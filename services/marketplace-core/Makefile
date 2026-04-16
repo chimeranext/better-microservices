@@ -72,6 +72,31 @@ db-psql: ## Open psql shell to local postgres
 	@PGPASSWORD="$${POSTGRES_PASSWORD:-marketplace_dev}" psql \
 		-h localhost -p $(POSTGRES_PORT) -U $(POSTGRES_USER) -d $(POSTGRES_DB)
 
+# ── Seeds ────────────────────────────────────────────────────────────
+SEED_DIR ?= db/seeds
+
+define run_seed
+	@echo "[seed] applying $(1)"
+	@PGPASSWORD="$${POSTGRES_PASSWORD:-marketplace_dev}" psql -v ON_ERROR_STOP=1 \
+		-h localhost -p $(POSTGRES_PORT) -U $(POSTGRES_USER) -d $(POSTGRES_DB) \
+		-f $(SEED_DIR)/$(1).sql
+endef
+
+.PHONY: seed-vertivo
+seed-vertivo: ## Seed 20 Vertivo hortalizas
+	$(call run_seed,vertivo)
+
+.PHONY: seed-habitanexus
+seed-habitanexus: ## Seed 10 HabitaNexus rentals
+	$(call run_seed,habitanexus)
+
+.PHONY: seed-altrupets
+seed-altrupets: ## Seed 30 AltruPets pet supplies
+	$(call run_seed,altrupets)
+
+.PHONY: seed-all
+seed-all: seed-vertivo seed-habitanexus seed-altrupets ## Apply all three seeds
+
 # ── Container builds ─────────────────────────────────────────────────
 .PHONY: build-docker
 build-docker: ## Build the marketplace-core container image
