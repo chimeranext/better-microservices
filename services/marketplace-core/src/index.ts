@@ -1,6 +1,3 @@
-// Domain entities (to be implemented)
-// export * from "./domain/entities/index.js";
-
 // Value objects
 export * from "./domain/value-objects/index.js";
 

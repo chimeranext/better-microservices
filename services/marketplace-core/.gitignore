@@ -1,1 +1,11 @@
-node_modules/\ndist/\n*.js\n!src/**\n.env
+node_modules/
+dist/
+coverage/
+.tsbuildinfo
+*.tsbuildinfo
+*.js
+!src/**
+!tests/**
+!*.config.ts
+.env
+.env.local

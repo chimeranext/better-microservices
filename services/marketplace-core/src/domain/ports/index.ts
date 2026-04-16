@@ -1,6 +1,6 @@
-import type { Money, GeoLocation, AvailabilityRule } from "../value-objects/index.js";
-import type { InventoryPolicy, FulfillmentType, ProductStatus } from "../../shared-kernel/types.js";
 import type { DomainEvent } from "../../shared-kernel/events.js";
+import type { FulfillmentType, InventoryPolicy, ProductStatus } from "../../shared-kernel/types.js";
+import type { AvailabilityRule, GeoLocation, Money } from "../value-objects/index.js";
 
 // ============================================================
 // PORTS — Interfaces that the domain defines.
@@ -224,9 +224,25 @@ export interface PaymentResult {
 // --- Traceability Port ---
 
 export interface TraceabilityPort {
-  recordOrigin(productId: string, originParty: string, location: GeoLocation, metadata: Record<string, string>): Promise<TraceEventResult>;
-  recordTransfer(productId: string, fromParty: string, toParty: string, location: GeoLocation, metadata: Record<string, string>): Promise<TraceEventResult>;
-  recordTransformation(productId: string, inputProductIds: string[], description: string, metadata: Record<string, string>): Promise<TraceEventResult>;
+  recordOrigin(
+    productId: string,
+    originParty: string,
+    location: GeoLocation,
+    metadata: Record<string, string>,
+  ): Promise<TraceEventResult>;
+  recordTransfer(
+    productId: string,
+    fromParty: string,
+    toParty: string,
+    location: GeoLocation,
+    metadata: Record<string, string>,
+  ): Promise<TraceEventResult>;
+  recordTransformation(
+    productId: string,
+    inputProductIds: string[],
+    description: string,
+    metadata: Record<string, string>,
+  ): Promise<TraceEventResult>;
   getChain(productId: string): Promise<TraceChainResult>;
   verifyChain(productId: string): Promise<boolean>;
 }
@@ -260,7 +276,11 @@ export interface TraceChainResult {
 export interface ReputationPort {
   submitRating(input: RatingInput): Promise<string>;
   getReputation(entityId: string): Promise<ReputationScore>;
-  getReviewHistory(entityId: string, limit: number, cursor?: string): Promise<PaginatedResult<RatingData>>;
+  getReviewHistory(
+    entityId: string,
+    limit: number,
+    cursor?: string,
+  ): Promise<PaginatedResult<RatingData>>;
 }
 
 export interface RatingInput {

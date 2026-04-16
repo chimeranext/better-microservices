@@ -1,5 +1,7 @@
-export { Money, MoneySchema, createMoney, addMoney } from "./money.js";
-export { GeoLocation, GeoLocationSchema } from "./geo-location.js";
+export { MoneySchema, createMoney, addMoney } from "./money.js";
+export type { Money } from "./money.js";
+export { GeoLocationSchema } from "./geo-location.js";
+export type { GeoLocation } from "./geo-location.js";
 
 export { z } from "zod";
 

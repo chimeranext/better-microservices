@@ -15,6 +15,6 @@ export function addMoney(a: Money, b: Money): Money {
   if (a.currency !== b.currency) {
     throw new Error(`Cannot add different currencies: ${a.currency} vs ${b.currency}`);
   }
-  const sum = (parseFloat(a.amount) + parseFloat(b.amount)).toFixed(2);
+  const sum = (Number.parseFloat(a.amount) + Number.parseFloat(b.amount)).toFixed(2);
   return { amount: sum, currency: a.currency };
 }
