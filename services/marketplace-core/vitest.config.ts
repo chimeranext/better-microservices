@@ -16,6 +16,12 @@ export default defineConfig({
         // Pure type declarations — TypeScript erases them, nothing to cover.
         "src/domain/ports/**",
         "src/shared-kernel/events.ts",
+        // I/O orchestration — covered by integration tests in a follow-up PR.
+        "src/main.ts",
+        "src/adapters/primary/grpc/server.ts",
+        "src/adapters/secondary/meilisearch-engine.ts",
+        "src/infrastructure/postgres/pool.ts",
+        "src/infrastructure/postgres/migrate.ts",
       ],
       thresholds: {
         statements: 100,

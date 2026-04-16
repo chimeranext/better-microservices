@@ -599,6 +599,13 @@ message CollectionPage {
   int32 total = 3;
 }
 
+message ListCollectionsRequest {
+  string vendor_id = 1;
+  CollectionType type = 2;
+  int32 limit = 3;
+  string cursor = 4;
+}
+
 // --- Vendor Requests ---
 
 message RegisterVendorRequest {
