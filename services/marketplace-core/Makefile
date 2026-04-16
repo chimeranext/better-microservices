@@ -116,6 +116,41 @@ verify: typecheck lint test build ## Full local CI pipeline
 clean: ## Remove build artifacts + coverage
 	rm -rf dist coverage .tsbuildinfo
 
+# ── Flutter UI ───────────────────────────────────────────────────────
+UI_DIR ?= ui
+
+.PHONY: ui-install
+ui-install: ## flutter pub get in ui/
+	cd $(UI_DIR) && flutter pub get
+
+.PHONY: ui-proto
+ui-proto: ## Regenerate Dart gRPC code from proto/
+	mkdir -p $(UI_DIR)/lib/generated
+	protoc --dart_out=grpc:$(UI_DIR)/lib/generated -Iproto proto/marketplace_core.proto
+
+.PHONY: ui-analyze
+ui-analyze: ## flutter analyze
+	cd $(UI_DIR) && flutter analyze
+
+.PHONY: ui-test
+ui-test: ## flutter test
+	cd $(UI_DIR) && flutter test
+
+.PHONY: ui-build
+ui-build: ## flutter build linux
+	cd $(UI_DIR) && flutter build linux --release
+
+.PHONY: ui-run
+ui-run: ## flutter run -d linux
+	cd $(UI_DIR) && flutter run -d linux
+
+.PHONY: ui-clean
+ui-clean: ## flutter clean + pub get
+	cd $(UI_DIR) && flutter clean && flutter pub get
+
+.PHONY: ui-verify
+ui-verify: ui-analyze ui-test ui-build ## Full UI local CI pipeline
+
 # ── Help ─────────────────────────────────────────────────────────────
 .PHONY: help
 help: ## Print this help
