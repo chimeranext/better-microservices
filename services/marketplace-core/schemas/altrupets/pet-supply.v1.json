@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema://altrupets/pet-supply:v1",
+  "title": "Pet supply (AltruPets)",
+  "description": "Insumos para mascotas con ficha nutricional + verificación veterinaria.",
+  "type": "object",
+  "x-ui-order": [
+    "lifeStage",
+    "species",
+    "weightGrams",
+    "kcalPerGram",
+    "primaryImage",
+    "ingredients",
+    "vetApproved",
+    "expiresOn",
+    "manufacturerUrl"
+  ],
+  "x-ui-browse-fields": ["lifeStage", "species", "vetApproved"],
+  "required": ["species", "lifeStage"],
+  "properties": {
+    "species": {
+      "type": "string",
+      "title": "Species",
+      "enum": ["dog", "cat", "rabbit", "bird"]
+    },
+    "lifeStage": {
+      "type": "string",
+      "title": "Life stage",
+      "enum": ["puppy", "adult", "senior"]
+    },
+    "weightGrams": {
+      "type": "integer",
+      "title": "Pack weight",
+      "x-ui-unit": "g"
+    },
+    "kcalPerGram": {
+      "type": "number",
+      "title": "Energy",
+      "x-ui-unit": "kcal/g"
+    },
+    "primaryImage": {
+      "type": "string",
+      "title": "Primary image",
+      "x-ui-hint": "image"
+    },
+    "ingredients": {
+      "type": "array",
+      "title": "Ingredients",
+      "items": { "type": "string" }
+    },
+    "vetApproved": {
+      "type": "boolean",
+      "title": "Vet approved",
+      "x-ui-true-label": "Approved",
+      "x-ui-false-label": "Not reviewed"
+    },
+    "expiresOn": {
+      "type": "string",
+      "format": "date",
+      "title": "Best before"
+    },
+    "manufacturerUrl": {
+      "type": "string",
+      "format": "uri",
+      "title": "Manufacturer site"
+    }
+  }
+}

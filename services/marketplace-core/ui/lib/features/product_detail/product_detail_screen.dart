@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/json_schema_renderer.dart';
+import '../../shared/schema_registry_provider.dart';
 import 'product_detail_providers.dart';
 
+/// Product detail — schema-driven attributes pane plus the gRPC Product
+/// message's built-in fields (title, description, tags).
 class ProductDetailScreen extends ConsumerWidget {
   const ProductDetailScreen({required this.productId, super.key});
 
@@ -12,11 +15,16 @@ class ProductDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncProduct = ref.watch(productDetailProvider(productId));
+    final asyncSchema = ref.watch(merchantSchemaProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Product')),
       body: asyncProduct.when(
-        data: (product) {
-          return ListView(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, _) => Center(child: Text(err.toString())),
+        data: (product) => asyncSchema.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (err, _) => Center(child: Text('Schema load failed: $err')),
+          data: (merchant) => ListView(
             padding: const EdgeInsets.all(16),
             children: [
               Text(product.title, style: Theme.of(context).textTheme.headlineMedium),
@@ -31,20 +39,18 @@ class ProductDetailScreen extends ConsumerWidget {
                 ],
               ),
               const Divider(height: 32),
-              // PR-5 replaces this placeholder with the real JSON Schema
-              // renderer that drives the layout from product.schemaRef.
               JsonSchemaRenderer(
-                schemaRef: product.schemaRef,
+                schemaRef: product.schemaRef.isNotEmpty
+                    ? product.schemaRef
+                    : merchant.url,
+                schema: merchant.schema,
                 attributes: {
-                  for (final entry in product.attributes.entries)
-                    entry.key: entry.value,
+                  for (final e in product.attributes.entries) e.key: e.value,
                 },
               ),
             ],
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text(err.toString())),
+          ),
+        ),
       ),
     );
   }

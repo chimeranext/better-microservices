@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema://habitanexus/property:v1",
+  "title": "Rental property (HabitaNexus)",
+  "description": "Alquileres residenciales con fichas enriquecidas.",
+  "type": "object",
+  "x-ui-order": [
+    "bedrooms",
+    "bathrooms",
+    "areaM2",
+    "monthlyRent",
+    "includesUtilities",
+    "parking",
+    "deposit",
+    "availableFrom",
+    "locationGeo",
+    "propertyType",
+    "primaryColor"
+  ],
+  "x-ui-browse-fields": ["bedrooms", "monthlyRent", "locationGeo"],
+  "required": ["bedrooms", "bathrooms", "monthlyRent"],
+  "properties": {
+    "bedrooms": {
+      "type": "integer",
+      "title": "Bedrooms",
+      "x-ui-unit": "hab"
+    },
+    "bathrooms": { "type": "number", "title": "Bathrooms" },
+    "areaM2": {
+      "type": "number",
+      "title": "Area",
+      "x-ui-unit": "m²"
+    },
+    "monthlyRent": {
+      "type": "string",
+      "title": "Monthly rent",
+      "x-ui-hint": "money",
+      "x-ui-currency": "USD"
+    },
+    "includesUtilities": {
+      "type": "boolean",
+      "title": "Utilities included"
+    },
+    "parking": {
+      "type": "boolean",
+      "title": "Parking"
+    },
+    "deposit": {
+      "type": "string",
+      "title": "Deposit",
+      "x-ui-hint": "money",
+      "x-ui-currency": "USD"
+    },
+    "availableFrom": {
+      "type": "string",
+      "format": "date",
+      "title": "Available from"
+    },
+    "locationGeo": {
+      "type": "object",
+      "title": "Location",
+      "x-ui-hint": "geo",
+      "properties": {
+        "lat": { "type": "number" },
+        "lng": { "type": "number" }
+      }
+    },
+    "propertyType": {
+      "type": "string",
+      "title": "Property type",
+      "enum": ["apartment", "house", "studio", "loft"]
+    },
+    "primaryColor": {
+      "type": "string",
+      "title": "Brand color",
+      "x-ui-hint": "color"
+    }
+  }
+}
