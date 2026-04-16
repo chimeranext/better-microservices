@@ -1,0 +1,66 @@
+services:
+  postgres:
+    image: docker.io/library/postgres:16-alpine
+    container_name: marketplace-core-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-marketplace}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-marketplace_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-marketplace_core}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  meilisearch:
+    image: docker.io/getmeili/meilisearch:v1.11
+    container_name: marketplace-core-meilisearch
+    restart: unless-stopped
+    environment:
+      MEILI_ENV: ${MEILI_ENV:-development}
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-marketplace_dev_master_key}
+      MEILI_NO_ANALYTICS: "true"
+    ports:
+      - "${MEILI_PORT:-7700}:7700"
+    volumes:
+      - meilisearch-data:/meili_data
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7700/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  marketplace-core:
+    image: ghcr.io/lapc506/marketplace-core:latest
+    container_name: marketplace-core-server
+    restart: unless-stopped
+    profiles:
+      - server
+    depends_on:
+      postgres:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-marketplace}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-marketplace_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-marketplace_core}
+      MEILI_HOST: http://meilisearch:7700
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-marketplace_dev_master_key}
+      MERCHANT_SCHEMA_URL: ${MERCHANT_SCHEMA_URL:-file:///schemas/vertivolatam/hortalizas.v1.json}
+    ports:
+      - "${GRPC_PORT:-50051}:50051"
+    volumes:
+      - ./schemas:/schemas:ro
+
+volumes:
+  postgres-data:
+  meilisearch-data:
