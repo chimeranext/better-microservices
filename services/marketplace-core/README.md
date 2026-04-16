@@ -111,6 +111,40 @@ Supply chain traceability follows:
 npm install @lapc506/marketplace-core
 ```
 
+## Standalone Demo
+
+Version `0.1.0` ships with a standalone Flutter storefront + docker-compose
+stack that proves one binary can render three radically different
+marketplaces — hortalizas frescas, rental properties, pet supplies — just
+by swapping a JSON Schema. No domain-specific code.
+
+```bash
+make images-pull       # one-time: pull postgres + meilisearch
+make up                # start compose (postgres + meilisearch)
+make build-docker      # build the server image
+make up-server         # start the server (auto-runs migrations + index init)
+make seed-all          # 20 hortalizas + 10 rentals + 30 pet supplies
+
+# in another terminal
+MERCHANT_SCHEMA_URL=file://$PWD/schemas/vertivolatam/hortalizas.v1.json \
+  make ui-run          # open the Flutter desktop app
+
+# swap the schema without rebuilding:
+MERCHANT_SCHEMA_URL=file://$PWD/schemas/habitanexus/property.v1.json \
+  make ui-run
+MERCHANT_SCHEMA_URL=file://$PWD/schemas/altrupets/pet-supply.v1.json \
+  make ui-run
+```
+
+The same Flutter binary renders each marketplace with merchant-appropriate
+fields, units, badges, and order — all driven by the JSON Schema.
+
+Deep-dive docs:
+
+- [`docs/design/standalone-mode.md`](docs/design/standalone-mode.md) — architecture + Mermaid diagrams.
+- [`docs/design/json-schema-renderer.md`](docs/design/json-schema-renderer.md) — dispatch rules + widget map.
+- [`docs/design/schema-extensions.md`](docs/design/schema-extensions.md) — catalog of every `x-ui-*` extension.
+
 ## License
 
 MIT — same as [agentic-core](https://github.com/lapc506/agentic-core).
