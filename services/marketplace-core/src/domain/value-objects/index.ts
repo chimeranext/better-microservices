@@ -1,4 +1,11 @@
-export { MoneySchema, createMoney, addMoney } from "./money.js";
+export {
+  MoneySchema,
+  createMoney,
+  zeroMoney,
+  addMoney,
+  subtractMoney,
+  compareMoney,
+} from "./money.js";
 export type { Money } from "./money.js";
 export { GeoLocationSchema } from "./geo-location.js";
 export type { GeoLocation } from "./geo-location.js";
