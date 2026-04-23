@@ -19,6 +19,20 @@ HELM_VALUES_DEV ?= $(HELM_CHART)/values-dev.yaml
 K8S_DEPS_DIR   = k8s/dependencies
 SCRIPTS_DIR    = infrastructure/scripts
 
+# --- ANSI colors -------------------------------------------------------------
+
+BLUE   := \033[36m
+GREEN  := \033[32m
+YELLOW := \033[33m
+RED    := \033[31m
+NC     := \033[0m
+
+# --- Standalone / Flutter ----------------------------------------------------
+
+STANDALONE_IMAGE ?= agentic-core
+UI_DIR           := ui
+UI_BINARY        := $(UI_DIR)/build/linux/x64/release/bundle/agent_studio
+
 # --- Phony -------------------------------------------------------------------
 
 .PHONY: help proto test lint typecheck \
