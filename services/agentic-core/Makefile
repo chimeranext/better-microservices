@@ -49,6 +49,7 @@ UI_BINARY        := $(UI_DIR)/build/linux/x64/release/bundle/agent_studio
 	build-web build-docker up down clean \
 	dev-backend-build dev-backend-up dev-backend-down dev-backend-destroy \
 	dev-backend-logs dev-backend-status dev-backend-wait \
+	dev-desktop-build dev-desktop-launch dev-desktop-launch-dev dev-desktop-clean \
 	build-desktop desktop desktop-dev \
 	tui tui-build \
 	docs-site docs-specs docs
@@ -335,6 +336,30 @@ dev-backend-wait: ## Wait for backend WebSocket port (:8765) up to 60s
 
 build-web:
 	cd ui && flutter pub get && flutter build web --release
+
+# =============================================================================
+# STANDALONE — Desktop App (Flutter Linux native)
+# =============================================================================
+
+dev-desktop-build: ## Build Flutter Linux release
+	@cd $(UI_DIR) && flutter pub get && flutter build linux --release
+	@echo "$(GREEN)✓ Desktop build ready: $(UI_BINARY)$(NC)"
+
+dev-desktop-launch: ## Run the compiled release binary (requires dev-desktop-build first)
+	@if [ ! -x $(UI_BINARY) ]; then \
+		echo "$(RED)✗ Binary not found at $(UI_BINARY)$(NC)"; \
+		echo "  Run 'make dev-desktop-build' first."; \
+		exit 1; \
+	fi
+	@echo "$(GREEN)Launching Agent Studio (release)$(NC)"
+	@./$(UI_BINARY)
+
+dev-desktop-launch-dev: ## Launch Flutter Linux with hot reload
+	@cd $(UI_DIR) && flutter pub get && flutter run -d linux
+
+dev-desktop-clean: ## flutter clean for the UI
+	@cd $(UI_DIR) && flutter clean
+	@echo "$(GREEN)✓ Flutter build artifacts cleaned$(NC)"
 
 build-docker: build-web
 	podman build -t agentic-core -f deployment/docker/Dockerfile .
