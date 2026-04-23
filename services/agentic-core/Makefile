@@ -36,7 +36,7 @@ UI_BINARY        := $(UI_DIR)/build/linux/x64/release/bundle/agent_studio
 # --- Phony -------------------------------------------------------------------
 
 .PHONY: help proto test lint typecheck \
-	bootstrap-dev \
+	bootstrap-dev bootstrap-standalone \
 	dev-minikube-start dev-minikube-stop dev-minikube-destroy dev-minikube-status \
 	dev-secret-create \
 	dev-deps-deploy dev-deps-destroy dev-deps-status dev-deps-wait \
@@ -127,14 +127,27 @@ typecheck:
 # BOOTSTRAP — one command to rule them all
 # =============================================================================
 
-bootstrap-dev: dev-minikube-start dev-secret-create dev-deps-deploy dev-deps-wait dev-build dev-deploy ## Full local cluster setup
+bootstrap-dev: dev-minikube-start dev-secret-create dev-deps-deploy dev-deps-wait dev-build dev-deploy ## Full local cluster setup (Minikube)
 	@echo ""
-	@echo "=== agentic-core cluster ready ==="
+	@echo "$(GREEN)=== agentic-core cluster ready ===$(NC)"
 	@echo ""
 	@echo "  Run:  make dev-port-forward"
 	@echo "  Then: ws://localhost:8765  (WebSocket)"
 	@echo "        localhost:50051      (gRPC)"
 	@echo ""
+
+bootstrap-standalone: dev-backend-build dev-backend-up dev-backend-wait ## Compose stack + Flutter desktop (hot reload)
+	@echo ""
+	@echo "$(GREEN)=== Backend stack ready ===$(NC)"
+	@echo "  HTTP: http://localhost:8080"
+	@echo "  WS:   ws://localhost:8765"
+	@echo ""
+	@echo "$(YELLOW)Launching Flutter desktop in dev mode.$(NC)"
+	@echo "$(YELLOW)Ctrl+C stops the UI — compose stays running.$(NC)"
+	@echo ""
+	@$(MAKE) dev-desktop-launch-dev
+	@echo ""
+	@echo "$(YELLOW)UI stopped. Run 'make dev-backend-down' to stop compose.$(NC)"
 
 # =============================================================================
 # MINIKUBE CLUSTER
