@@ -312,11 +312,11 @@ dev-backend-up: ## Start compose stack (detached)
 	@echo "$(GREEN)✓ Compose stack started$(NC)"
 
 dev-backend-down: ## Stop compose stack (preserve volumes)
-	podman compose down
+	@podman compose down
 	@echo "$(GREEN)✓ Compose stack stopped$(NC)"
 
 dev-backend-destroy: ## Stop compose stack and remove volumes
-	podman compose down -v
+	@podman compose down -v
 	@echo "$(GREEN)✓ Compose stack destroyed (volumes removed)$(NC)"
 
 dev-backend-logs: ## Tail compose logs
