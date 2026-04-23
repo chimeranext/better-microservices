@@ -47,6 +47,8 @@ UI_BINARY        := $(UI_DIR)/build/linux/x64/release/bundle/agent_studio
 	dev-status \
 	dev-clean \
 	build-web build-docker up down clean \
+	dev-backend-build dev-backend-up dev-backend-down dev-backend-destroy \
+	dev-backend-logs dev-backend-status dev-backend-wait \
 	build-desktop desktop desktop-dev \
 	tui tui-build \
 	docs-site docs-specs docs
@@ -292,8 +294,44 @@ dev-clean: dev-port-forward-stop dev-deploy-destroy dev-deps-destroy dev-minikub
 	@echo "Full cleanup complete."
 
 # =============================================================================
-# STANDALONE AGENT STUDIO (docker compose, no K8s)
+# STANDALONE — Backend (docker-compose)
 # =============================================================================
+#
+# NOTE: In standalone mode, `dev-backend-*` targets operate the compose stack.
+# In Kubernetes mode, `dev-deploy`/`dev-build` operate the same service via Helm.
+# Same "backend" resource, two deployment homes.
+
+dev-backend-build: build-web ## Build agentic-core image (flutter web + podman build)
+	@echo "$(BLUE)Building agentic-core image...$(NC)"
+	podman build -t $(STANDALONE_IMAGE) -f deployment/docker/Dockerfile .
+	@echo "$(GREEN)✓ Image built: $(STANDALONE_IMAGE)$(NC)"
+
+dev-backend-up: ## Start compose stack (detached)
+	@echo "$(BLUE)Starting compose stack...$(NC)"
+	podman compose up -d
+	@echo "$(GREEN)✓ Compose stack started$(NC)"
+
+dev-backend-down: ## Stop compose stack (preserve volumes)
+	podman compose down
+	@echo "$(GREEN)✓ Compose stack stopped$(NC)"
+
+dev-backend-destroy: ## Stop compose stack and remove volumes
+	podman compose down -v
+	@echo "$(GREEN)✓ Compose stack destroyed (volumes removed)$(NC)"
+
+dev-backend-logs: ## Tail compose logs
+	podman compose logs -f
+
+dev-backend-status: ## Show compose service status
+	@podman compose ps
+
+dev-backend-wait: ## Wait for backend WebSocket port (:8765) up to 60s
+	@echo "$(BLUE)Waiting for backend on :8765 (max 60s)...$(NC)"
+	@timeout 60 bash -c 'until nc -z localhost 8765 2>/dev/null; do sleep 1; done' \
+		|| { echo "$(RED)✗ Backend not ready after 60s$(NC)"; exit 1; }
+	@echo "$(GREEN)✓ Backend ready$(NC)"
+
+# --- Legacy web-bundle target (used as dep by dev-backend-build) -------------
 
 build-web:
 	cd ui && flutter pub get && flutter build web --release
