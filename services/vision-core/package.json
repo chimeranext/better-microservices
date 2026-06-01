@@ -1,0 +1,12 @@
+{
+  "name": "@chimeranext/vision-core",
+  "version": "0.0.0",
+  "private": true,
+  "license": "BUSL-1.1",
+  "description": "AgTech image & video segmentation service (Python). Thin Turbo passthrough — real scripts delegated to native tooling (uv / pytest).",
+  "scripts": {
+    "build": "echo '[vision-core] build delegated to native tooling (uv / hatchling) — see openspec 2026-06-01-vision-core'",
+    "test": "echo '[vision-core] test delegated to native tooling (pytest) — see openspec 2026-06-01-vision-core'",
+    "lint": "echo '[vision-core] lint delegated to native tooling (ruff / mypy) — see openspec 2026-06-01-vision-core'"
+  }
+}
