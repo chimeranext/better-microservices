@@ -28,6 +28,8 @@ Every change belongs to exactly one **domain**. Domains map 1:1 to a GitHub
 | `invoice-core` | `service:invoice-core` | Node (pnpm) | Pre-alpha (Fase 1) |
 | `marketplace-core` | `service:marketplace-core` | Node + appchain + Flutter | Active |
 | `payments-core` | `service:payments-core` | Node (pnpm) | Skeleton + adapters |
+| `vision-core` | `service:vision-core` | Python (hexagonal) | Scaffold (close-range image/video segmentation; serves vertivolatam) |
+| `geospatial-core` | `service:geospatial-core` | Python (hexagonal) | Scaffold (remote-sensing land-use; serves habitanexus) |
 | `common` | `service:common` | — (cross-service docs/contracts) | Active |
 | `platform` | `service:cross-repo` | — (eventbus, sidecar, gRPC Health, OTel) | Active |
 

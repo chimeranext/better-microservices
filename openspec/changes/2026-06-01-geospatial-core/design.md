@@ -229,14 +229,18 @@ close-range). **This ADR only flags it** — per the brief and `openspec/project
 - **Pure deep-learning LULC (no thresholds)** — deferred: needs HPC + regional labels
   (Digifarm scale); index-threshold + weak-labelled RF is the pragmatic Fase-1 base.
 
-## 9. Open questions for the owner (decide before merge)
+## 9. Owner decisions
 
+**Resolved (2026-06-01):**
+- ✅ **UC-2 legal framing → ADVISORY, no legal value.** The satellite built-area
+  estimate is delivered strictly as an advisory input; it does **not** substitute the
+  official avalúo catastral nor imply a legal valuation, and must not be presented as
+  binding for the canon cap. Implementations of UC-2 must label outputs accordingly.
+- ✅ **Domain row + label** added to `openspec/project.md`; `geospatial-core` and
+  `vision-core` landed in the **same merge wave**.
+
+**Still open (decide before implementation):**
 1. **Provider priority:** GEE-broker-first vs. direct Copernicus/LP-DAAC COG-first as the
    *default* `ImageryProviderPort`? (Affects credentials + quota posture.)
-2. **Legal framing of UC-2:** is a satellite built-area estimate acceptable as an
-   *advisory* prior to the avalúo/canon cap, or must it stay purely informational to
-   avoid implying a legal valuation?
-3. **`service:geospatial-core` label + domain row** in `openspec/project.md` — confirm
-   naming and whether vision-core lands in the same PR wave.
-4. **Shared `packages/common` segmentation contract** — green-light a joint
+2. **Shared `packages/common` segmentation contract** — green-light a joint
    geospatial-core × vision-core change to author it?

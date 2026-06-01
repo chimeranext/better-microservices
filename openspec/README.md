@@ -11,6 +11,8 @@ Living index of decision records for `better-microservices`. Governance:
 | [`2026-06-01-license-normalization`](./changes/2026-06-01-license-normalization/) | all services | proposal · design · tasks | **Merged 2026-06-01** (BSL 1.1, Non-Profit OSL 3.0 +5y, ChimeraNext Shared Services LLC) |
 | [`2026-06-01-docs-site`](./changes/2026-06-01-docs-site/) | `common` | proposal · design · tasks | **Merged 2026-06-01** (README-first tabs + Common; gated: enable GitHub Pages) |
 | [`2026-06-01-landing-configurator`](./changes/2026-06-01-landing-configurator/) | `platform` | proposal · design · tasks | Modeled — pending implementation |
+| [`2026-06-01-vision-core`](./changes/2026-06-01-vision-core/) | `vision-core` | proposal · design · tasks | **Merged 2026-06-01** — scaffold (7th service; serves vertivolatam) |
+| [`2026-06-01-geospatial-core`](./changes/2026-06-01-geospatial-core/) | `geospatial-core` | proposal · design · tasks | **Merged 2026-06-01** — scaffold (8th service; serves habitanexus) |
 
 ## Roadmap (sub-projects)
 
