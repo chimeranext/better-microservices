@@ -7,7 +7,7 @@ Living index of decision records for `better-microservices`. Governance:
 
 | Change | Domain | Records | Status |
 |---|---|---|---|
-| [`2026-05-31-monorepo-foundation`](./changes/2026-05-31-monorepo-foundation/) | `platform` | proposal · design · tasks | Design approved — pending implementation |
+| [`2026-05-31-monorepo-foundation`](./changes/2026-05-31-monorepo-foundation/) | `platform` | proposal · design · tasks | **Shipped 2026-06-01** (tracking [#1](https://github.com/chimeranext/better-microservices/issues/1)) |
 
 ## Roadmap (sub-projects)
 

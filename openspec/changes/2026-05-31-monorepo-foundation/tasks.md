@@ -12,7 +12,9 @@
 - ✅ **Phase 3** — root layer (pnpm/Turbo/OpenSpec/placeholders) + **swap**: `$ROOT` is now the monorepo clone.
 - ✅ **Phase 4** — pushed to `chimeranext/better-microservices` (main + 19 branches); remote verified.
 - ✅ **Phase 5** — labels (70) + milestones (8) + **68 issues** created (epics + 1:1 + mirrors + platform #2 + foundation #1); back-references on source issues.
-- 🚧 **Phase 6** — archive `lapc506` repos (**pending owner go-ahead**). Note: monorepo issue #18 (filing Task A4) should be pinned manually via the GitHub UI.
+- ✅ **Phase 6** — 6 `lapc506` repos archived (read-only) with README pointers. Note: monorepo issue #18 (filing Task A4) should be pinned manually via the GitHub UI.
+
+**Sub-project #1 SHIPPED 2026-06-01.** Next: #2 licenses · #3 Turbo pipeline · #4 docs site · #5 OpenSpec hooks · #6 landing page.
 
 ## Phase 0 — Spec & scaffold (local, safe)
 
