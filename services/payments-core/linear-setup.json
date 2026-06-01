@@ -1,0 +1,18 @@
+{
+  "_note": "This repo does NOT use Linear. Tracking lives in GitHub Issues on lapc506/payments-core. This file only preserves the git/openspec defaults the /make-no-mistakes:implement skill reads; do not reintroduce a `team` field unless a dedicated Linear workspace exists.",
+  "tracker": "github-issues",
+  "git": {
+    "baseBranch": "main",
+    "branchPattern": "{type}/{issueNumber}-{description}"
+  },
+  "defaults": {
+    "greptileReview": true,
+    "greptileMinConfidence": 5,
+    "squashMerge": true,
+    "slackNotify": false
+  },
+  "openspec": {
+    "specLibraryPath": "openspec/specs",
+    "changesPath": "openspec/changes"
+  }
+}
