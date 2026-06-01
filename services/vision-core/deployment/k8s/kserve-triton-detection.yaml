@@ -1,0 +1,32 @@
+# KServe InferenceService — TIER 1 DETECTION (Triton runtime).
+# Serves the structured-output detector (YOLO26 / RF-DETR -> boxes/masks/conf)
+# behind DetectionRuntimePort. Fed by the Kubeflow training pipeline
+# (TrainingOperator -> export -> register -> promote). Weights load DIRECTLY from
+# MinIO via storageUri (the s3fs/KServe data path — NOT KFP artifact passing).
+#
+# This is the authoritative-tier detector (Phase 1). In Phase 2 the SAME weights
+# are exported to a TensorRT engine and run in-greenhouse on Jetson Orin; the
+# call site (DetectionRuntimePort) is identical.
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: vision-core-triton-detection
+  namespace: vision-core
+  annotations:
+    serving.kserve.io/deploymentMode: Serverless
+spec:
+  predictor:
+    # KServe deploy needs explicit admin ServiceAccount perms — see rbac.yaml.
+    serviceAccountName: vision-core-kserve
+    minReplicas: 0          # scale-to-zero between time-lapse batch sweeps
+    maxReplicas: 4
+    model:
+      modelFormat:
+        name: triton
+      runtime: kserve-tritonserver
+      # Populated by the Kubeflow pipeline's register step with the promoted,
+      # per-crop fine-tuned engine (-> Vertivo aiModelVersion). s3:// = MinIO.
+      storageUri: "s3://vision-core-models/detection/generic-2026.06/"
+      resources:
+        limits:
+          nvidia.com/gpu: "1"

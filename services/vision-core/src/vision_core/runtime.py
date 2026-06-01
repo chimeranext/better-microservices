@@ -22,9 +22,18 @@ def main() -> None:
         grpc_port=settings.grpc_port,
         rest_port=settings.rest_port,
         inference_local=settings.inference_local,
+        kserve_url=settings.kserve_url,
+        vllm_url=settings.vllm_url,
+        minio_endpoint=settings.minio_endpoint,
     )
-    # apply Phase 3: build {ModelFamily: SegmentationModelPort}, registry, stream;
-    # construct SegmentImageHandler/SegmentVideoHandler; asyncio.run(serve()).
+    # apply Phase 3: build the tier adapters per settings.tier —
+    #   ObjectStoragePort -> S3fsObjectStorageAdapter (MinIO),
+    #   DetectionRuntimePort -> TritonDetectionAdapter (cloud) | TensorRT (edge),
+    #   VlmDiagnosisPort -> VllmDiagnosisAdapter (always cloud),
+    #   CaptureIngestPort -> MqttCaptureIngestAdapter,
+    #   ActiveLearningPort -> MinioActiveLearningAdapter, + registry + stream;
+    # construct SegmentImage/SegmentVideo/DiagnoseImage/SubmitCapture/
+    # SubmitCorrection handlers; asyncio.run(serve()).
     logger.info(
         "scaffold runtime — inference not yet wired; see openspec "
         "2026-06-01-vision-core tasks.md Phase 3"

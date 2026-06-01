@@ -1,19 +1,40 @@
 # vision-core
 
-Real-time + batch **image & video segmentation for AgTech** — crop/plant disease
-identification, pest detection, plant-species ID, and crop monitoring. Built as a
-shared, source-available microservice in the `better-microservices` monorepo, and
-designed primarily to power the **[vertivolatam](https://github.com/vertivolatam/monorepo)
-(Vertivo)** autonomous-greenhouse product.
+**Phytopathology (pest & disease) vision + MLOps engine for autonomous indoor
+HYDROPONIC greenhouses.** Detection (bounding boxes / masks / confidence) **plus**
+VLM diagnosis (disease + severity + free-text), delivered as a **3-tier phased
+MLOps topology** on Kubeflow. Built as a shared, source-available microservice in
+the `better-microservices` monorepo, and designed to power the
+**[vertivolatam](https://github.com/vertivolatam/monorepo) (Vertivo)** product.
 
 > **vision-core contains NO product-specific business logic.** It returns generic
-> pixel-accurate segmentation; the consuming product (Vertivo) maps results onto
-> its own domain (e.g. `DiseaseDetection` rows + treatment recommendations) — the
-> same boundary rule `agentic-core` follows.
+> segmentation + diagnosis; the consumer — Vertivo's **`vertivo_server`**
+> (Serverpod 3.4.1, Dart) — maps results onto its own domain (`DiseaseDetection`
+> rows + alerts + treatment recommendations). Same boundary rule `agentic-core`
+> follows.
 
-**Target deployment:** **NVIDIA Jetson edge** (cuDNN / TensorRT) for real-time
-per-frame monitoring + **Kubeflow ML pipelines on Kubernetes** for batch sweeps,
-authoritative diagnosis, and crop-specific retraining.
+## 3-tier phased topology
+
+- **Tier 0 — On-camera (OpenMV Nicla Vision), NOW.** Tiny on-sensor FOMO/tinyML
+  pre-trigger ("is there something?") + high-res capture. Cheap/abundant —
+  **sidesteps the NVIDIA Jetson Orin Nano scarcity**.
+- **Tier 1 — Cloud (Phase 1, authoritative).** KServe with **two**
+  InferenceServices: **Triton** (YOLO26 / RF-DETR detection) **+ vLLM** (a VLM,
+  e.g. Qwen-VL/LLaVA, for text diagnosis). The VLM is **always cloud**. HITL /
+  active-learning retraining lives here.
+- **Tier 2 — Edge (Phase 2).** Jetson Orin runs lightweight **detection**
+  in-greenhouse once models converge and Jetson supply recovers; the **VLM stays
+  cloud** (low-confidence escalations only). RF-DETR (Apache-2.0) is the
+  recommended shipped edge default.
+
+**Capture phasing:** Phase 1 = time-lapse photos (disease evolves over hours/days
+→ batch); Phase 2 = continuous/burst video for fast-moving insects (OpenMV motion
+triggers). Photos default.
+
+**MLOps stack (Kubeflow):** Dask (preprocess) → Katib (HPO) → Training Operator
+(PyTorch DDP multi-GPU) → KServe deploy, with a first-class **`ObjectStoragePort`
+(s3fs/MinIO)** as the data backbone — because KServe/Katib/PyTorchJob do **not**
+use KFP's native artifact I/O (the ISS/Kubeflow s3fs workaround).
 
 **License:** Business Source License 1.1 (`BUSL-1.1`) — see [`LICENSE.md`](./LICENSE.md).
 
@@ -60,13 +81,18 @@ baked in:
 | Edge / Jetson fit | **excellent** (tiny, mature TRT) | good (TRT FP16, JetPack 5+) |
 | License | **AGPL-3.0** / paid Enterprise | **Apache-2.0** (Nano→Large) |
 
-**Default per tier** (see [ADR §2](../../openspec/changes/2026-06-01-vision-core/design.md)):
+Plus a **VLM tier** (vLLM/KServe, always cloud): a vision-language model
+(Qwen-VL / LLaVA) turns an image + detection context into a human-readable
+diagnosis (disease type/name, severity, free-text rationale) — the part a
+zero-agronomy-knowledge user actually needs.
 
-- **Edge (Jetson, real-time):** **YOLO26-seg** — tiny + fastest. *Licensing
-  caveat: AGPL-3.0; an owner decision for commercial edge ship.*
-- **Cloud (Kubeflow, accuracy):** **RF-DETR-Seg** — higher mask accuracy on small
-  lesions, **Apache-2.0** (commercially clean). Also the licensing-safe drop-in on
-  the edge.
+**Defaults** (see [ADR §2 / §2b](../../openspec/changes/2026-06-01-vision-core/design.md)):
+
+- **Cloud detection (Phase 1):** **RF-DETR-Seg** (Apache-2.0) on Triton — higher
+  mask accuracy on small lesions, commercially clean. YOLO26 also behind the port.
+- **Edge detection (Phase 2):** **RF-DETR** recommended (Apache-2.0; avoids YOLO
+  AGPL-3.0 / Ultralytics Enterprise on a commercial edge device).
+- **Diagnosis (all phases):** **vLLM** — always cloud.
 
 ## Architecture
 
@@ -81,7 +107,7 @@ Primary Adapters (gRPC, REST/FastAPI)   — call into →
 Secondary Adapters (UltralyticsYOLO, RF-DETR, ModelRegistry, VideoStream)
 ```
 
-### The four ports
+### Ports
 
 | Port | Role | Adapters |
 |---|---|---|
@@ -89,6 +115,11 @@ Secondary Adapters (UltralyticsYOLO, RF-DETR, ModelRegistry, VideoStream)
 | `InferencePort` | *where* it runs (Jetson TensorRT vs cloud KServe) | `LocalTensorRTAdapter`, `KServeInferenceAdapter` |
 | `VideoStreamPort` | decode a stream → frames, with sampling | `OpenCVVideoStreamAdapter`, `GStreamerJetsonAdapter` |
 | `ModelRegistryPort` | resolve/pull/promote models per crop | `LocalFsModelRegistryAdapter`, `KubeflowModelRegistryAdapter` |
+| **`ObjectStoragePort`** | MinIO/S3 via **s3fs** (weights · datasets · captures) | `S3fsObjectStorageAdapter` |
+| **`DetectionRuntimePort`** | Tier-1/2 detection — Triton/KServe (cloud) / TensorRT (edge) | `TritonDetectionAdapter` |
+| **`VlmDiagnosisPort`** | Tier-1 VLM diagnosis — vLLM/KServe (**always cloud**) | `VllmDiagnosisAdapter` |
+| **`CaptureIngestPort`** | accept a capture from vertivo_server / MQTT bridge | `MqttCaptureIngestAdapter` |
+| **`ActiveLearningPort`** | HITL — agronomist correction → MinIO → retrain | `MinioActiveLearningAdapter` |
 
 ## Quickstart
 
@@ -97,7 +128,7 @@ cd services/vision-core
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 
-pytest -q          # domain logic is real and passes (16 passed)
+pytest -q          # domain + MQTT parser + retrain gate real (23 passed, 2 skipped)
 make proto         # generate gRPC stubs from proto/vision/v1/vision.proto
 make lint          # ruff
 make typecheck     # mypy
@@ -110,56 +141,78 @@ make typecheck     # mypy
 
 ## vertivolatam integration
 
-Vertivo's Serverpod backend (`apps/vertivo_server/lib/src/phytopathology/`)
-already persists `DiseaseDetection` / `PestIdentification` /
-`NutritionalDeficiency` but has no engine to produce them. vision-core is that
-engine. A `Segmentation` maps **1:1** onto a `DiseaseDetection`:
+**The executor is `vertivo_server`** (Serverpod 3.4.1, Dart) — its
+`PhytopathologyEndpoint` calls vision-core and persists results. The Raspberry
+orchestrator is the **edge capture** layer (it publishes captures to EMQX), not
+the caller. Full chain:
 
-| `vision.v1` field | Vertivo `DiseaseDetection` | Produced by |
+```
+raspberry / OpenMV (capture) → MQTT (EMQX) → vertivo_server (Serverpod ingest)
+  → vision-core gRPC (Triton detection + vLLM diagnosis)
+    → vertivo_server persists DiseaseDetection / PestIdentification
+      → alerts + treatment_recommendation
+```
+
+### Dart ↔ Python crossing
+
+vision-core exposes gRPC `vision.v1`; `vertivo_server` (Dart) consumes it via a
+**generated grpc-dart client** (`protoc --dart_out=grpc:` over the *same*
+`vision.proto` — single source of truth), or via the **REST mirror** (`POST
+/v1/segment`, `POST /v1/diagnose`) with `package:http`. grpc-dart is recommended
+(typed + `SegmentVideo` streaming). The Dart pubspec does not yet depend on
+grpc/protobuf — adding it is the Phase-6 integration task. See
+[`design.md` §5](../../openspec/changes/2026-06-01-vision-core/design.md) for the
+full architecture + the cross-language contract.
+
+### Field mapping → `vertivo_server` `.spy.yaml`
+
+| `vision.v1` field | Vertivo model field | Produced by |
 |---|---|---|
-| `masks[].class_name` | `diseaseName` / `diseaseType` | model labels |
-| `masks[].confidence` | `confidence` | model score |
+| `masks[].class_name` | `DiseaseDetection.diseaseName`/`diseaseType` | Triton labels |
+| `masks[].confidence` | `confidence` | Triton score |
 | `affected_area_percent` | `affectedAreaPercent` | `AreaQuantifier` |
-| `severity` | `severity` | `SeverityScorer` |
+| `severity` | `severity` (`mild/moderate/severe/critical`) | `SeverityScorer` / VLM |
 | `masks[].anatomical_part` | `anatomicalParts` | label taxonomy |
-| `image_ref` | `imageUrl` | passthrough |
+| `Diagnosis.disease_type` | `diseaseType` (`fungal/bacterial/…`) | **vLLM** |
+| `Diagnosis.diagnosis_text` | `notes` | **vLLM** free-text |
+| `Diagnosis.recommended_action` | seeds `TreatmentRecommendation` | **vLLM** |
+| `image_ref` | `imageUrl` | passthrough (MinIO ref) |
 | `model_version` | `aiModelVersion` | `ModelRegistryPort` |
 
-**Contract** — gRPC `vision.v1.SegmentationService`
-([`proto/vision/v1/vision.proto`](./proto/vision/v1/vision.proto)):
+### Contract surface — gRPC `vision.v1` ([proto](./proto/vision/v1/vision.proto))
 
-- `SegmentImage(SegmentImageRequest) → SegmentImageResponse` — unary (uploads,
-  snapshots).
-- `SegmentVideo(SegmentVideoRequest) → stream SegmentationResponse` — real-time
-  edge.
-- `ListModels` / `GetModelForCrop` / `HealthCheck` (gRPC Health v1).
-- **REST mirror** `POST /v1/segment` (multipart upload) for the mobile app /
-  dashboard — Agrio-style ergonomics.
+- **`SegmentationService`** (Triton): `SegmentImage`, `SegmentVideo` (stream,
+  Phase 2 bursts), `ListModels` / `GetModelForCrop` / `HealthCheck`.
+- **`DiagnosisService`** (vLLM): `DiagnoseImage` — image + detection context →
+  diagnosis.
+- **`CaptureIngestService`**: `SubmitCapture` — MQTT capture ref ingest.
+- **`ActiveLearningService`**: `SubmitCorrection` — HITL agronomist correction.
+- **REST mirror** `POST /v1/segment`, `POST /v1/diagnose`.
 
-Vertivo owns the mapping from a generic `class_name` to its disease taxonomy and
-the choice of `TreatmentRecommendation`. See
+`vertivo_server` owns the mapping to its disease taxonomy + the downstream
+alert/treatment logic. See
 [`examples/grpc_client/segment_image.py`](./examples/grpc_client/segment_image.py).
 
-## Edge / cloud deployment
+## Deployment — the 3 tiers
 
-| | **Edge — NVIDIA Jetson** | **Cloud — Kubeflow on k8s** |
-|---|---|---|
-| Trigger | real-time, per-frame, at the greenhouse | batch sweeps, authoritative re-check, retraining |
-| Model | YOLO26-seg (TensorRT FP16/INT8) | RF-DETR-Seg (KServe/Triton) |
-| Why | no network round-trip, autonomy, privacy | heavy models, GPU pooling, reproducible retraining |
-| cuDNN | underlies the TensorRT engine | underlies server-GPU inference |
+| | **Tier 0 — OpenMV (now)** | **Tier 1 — Cloud KServe (Phase 1)** | **Tier 2 — Edge Jetson (Phase 2)** |
+|---|---|---|---|
+| Job | FOMO pre-trigger + capture | Triton detection + **vLLM diagnosis** | lightweight detection |
+| Why | cheap/abundant, dodges Orin scarcity | authoritative, centralizes data, retrains | low latency, bandwidth, resilience |
+| VLM | — | **always here** | **stays cloud** |
+| Dir | [`deployment/openmv/`](./deployment/openmv/) | [`deployment/k8s/`](./deployment/k8s/) | [`deployment/jetson/`](./deployment/jetson/) |
 
-Edge does **real-time triage** (flag a suspect frame fast); cloud does
-**authoritative diagnosis + retraining**. Low-confidence edge results escalate to
-the cloud RF-DETR path. This mirrors the NVIDIA AgTech pattern (SeeTree on Jetson
-TX2, Bilberry weed-recognition on Jetson, GPU cloud for training).
+- **KServe:** `kserve-triton-detection.yaml` (Triton) +
+  `kserve-vllm-diagnosis.yaml` (vLLM) + `rbac.yaml` (KServe-deploy
+  ServiceAccount + MinIO creds — **KServe deploy needs explicit admin perms**).
+- **Training (Kubeflow):** [`deployment/kubeflow/pipeline.py`](./deployment/kubeflow/pipeline.py)
+  — **Dask → Katib → Training Operator (PyTorch DDP) → export TensorRT → register
+  + KServe deploy**, all I/O via **s3fs/MinIO** (NOT KFP artifacts). Includes the
+  **HITL active-learning retrain trigger** (new-data / drift / schedule).
 
-- **Jetson:** [`deployment/jetson/`](./deployment/jetson/) (Dockerfile + notes).
-- **Cloud:** [`deployment/k8s/`](./deployment/k8s/) (Deployment + KServe
-  InferenceService).
-- **Training:** [`deployment/kubeflow/pipeline.py`](./deployment/kubeflow/pipeline.py)
-  — crop-specific fine-tuning DAG (ingest → preprocess → train → eval gate →
-  export TensorRT → register → promote → sync to edge).
+The cloud-first (Phase 1) verdict + the Jetson-scarcity / data-centralization
+rationale + the OpenMV Tier-0 bridge are in
+[`design.md` §2b](../../openspec/changes/2026-06-01-vision-core/design.md).
 
 ## Layout
 
@@ -171,10 +224,11 @@ services/vision-core/
     domain/                             # pure: Image, Mask, Segmentation, quantifiers
     application/{ports,commands,queries}/  # 4 ports + handlers
     adapters/primary/{grpc,rest}/       # gRPC server + FastAPI facade
-    adapters/secondary/                 # YOLO, RF-DETR, registry, video-stream
+    adapters/secondary/                 # YOLO, RF-DETR, registry, video-stream,
+                                        #   s3fs, Triton, vLLM, MQTT, active-learning
     config.py  runtime.py
   tests/{unit,integration,e2e}/
-  deployment/{docker,jetson,kubeflow,k8s}/
+  deployment/{docker,openmv,jetson,kubeflow,k8s}/   # Tier 0 / Tier 2 / cloud
   examples/{grpc_client,rest_client,edge_jetson}/
 ```
 

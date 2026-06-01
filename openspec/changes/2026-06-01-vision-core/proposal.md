@@ -1,11 +1,23 @@
-# vision-core — real-time + batch image & video SEGMENTATION for AgTech
+# vision-core — phytopathology vision/MLOps engine for hydroponic greenhouses
 
-**Date:** 2026-06-01
+**Date:** 2026-06-01 (MLOps architecture update: 2026-06-01)
 **Owner:** Andrés (Luis Andrés Peña Castillo, GitHub: lapc506, andres@dojocoding.io)
-**Status:** Proposed — scaffold on branch `chore/vision-core-scaffold`; pending review/merge
+**Status:** Proposed — scaffold on branch `chore/vision-core-mlops-update`; pending review/merge
 **Domain:** `vision-core` (new 7th service) · touches `common` (gRPC/REST contract), `platform` (gRPC Health, OTel)
 **Tracking issue:** _to open_ with `service:vision-core` + `type:feature` + `size:XL` (decompose).
-**Primary consumer:** `vertivolatam` (Vertivo) AgTech product.
+**Executor / primary consumer:** `vertivolatam`'s **`vertivo_server`** (Serverpod
+3.4.1, Dart) — its `PhytopathologyEndpoint` calls vision-core and persists the
+results. The Raspberry orchestrator is the **edge capture** layer that feeds the
+backend, not the caller.
+
+## Use case (refined)
+
+**Phytopathology — pest & disease detection — in autonomous indoor HYDROPONIC
+greenhouses for vertivolatam.** Capture is orchestrated by Vertivo's **CUSTOM
+Raspberry orchestrator** (NOT generic OpenPLC), which publishes captures over MQTT
+(EMQX). The engine is delivered as a **3-tier phased MLOps topology** (Tier 0
+on-camera OpenMV / Tier 1 cloud KServe / Tier 2 edge Jetson) built on Kubeflow.
+See `design.md` for the topology decision matrix and verdict.
 
 ---
 
@@ -54,8 +66,34 @@ vision-core is **domain-agnostic at its core and AgTech-shaped at its edges**: t
 domain models segmentation generically (an image/frame → masks + labels +
 quantified area), while adapters and the default model registry are tuned for
 plant phytopathology. Like `agentic-core`, **no `vertivolatam`-specific business
-logic lives in vision-core** — Vertivo owns the mapping from a `Segmentation`
-result to a `DiseaseDetection` row.
+logic lives in vision-core** — `vertivo_server` owns the mapping from a
+`Segmentation` / `Diagnosis` result to a `DiseaseDetection` row.
+
+### The 3-tier phased topology (encoded here; full ADR in `design.md`)
+
+- **Tier 0 — On-camera (OpenMV Nicla Vision), NOW.** A tiny on-sensor FOMO/tinyML
+  model does the cheap pre-trigger ("is there something?") + high-res photo
+  capture. Abundant/cheap — **sidesteps the NVIDIA Jetson Orin Nano scarcity**.
+- **Tier 1 — Cloud (Phase 1).** KServe with **TWO** InferenceServices: **Triton**
+  (YOLO26 / RF-DETR detection → boxes/masks/confidence) **+ vLLM** (a VLM, e.g.
+  Qwen-VL/LLaVA → text diagnosis "disease + severity"). The VLM is **always
+  cloud**. This is the authoritative tier; HITL/active-learning retraining lives
+  here.
+- **Tier 2 — Edge (Phase 2).** Jetson Orin runs the lightweight **detection**
+  in-greenhouse once models converge AND Jetson supply recovers; the **VLM stays
+  cloud** (called only on low-confidence escalations). **RF-DETR (Apache-2.0)** is
+  the recommended shipped edge default (avoids YOLO AGPL-3.0).
+
+**Capture phasing:** Phase 1 = time-lapse photos (disease evolves over hours/days
+→ batch inference); Phase 2 = continuous/burst video for insects (OpenMV motion
+triggers bursts). The capture port supports both; photos default.
+
+**MLOps stack (Kubeflow):** KFP pipeline = Dask (parallel preprocessing) → Katib
+(HPO) → Training Operator (PyTorch DDP multi-GPU) → KServe deploy, with a
+first-class **`ObjectStoragePort` (s3fs/MinIO)** as the data backbone because
+KServe/Katib/PyTorchJob do not use KFP's native artifact I/O. **HITL active
+learning** (not RLHF): low-confidence inference → agronomist corrects the box →
+back to the MinIO dataset → pipeline retrains.
 
 ### Why segmentation (not just classification or detection)
 

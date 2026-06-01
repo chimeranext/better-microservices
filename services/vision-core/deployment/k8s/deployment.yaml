@@ -29,8 +29,18 @@ spec:
               value: "rfdetr_seg"      # Apache-2.0; cloud accuracy default
             - name: VISION_INFERENCE_LOCAL
               value: "false"
+            # Tier-1 detection (Triton) InferenceService.
             - name: VISION_KSERVE_URL
-              value: "http://vision-core-rfdetr-seg.vision-core.svc.cluster.local"
+              value: "http://vision-core-triton-detection.vision-core.svc.cluster.local"
+            # Tier-1 diagnosis (vLLM) InferenceService — always cloud.
+            - name: VISION_VLLM_URL
+              value: "http://vision-core-vllm-diagnosis.vision-core.svc.cluster.local"
+            # MinIO object storage (s3fs data backbone).
+            - name: VISION_MINIO_ENDPOINT
+              value: "http://minio.vision-core.svc:9000"
+            # EMQX capture-ingest bridge (Vertivo orchestrator contract).
+            - name: VISION_MQTT_BROKER_URL
+              value: "mqtt://emqx-listeners:1883"
           ports:
             - name: grpc
               containerPort: 50051
