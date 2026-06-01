@@ -93,31 +93,50 @@ PDR; until then, edit the Common copy and propagate.
 
 ```
 Inicio (index.md)
-agentic-core
-  Overview · Getting Started (Quick Start / Standalone / TUI)
+agentic-core                          ← tab label opens README (navigation.indexes)
+  [README · index]
+  Docs · Overview · Getting Started (Quick Start / Standalone / TUI)
   API Reference (REST / WebSocket / Ollama / A2A)
   Guides (Providers / Personas / SOUL.md)
   Architecture (Overview / Deployment)
   Specs & Plans (WhatsApp adapter, Phase-1 design+plan, Standalone backend,
                  Agent Studio, Flutter Web UI, Channel-config debug panel)
   Operations (Disaster Recovery / GitHub Workspace Setup / Nice-to-Have)
-compliance-core
+compliance-core                       ← tab label opens README
+  [README · index]
   Design Specification · Fase 1 Implementation Plan
-filing-core
+  Packages (@compliance-core/core · @compliance-core/proto)
+filing-core                           ← tab label opens README
+  [README · index]
   Preliminary Design · Trigger + Skeleton Activation Plan
-invoice-core
+invoice-core                          ← tab label opens README
+  [README · index]
   Design Specification · Fase 1 Implementation Plan
-marketplace-core
+  Packages (@lapc506/invoice-core-core)
+marketplace-core                      ← tab label opens README
+  [README · index]
   Design (JSON Schema Renderer / ReputationPort / Schema Extensions / Standalone)
   References (ISO 22000 / 22005 / 28000 / 28004-2)
-payments-core
-  Overview · Governance (Overview/Rubric) · Architecture · Ports (Overview/Escrow)
+payments-core                         ← tab label opens README
+  [README · index]
+  Docs · Overview · Governance (Overview/Rubric) · Architecture · Ports (Overview/Escrow)
   Adapters (Overview/Stripe/OnvoPay) · Integrations (Overview/Consumers/AduaNext)
   Donations & Crowdfunding · Security · API (Overview/Reference)
   References · Legal · Operations
 Common
   Overview (index.md) · Bus de Eventos (consolidado)
 ```
+
+### README-first landing (`navigation.indexes`)
+
+Each service tab opens on **that service's `README.md`**, not on a loose first
+page. The README lives at `services/<name>/README.md` — one level **above** the
+`docs/` symlink target — so it is exposed to the site via a dedicated file
+symlink `content/<name>-readme.md → ../../../services/<name>/README.md`. Listing
+that symlink as the **first, title-less entry** of the section makes Material's
+`navigation.indexes` feature use it as the section's index page, so clicking the
+tab label lands on the README. Internal package READMEs are surfaced the same
+way (`content/<name>-pkg-<pkg>.md`) under a **Packages** sub-section.
 
 ### Per-service sub-tab → source mapping
 
@@ -130,6 +149,9 @@ Common
 | marketplace-core | `docs/design/*`, `docs/references/*` |
 | payments-core | `docs/content/{index.md,docs/**}` (mirrors its prior standalone nav) |
 | Common | consolidated `eventbus-broker-analysis.md` |
+
+Plus, for every service, `README.md` (index page) and, for `compliance-core` /
+`invoice-core`, their internal `packages/*/README.md`.
 
 ## 4. Theme parity with reference (habitanexus)
 

@@ -156,7 +156,8 @@ nav:
   - Inicio: index.md
 
   - agentic-core:
-      - Overview: agentic-core/site/docs/index.md
+      - agentic-core-readme.md           # README del servicio = index del tab (navigation.indexes)
+      - "Docs · Overview": agentic-core/site/docs/index.md
       - Getting Started:
           - Quick Start: agentic-core/site/docs/getting-started.md
           - Standalone Mode: agentic-core/site/docs/standalone.md
@@ -187,18 +188,27 @@ nav:
           - Nice-to-Have Features: agentic-core/nice-to-have-features.md
 
   - compliance-core:
+      - compliance-core-readme.md         # README del servicio = index del tab
       - Design Specification: compliance-core/superpowers/specs/2026-04-16-compliance-core-design.md
       - "Fase 1 — Implementation Plan": compliance-core/superpowers/plans/2026-04-16-compliance-core-phase-1-plan.md
+      - Packages:
+          - "@compliance-core/core": compliance-core-pkg-core.md
+          - "@compliance-core/proto": compliance-core-pkg-proto.md
 
   - filing-core:
+      - filing-core-readme.md             # README del servicio = index del tab
       - Preliminary Design: filing-core/superpowers/specs/2026-04-16-filing-core-design.md
       - "Trigger + Skeleton Activation Plan": filing-core/superpowers/plans/2026-04-16-filing-core-trigger-and-skeleton-plan.md
 
   - invoice-core:
+      - invoice-core-readme.md            # README del servicio = index del tab
       - Design Specification: invoice-core/superpowers/specs/2026-04-16-invoice-core-design.md
       - "Fase 1 — Implementation Plan": invoice-core/superpowers/plans/2026-04-16-invoice-core-phase-1-plan.md
+      - Packages:
+          - "@lapc506/invoice-core-core": invoice-core-pkg-core.md
 
   - marketplace-core:
+      - marketplace-core-readme.md        # README del servicio = index del tab
       - Design:
           - JSON Schema Renderer: marketplace-core/design/json-schema-renderer.md
           - ReputationPort: marketplace-core/design/reputation-port.md
@@ -211,7 +221,8 @@ nav:
           - "ISO 28004-2 — Implementation Guide": marketplace-core/references/iso-28004-2-implementation-guide.md
 
   - payments-core:
-      - Overview: payments-core/content/index.md
+      - payments-core-readme.md           # README del servicio = index del tab
+      - "Docs · Overview": payments-core/content/index.md
       - Governance:
           - Overview: payments-core/content/docs/governance/index.md
           - Rubric: payments-core/content/docs/governance/rubric.md

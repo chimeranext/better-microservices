@@ -35,6 +35,19 @@
       the 5 duplicated eventbus copies.
 - [x] `docs/site/requirements.txt` (copied from habitanexus reference).
 
+## Phase 2b — README-first landing (done)
+
+- [x] Each service tab opens on `services/<name>/README.md` via Material's
+      `navigation.indexes`, exposed through `content/<name>-readme.md` symlinks
+      (README lives above the `docs/` symlink target).
+- [x] Internal package READMEs surfaced under a **Packages** sub-section
+      (`content/<name>-pkg-<pkg>.md` symlinks): `@compliance-core/core`,
+      `@compliance-core/proto`, `@lapc506/invoice-core-core`.
+- [x] Authored the 3 missing package READMEs (did not exist):
+      `services/compliance-core/packages/core/README.md`,
+      `services/compliance-core/packages/proto/README.md`,
+      `services/invoice-core/packages/core/README.md`.
+
 ## Phase 3 — Content (done)
 
 - [x] `content/index.md` — landing with 6-service table + navigation help.
