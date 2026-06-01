@@ -16,6 +16,8 @@ a unified docs site, issue tracker, and build tooling. Inspired by the
 | [`invoice-core`](services/invoice-core) | E-invoicing (Hacienda CR v4.4, XAdES) | Node | Pre-alpha |
 | [`marketplace-core`](services/marketplace-core) | Storefront + schema-driven catalog | Node · appchain · Flutter | Active |
 | [`payments-core`](services/payments-core) | Payment gateways, escrow, settlement | Node | Skeleton + adapters |
+| [`vision-core`](services/vision-core) | Crop pest & disease vision — Triton/vLLM, 3-tier (OpenMV/cloud/Jetson), Kubeflow MLOps · serves vertivolatam | Python | Scaffold |
+| [`geospatial-core`](services/geospatial-core) | Remote-sensing land-use AI — H3 · Sentinel-2/HLS · rasterio · SAM/RF-DETR · serves habitanexus | Python | Scaffold |
 
 Each service keeps its **own license** — see the `LICENSE*` file inside each
 `services/<name>/`.
@@ -35,8 +37,9 @@ openspec/     # decision records (PDR/ADR) + governance — see openspec/project
 - **Monorepo:** [Turborepo](https://turbo.build) + [pnpm](https://pnpm.io) workspaces (`pnpm@9`).
 - **Decisions:** every significant decision is an [OpenSpec](openspec/README.md) change
   (`proposal.md` = PDR, `design.md` = ADR, `tasks.md` = checklist).
-- **Polyglot:** non-Node services (`agentic-core`, `filing-core`) expose a thin
-  `package.json` so Turbo can orchestrate them alongside the Node services.
+- **Polyglot:** non-Node services (`agentic-core`, `filing-core`, `vision-core`,
+  `geospatial-core`) expose a thin `package.json` so Turbo can orchestrate them
+  alongside the Node services.
 
 ## Getting started
 
