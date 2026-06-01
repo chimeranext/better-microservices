@@ -11,6 +11,8 @@ import json
 import logging
 import os
 import time
+
+logger = logging.getLogger(__name__)
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -20,6 +22,7 @@ import yaml
 from aiohttp import web
 
 from agentic_core.adapters.primary.a2a import A2AServer, AgentCard
+from agentic_core.application.services.model_registry import ModelRegistry
 from agentic_core.application.commands.create_agent import (
     CreateAgentCommand,
     CreateAgentHandler,
@@ -48,6 +51,21 @@ from agentic_core.application.queries.list_agents import (
 
 async def health(request: web.Request) -> web.Response:
     return web.json_response({"status": "ok"})
+
+
+async def list_models(request: web.Request) -> web.Response:
+    """GET /api/models -- List available models from models.dev cache."""
+    registry: ModelRegistry | None = request.app.get("model_registry")
+    if registry is None:
+        return web.json_response({"models": [], "cached": False})
+    tool_call_only = request.query.get("tool_call", "true").lower() == "true"
+    models = registry.list_models(tool_call_only=tool_call_only)
+    return web.json_response({
+        "models": models,
+        "count": len(models),
+        "cached": bool(registry.entries),
+        "fetched_at": getattr(registry, "_last_fetch", 0),
+    })
 
 
 async def config(request: web.Request) -> web.Response:
@@ -839,8 +857,22 @@ def create_app(
     ))
     app["a2a_server"] = a2a_server
 
+    # --- Model registry (shared with Go TUI and Flutter UI) ---
+    registry = ModelRegistry()
+    app["model_registry"] = registry
+
+    async def _refresh_registry(app: web.Application) -> None:
+        """Warm model cache on startup so /api/models returns data immediately."""
+        try:
+            await registry.refresh()
+        except Exception:
+            logger.warning("Initial model fetch failed — will retry on first request")
+
+    app.on_startup.append(_refresh_registry)
+
     # --- API routes ---
     app.router.add_get("/api/health", health)
+    app.router.add_get("/api/models", list_models)
     app.router.add_get("/api/config", config)
     app.router.add_get("/api/agents", list_agents)
     app.router.add_post("/api/agents", create_agent)

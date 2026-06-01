@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import 'package:xterm/xterm.dart';
 import '../../theme/agent_studio_theme.dart';
 import '../../services/api_client.dart';
+import 'widgets/model_catalog_widget.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -372,6 +373,13 @@ class _ModelsTabState extends State<_ModelsTab> {
         const SizedBox(height: 8),
         for (int i = 0; i < _providers.length; i++)
           _providerCard(_providers[i], i),
+        const SizedBox(height: 32),
+        const Divider(color: AgentStudioTheme.border),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 480,
+          child: ModelCatalogWidget(onAddModel: _addProvider),
+        ),
       ],
     );
   }

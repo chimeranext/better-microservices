@@ -7,6 +7,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
     - name: websocket
       port: {{ .Values.service.websocket.port }}
       targetPort: websocket

@@ -143,6 +143,17 @@ class ApiClient {
     _log.fine('saveStudioConfig: ${resp.statusCode}');
   }
 
+  /// GET /api/models -- List available models from the backend model registry.
+  /// [toolCallOnly] filters to models that support tool/function calling.
+  Future<Map<String, dynamic>> listModels({bool toolCallOnly = true}) async {
+    final params = <String, String>{'tool_call': toolCallOnly.toString()};
+    final uri = Uri.parse('$_baseUrl/api/models').replace(queryParameters: params);
+    _log.fine('GET $uri');
+    final resp = await http.get(uri);
+    _log.fine('listModels: ${resp.statusCode} (${resp.body.length} bytes)');
+    return jsonDecode(resp.body) as Map<String, dynamic>;
+  }
+
   /// Generic POST for arbitrary endpoints (used by GenUI transport).
   Future<Map<String, dynamic>> rawPost(String path, Map<String, dynamic> body) async {
     _log.fine('POST $path');

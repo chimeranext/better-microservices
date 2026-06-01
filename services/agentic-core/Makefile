@@ -18,6 +18,7 @@ HELM_VALUES_DEV ?= $(HELM_CHART)/values-dev.yaml
 
 K8S_DEPS_DIR   = k8s/dependencies
 SCRIPTS_DIR    = infrastructure/scripts
+HELM           ?= /tmp/linux-amd64/helm
 
 # --- ANSI colors -------------------------------------------------------------
 
@@ -69,7 +70,17 @@ help: ## Show this help
 	@echo "    make typecheck         Run mypy strict"
 	@echo ""
 	@echo "  Bootstrap (one-command cluster setup):"
-	@echo "    make bootstrap-dev     Full local cluster: minikube + deps + build + deploy"
+	@echo "    make bootstrap-dev       Full local cluster: minikube + deps + build + deploy"
+	@echo "    make bootstrap-vllm      Minikube + vLLM sidecar + Flutter UI (GPU)"
+	@echo "    make bootstrap-standalone Compose + Flutter desktop (no K8s)"
+	@echo ""
+	@echo "  vLLM Inference (local GPU):"
+	@echo "    make dev-backend-up-vllm  Start compose with vLLM GPU sidecar"
+	@echo "    make dev-backend-wait-vllm Wait for vLLM model to load"
+	@echo "    make bootstrap-vllm       Minikube + vLLM sidecar + Flutter"
+	@echo "    make dev-vllm-stop        Stop vLLM deployment"
+	@echo "    make dev-vllm-destroy     Full vLLM environment teardown"
+	@echo "    (set VLLM_MODEL=my/model to override default model)"
 	@echo ""
 	@echo "  Minikube Cluster:"
 	@echo "    make dev-minikube-start     Start Minikube cluster"
@@ -141,6 +152,7 @@ bootstrap-standalone: dev-backend-build dev-backend-up dev-backend-wait ## Compo
 	@echo "$(GREEN)=== Backend stack ready ===$(NC)"
 	@echo "  HTTP: http://localhost:8080"
 	@echo "  WS:   ws://localhost:8765"
+	@echo "  (add VLLM_MODEL=my/model to enable vLLM GPU sidecar)"
 	@echo ""
 	@echo "$(YELLOW)Launching Flutter desktop in dev mode.$(NC)"
 	@echo "$(YELLOW)Ctrl+C stops the UI — compose stays running.$(NC)"
@@ -148,6 +160,37 @@ bootstrap-standalone: dev-backend-build dev-backend-up dev-backend-wait ## Compo
 	@$(MAKE) dev-desktop-launch-dev
 	@echo ""
 	@echo "$(YELLOW)UI stopped. Run 'make dev-backend-down' to stop compose.$(NC)"
+
+bootstrap-vllm: VLLM_MODEL ?= deepseek-ai/DeepSeek-R1-Distill-Qwen-7B
+bootstrap-vllm: dev-minikube-start dev-secret-create dev-deps-deploy dev-deps-wait dev-build ## Minikube cluster + vLLM sidecar + Flutter UI
+	@echo "$(BLUE)=== Deploying agentic-core with vLLM sidecar ===$(NC)"
+	$(HELM) upgrade --install $(HELM_RELEASE) $(HELM_CHART) \
+		-f $(HELM_VALUES_DEV) \
+		-f $(HELM_CHART)/values-vllm.yaml \
+		--set inference.vllm.model=$(VLLM_MODEL) \
+		-n $(NAMESPACE) \
+		--create-namespace \
+		--wait --timeout 300s
+	@echo "$(GREEN)=== agentic-core + vLLM sidecar deployed ===$(NC)"
+	@echo "  Starting port-forward to localhost..."
+	@kubectl port-forward -n $(NAMESPACE) svc/$(HELM_RELEASE)-agentic-core 8765:8765 50051:50051 &
+	@echo $$! > .port-forward.pid
+	@echo "$(GREEN)✓ Port forwarding active (PID: $$(cat .port-forward.pid))$(NC)"
+	@echo "  vLLM: http://localhost:8000/v1  (sidecar, via agentic-core)"
+	@echo ""
+	@echo "$(YELLOW)Launching Flutter desktop in dev mode.$(NC)"
+	@echo "$(YELLOW)Ctrl+C stops the UI. Run 'make dev-vllm-stop' to teardown.$(NC)"
+	@echo ""
+	@cd $(UI_DIR) && flutter run -d linux
+	@$(MAKE) dev-port-forward-stop
+	@echo "$(YELLOW)UI stopped. Run 'make dev-vllm-destroy' to teardown cluster.$(NC)"
+
+dev-vllm-stop: dev-port-forward-stop ## Stop vLLM deployment and port-forward
+	helm uninstall $(HELM_RELEASE) -n $(NAMESPACE) || true
+	@echo "$(GREEN)✓ agentic-core + vLLM removed$(NC)"
+
+dev-vllm-destroy: dev-vllm-stop dev-deps-destroy dev-minikube-destroy ## Full vLLM teardown
+	@echo "$(GREEN)✓ Full vLLM environment destroyed$(NC)"
 
 # =============================================================================
 # MINIKUBE CLUSTER
@@ -325,12 +368,21 @@ dev-backend-up: ## Start compose stack (detached)
 	podman compose up -d
 	@echo "$(GREEN)✓ Compose stack started$(NC)"
 
+dev-backend-up-vllm: ## Start compose stack with vLLM GPU sidecar
+	@echo "$(BLUE)Starting compose stack with vLLM (GPU profile)...$(NC)"
+	@if ! podman info | grep -q nvidia; then \
+		echo "$(YELLOW)⚠ nvidia-container-toolkit not detected. GPU may not be available.$(NC)"; \
+	fi
+	podman compose --profile gpu up -d
+	@echo "$(GREEN)✓ Compose stack with vLLM started$(NC)"
+	@echo "  vLLM: http://localhost:8000/v1  (model: $${VLLM_MODEL:-deepseek-ai/DeepSeek-R1-Distill-Qwen-7B})"
+
 dev-backend-down: ## Stop compose stack (preserve volumes)
-	@podman compose down
+	@podman compose --profile gpu down
 	@echo "$(GREEN)✓ Compose stack stopped$(NC)"
 
 dev-backend-destroy: ## Stop compose stack and remove volumes
-	@podman compose down -v
+	@podman compose --profile gpu down -v
 	@echo "$(GREEN)✓ Compose stack destroyed (volumes removed)$(NC)"
 
 dev-backend-logs: ## Tail compose logs
@@ -344,6 +396,12 @@ dev-backend-wait: ## Wait for backend WebSocket port (:8765) up to 60s
 	@timeout 60 bash -c 'until nc -z localhost 8765 2>/dev/null; do sleep 1; done' \
 		|| { echo "$(RED)✗ Backend not ready after 60s$(NC)"; exit 1; }
 	@echo "$(GREEN)✓ Backend ready$(NC)"
+
+dev-backend-wait-vllm: ## Wait for vLLM health endpoint (:8000/health)
+	@echo "$(BLUE)Waiting for vLLM on :8000/health (max 300s)...$(NC)"
+	@timeout 300 bash -c 'until curl -sf http://localhost:8000/health >/dev/null 2>&1; do sleep 5; done' \
+		|| { echo "$(RED)✗ vLLM not ready after 300s$(NC)"; exit 1; }
+	@echo "$(GREEN)✓ vLLM ready (model loaded)$(NC)"
 
 # --- Legacy web-bundle target (used as dep by dev-backend-build) -------------
 

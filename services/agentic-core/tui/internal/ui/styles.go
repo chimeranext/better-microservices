@@ -2,7 +2,6 @@ package ui
 
 import "charm.land/lipgloss/v2"
 
-// Dark theme palette matching the Agent Studio UI.
 var (
 	ColorRail    = lipgloss.Color("#080810")
 	ColorPanel   = lipgloss.Color("#0F0F1E")
@@ -16,34 +15,55 @@ var (
 	ColorWarning = lipgloss.Color("#FF9800")
 	ColorError   = lipgloss.Color("#EF5350")
 
-	StyleTitle = lipgloss.NewStyle().
-			Foreground(ColorPrimary).
-			Bold(true)
+	StyleTitle = lipgloss.NewStyle().Foreground(ColorPrimary).Bold(true)
 
-	StyleDim = lipgloss.NewStyle().
-			Foreground(ColorTextDim)
+	StyleDim = lipgloss.NewStyle().Foreground(ColorTextDim)
 
-	StyleBorder = lipgloss.NewStyle().
-			BorderStyle(lipgloss.RoundedBorder()).
-			BorderForeground(ColorBorder)
+	StyleBorder = lipgloss.NewStyle().BorderStyle(lipgloss.RoundedBorder()).BorderForeground(ColorBorder)
 
-	StyleActiveTab = lipgloss.NewStyle().
-			Foreground(ColorPrimary).
-			Bold(true).
-			Underline(true)
+	StyleActiveTab = lipgloss.NewStyle().Foreground(ColorPrimary).Bold(true).Underline(true)
 
-	StyleInactiveTab = lipgloss.NewStyle().
-				Foreground(ColorTextDim)
+	StyleInactiveTab = lipgloss.NewStyle().Foreground(ColorTextDim)
 
-	StyleUserMsg = lipgloss.NewStyle().
-			Foreground(ColorPrimary)
+	StyleUserMsg = lipgloss.NewStyle().Foreground(ColorPrimary).Bold(true)
 
-	StyleAssistantMsg = lipgloss.NewStyle().
-				Foreground(ColorText)
+	StyleAssistantMsg = lipgloss.NewStyle().Foreground(ColorText)
 
-	StyleStatus = lipgloss.NewStyle().
-			Foreground(ColorSuccess)
+	StyleStatus = lipgloss.NewStyle().Foreground(ColorSuccess)
 
-	StyleError = lipgloss.NewStyle().
-			Foreground(ColorError)
+	StyleError = lipgloss.NewStyle().Foreground(ColorError)
+
+	StyleWarning = lipgloss.NewStyle().Foreground(ColorWarning)
+
+	StyleQueueItem = lipgloss.NewStyle().Foreground(ColorWarning)
+
+	StyleQueueEditing = lipgloss.NewStyle().Foreground(ColorPrimary).Background(ColorCard)
+
+	StyleOverlay = lipgloss.NewStyle().BorderStyle(lipgloss.RoundedBorder()).BorderForeground(ColorPrimary).Padding(0, 1).Width(50)
+
+	StyleOverlayTitle = lipgloss.NewStyle().Foreground(ColorPrimary).Bold(true)
+
+	StyleOverlayItem = lipgloss.NewStyle().Foreground(ColorText)
+
+	StyleOverlayItemSelected = lipgloss.NewStyle().Foreground(ColorPrimary).Bold(true)
+
+	StyleOverlayHelp = lipgloss.NewStyle().Foreground(ColorTextDim)
+
+	StyleToolRunning = lipgloss.NewStyle().Foreground(ColorPrimary)
+
+	StyleToolDone = lipgloss.NewStyle().Foreground(ColorSuccess)
+
+	StyleToolFailed = lipgloss.NewStyle().Foreground(ColorError)
+
+	StyleThinking = lipgloss.NewStyle().Foreground(ColorTextDim).Italic(true)
+
+	StyleCode = lipgloss.NewStyle().Background(ColorCard).Foreground(ColorText)
+
+	StyleBold = lipgloss.NewStyle().Bold(true)
+
+	StyleItalic = lipgloss.NewStyle().Italic(true)
+
+	StyleSeparator = lipgloss.NewStyle().Foreground(ColorBorder)
+
+	StyleIndicator = lipgloss.NewStyle().Foreground(ColorWarning)
 )

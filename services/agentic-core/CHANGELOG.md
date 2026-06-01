@@ -4,7 +4,54 @@ All notable changes to agentic-core are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [0.2.0] - 2026-04-08
+## [Unreleased]
+
+### Added
+
+#### Flutter UI
+
+- **Model catalog widget** — new `ModelCatalogWidget` fetches `GET /api/models` and displays models categorized by type (cloud/local/hybrid) with search, filter chips, and tool_call toggle; "Agregar" button adds any model as an inference provider (`ui/lib/features/settings/widgets/model_catalog_widget.dart`)
+- **`ApiClient.listModels()`** — new method to fetch available models from the backend model registry with optional `toolCallOnly` filter (`ui/lib/services/api_client.dart`)
+- **Model catalog integrated into Settings** — the "Modelos" tab now shows the live model catalog below manually configured providers (`ui/lib/features/settings/settings_page.dart`)
+
+#### DevOps — vLLM CPU Mode
+
+- **`values-vllm-cpu.yaml`** — new CPU-only vLLM override for testing without GPU: uses `--device cpu`, smaller model (granite-4.1-8b-instruct), no `nvidia.com/gpu` resources (`deployment/helm/agentic-core/values-vllm-cpu.yaml`)
+- **`gpu.enabled` flag** — refactored vLLM GPU configuration: added `inference.vllm.gpu.enabled` boolean (default `true`) and `inference.vllm.gpu.count` (default `1`); template conditionally renders `nvidia.com/gpu` resources only when `gpu.enabled` is true (`deployment/helm/agentic-core/values.yaml`, `templates/deployment.yaml`)
+- **`extraArgs` support** — new `inference.vllm.extraArgs` list in values; appended to the vLLM container args in the deployment template, enabling `--device cpu` and other vLLM CLI flags (`deployment/helm/agentic-core/values.yaml`, `templates/deployment.yaml`)
+
+#### Makefile / DevOps Workflow
+
+- **`bootstrap-vllm`** — new one-command target: minikube + dependencies + agentic-core + vLLM sidecar → port-forward → Flutter desktop hot-reload. `make bootstrap-vllm VLLM_MODEL=ibm-granite/granite-4.1-8b-instruct` to choose the local model
+- **`dev-backend-up-vllm`** — starts the compose stack with the `gpu` profile, adding a vLLM container with NVIDIA GPU access alongside agentic-core, Redis, Postgres, FalkorDB
+- **`dev-backend-wait-vllm`** — polls `:8000/health` with 300s timeout (vLLM model loading is slow)
+- **`dev-vllm-stop`** / **`dev-vllm-destroy`** — teardown targets for the vLLM environment
+- **Model selection via env var**: `VLLM_MODEL=my/model` overrides the default DeepSeek-R1-Distill-Qwen-7B across compose and Helm
+
+#### Go TUI
+
+- **Search/filter in model picker overlay** — type to filter among 4400+ models in real time; filter narrows by display name/ID case-insensitively; `Esc` clears filter, `Ctrl+U` clears all, `Backspace` removes last char (`tui/internal/ui/overlays.go`)
+- **`--models-url` CLI flag** — overrides the default `https://models.dev/api.json` catalog URL for air-gapped or custom model sources (`tui/main.go`)
+- **vLLM (Sidecar) local provider** — added to Go well-known providers list so it displays in the model picker with `local` type indicator (`tui/internal/models/registry.go`)
+
+#### Python Backend
+
+- **vLLM (Sidecar) local provider** — registered in `LOCAL_PROVIDERS` as `http://127.0.0.1:8000/v1` with `local` type for discovery via `GET /api/models` (`src/agentic_core/application/services/model_registry.py`)
+
+#### DevOps — vLLM Inference Sidecar
+
+- **vLLM optional sidecar in Helm chart** — new `inference.vllm` config block in `values.yaml` with model, port, GPU resources; when `inference.vllm.enabled: true`, the Deployment template adds a `vllm` container as a sidecar in the same pod, binding `127.0.0.1:8000` loopback per the standard `-core` sidecar pattern (`deployment/helm/agentic-core/templates/deployment.yaml`)
+- **vLLM in docker-compose** — new `vllm` service under `gpu` profile (`podman compose --profile gpu up -d`); uses `VLLM_MODEL` env var (default: DeepSeek-R1-Distill-Qwen-7B); NVIDIA GPU via `deploy.resources.reservations.devices`; healthcheck with 120s start period (`docker-compose.yml`)
+- **`values-vllm.yaml`** — ready-to-use override file: `helm upgrade agentic-core ./deployment/helm/agentic-core -f deployment/helm/agentic-core/values-vllm.yaml` enables vLLM with DeepSeek-R1-Distill-Qwen-7B, single replica, no autoscaling (GPU efficiency)
+- **Sidecar injector updated** — the MutatingWebhookConfiguration template includes the vLLM container when `inference.vllm.enabled` is set (`deployment/helm/agentic-core/templates/sidecar-injector.yaml`)
+
+### Changed
+
+#### Go TUI
+
+- `overlays.go` — refactored `OverlayModel` with filter state (`allItems`, `allRaw`, `filter`), reusable `HandleFilterKey`, `AddFilterChar`, `RemoveFilterChar`, `ClearFilter`, `applyFilter` methods; model picker view now shows a search bar with model count; `SelectedRaw()` returns the raw model ID at cursor position in the filtered list
+- `app.go` — `NewAppModel` now accepts variadic `modelsURL` parameter; `updateOverlay` handles filter keypresses for model picker (type to filter, Esc clears filter first then closes)
+- `registry.go` — `NewRegistry` accepts variadic `modelsURL` parameter to override default `https://models.dev/api.json`
 
 ### Added
 

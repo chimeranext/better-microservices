@@ -8,7 +8,6 @@ import (
 	"charm.land/lipgloss/v2"
 )
 
-// DashboardData holds all the data rendered by DashboardModel.
 type DashboardData struct {
 	Status      string
 	Agent       string
@@ -23,14 +22,12 @@ type DashboardData struct {
 	Phase       string
 }
 
-// DashboardModel is the Bubble Tea model for the dashboard view.
 type DashboardModel struct {
 	data   DashboardData
 	width  int
 	height int
 }
 
-// NewDashboardModel returns a DashboardModel with sensible defaults.
 func NewDashboardModel() DashboardModel {
 	return DashboardModel{
 		data: DashboardData{
@@ -42,10 +39,8 @@ func NewDashboardModel() DashboardModel {
 	}
 }
 
-// Init is a no-op for the dashboard (data arrives via DashboardData messages).
 func (m DashboardModel) Init() tea.Cmd { return nil }
 
-// Update handles window resize and DashboardData update messages.
 func (m DashboardModel) Update(msg tea.Msg) (DashboardModel, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
@@ -57,35 +52,33 @@ func (m DashboardModel) Update(msg tea.Msg) (DashboardModel, tea.Cmd) {
 	return m, nil
 }
 
-// View renders the dashboard panel.
 func (m DashboardModel) View() string {
 	d := m.data
 
 	statusColor := ColorSuccess
-	statusIcon := "●"
+	statusIcon := "\u25cf"
 	switch d.Status {
 	case "running":
 		statusColor = ColorPrimary
-		statusIcon = "●"
+		statusIcon = "\u25cf"
 	case "paused":
 		statusColor = ColorWarning
-		statusIcon = "◐"
+		statusIcon = "\u25d0"
 	case "failed":
 		statusColor = ColorError
-		statusIcon = "✕"
+		statusIcon = "\u2717"
 	case "idle":
 		statusColor = ColorTextDim
-		statusIcon = "○"
+		statusIcon = "\u25cb"
 	}
 
 	header := StyleTitle.Render("  Dashboard")
 
-	// Status row
 	branchDirtyMarker := ""
 	if d.BranchDirty {
 		branchDirtyMarker = StyleError.Render(" *")
 	}
-	statusLine := fmt.Sprintf("  %s %s  │  Agent: %s  │  Model: %s  │  Branch: %s%s",
+	statusLine := fmt.Sprintf("  %s %s  \u2502  Agent: %s  \u2502  Model: %s  \u2502  Branch: %s%s",
 		lipgloss.NewStyle().Foreground(statusColor).Render(statusIcon),
 		lipgloss.NewStyle().Foreground(statusColor).Render(d.Status),
 		StyleAssistantMsg.Render(d.Agent),
@@ -94,7 +87,6 @@ func (m DashboardModel) View() string {
 		branchDirtyMarker,
 	)
 
-	// Progress bar
 	progress := 0.0
 	if d.TotalTasks > 0 {
 		progress = float64(d.DoneTasks) / float64(d.TotalTasks)
@@ -104,16 +96,15 @@ func (m DashboardModel) View() string {
 	if filled > barWidth {
 		filled = barWidth
 	}
-	bar := fmt.Sprintf("  [%s%s] %d/%d tasks  │  Iteration: %d  │  Phase: %s",
-		lipgloss.NewStyle().Foreground(ColorPrimary).Render(strings.Repeat("█", filled)),
-		lipgloss.NewStyle().Foreground(ColorBorder).Render(strings.Repeat("░", barWidth-filled)),
+	bar := fmt.Sprintf("  [%s%s] %d/%d tasks  \u2502  Iteration: %d  \u2502  Phase: %s",
+		lipgloss.NewStyle().Foreground(ColorPrimary).Render(strings.Repeat("\u2588", filled)),
+		lipgloss.NewStyle().Foreground(ColorBorder).Render(strings.Repeat("\u2591", barWidth-filled)),
 		d.DoneTasks, d.TotalTasks,
 		d.Iteration,
 		StyleDim.Render(d.Phase),
 	)
 
-	// Cost line
-	costLine := fmt.Sprintf("  Tokens: %s  │  Est. cost: %s",
+	costLine := fmt.Sprintf("  Tokens: %s  \u2502  Est. cost: %s",
 		StyleAssistantMsg.Render(fmt.Sprintf("%d", d.Tokens)),
 		lipgloss.NewStyle().Foreground(ColorWarning).Render(fmt.Sprintf("$%.4f", d.Cost)),
 	)
@@ -122,7 +113,9 @@ func (m DashboardModel) View() string {
 	if dividerWidth < 1 {
 		dividerWidth = 1
 	}
-	divider := lipgloss.NewStyle().Foreground(ColorBorder).Render(strings.Repeat("─", dividerWidth))
+	divider := lipgloss.NewStyle().Foreground(ColorBorder).Render(strings.Repeat("\u2500", dividerWidth))
 
-	return fmt.Sprintf("%s\n%s\n\n%s\n\n%s\n\n%s", header, divider, statusLine, bar, costLine)
+	keybindHint := StyleDim.Render("  p: pause/resume  |  s: start task")
+
+	return fmt.Sprintf("%s\n%s\n\n%s\n\n%s\n\n%s\n\n%s", header, divider, statusLine, bar, costLine, keybindHint)
 }

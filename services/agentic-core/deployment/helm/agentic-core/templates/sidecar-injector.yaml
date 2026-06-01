@@ -56,10 +56,48 @@ data:
           limits:
             cpu: 500m
             memory: 512Mi
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+{{- if .Values.inference.vllm.enabled }}
+      - name: vllm
+        image: "{{ .Values.inference.vllm.image.repository }}:{{ .Values.inference.vllm.image.tag }}"
+        ports:
+          - name: vllm-api
+            containerPort: {{ .Values.inference.vllm.port }}
+        args:
+          - "--host"
+          - "127.0.0.1"
+          - "--port"
+          - "{{ .Values.inference.vllm.port }}"
+          - "--model"
+          - "{{ .Values.inference.vllm.model }}"
+        env:
+          - name: CUDA_VISIBLE_DEVICES
+            value: "0"
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 8Gi
+            nvidia.com/gpu: 1
+          limits:
+            cpu: 4000m
+            memory: 16Gi
+            nvidia.com/gpu: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.inference.vllm.port }}
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          failureThreshold: 6
         securityContext:
-          readOnlyRootFilesystem: true
           runAsNonRoot: true
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
+{{- end }}
 {{- end }}

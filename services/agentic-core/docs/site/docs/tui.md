@@ -1,25 +1,65 @@
 # Go TUI
 
-Agent Studio ships with a terminal UI written in Go. It provides a lightweight, keyboard-driven interface for interacting with agents when a browser is not available — useful for SSH sessions, CI pipelines, or headless servers.
+Agent Studio ships with a terminal UI written in Go using [Bubble Tea](https://github.com/charmbracelet/bubbletea) v2. It provides a keyboard-driven interface inspired by the [Hermes TUI](https://github.com/NousResearch/hermes-agent) — non-blocking input, slash commands, overlays, tool activity tracking, and markdown rendering.
 
 ---
 
 ## Starting the TUI
 
-With the backend running (either via `make up` or the development workflow):
+With the backend running (HTTP API on port 8080):
 
 ```bash
 cd tui
-go run . --url ws://localhost:8765
+go run . --url http://localhost:8080
 ```
 
 Or build a binary:
 
 ```bash
 cd tui
-go build -o agent-studio-tui .
-./agent-studio-tui --url ws://localhost:8765
+go build -o agentic-tui .
+./agentic-tui --url http://localhost:8080
 ```
+
+---
+
+## Hermes-like Behaviors
+
+### Non-blocking input
+
+You can type while the agent is processing. Messages are queued and automatically drain after each assistant response. The queue is shown in the chat view and updates live.
+
+- **Queue while busy**: Type and press Enter while the agent is streaming — your message enters a queue.
+- **Auto-drain**: After each assistant response, the next queued message is sent automatically.
+- **View queue**: `/queue` shows all queued messages.
+- **Remove last queued**: `Ctrl+X` removes the last queued message.
+
+### Slash commands
+
+All slash commands execute immediately, even while the agent is busy:
+
+| Command | Action |
+|---------|--------|
+| `/help` | Show help overlay with keybindings and commands |
+| `/clear` | Start a new session (clear messages) |
+| `/new` | Start a fresh session |
+| `/quit`, `/exit` | Exit the TUI |
+| `/queue` | Show queued messages |
+| `/retry` | Regenerate the last assistant response |
+| `/undo` | Remove the last user/assistant turn |
+| `/details` | Toggle tool details panel expanded/collapsed |
+
+### Agent state tracking
+
+The status bar and chat header track the agent lifecycle:
+
+| State | Meaning |
+|-------|---------|
+| `starting agent...` | Session initializing, tools/skills coming online |
+| `ready` | Agent is idle, accepting input |
+| `thinking...` | Agent is reasoning or streaming a response |
+| `running...` | Agent is executing a tool |
+| `interrupted` | Current turn was cancelled |
 
 ---
 
@@ -27,14 +67,25 @@ go build -o agent-studio-tui .
 
 | Key | Action |
 |-----|--------|
-| `Enter` | Send message |
-| `Tab` | Switch between panels |
-| `Ctrl+N` | New session |
-| `Ctrl+A` | Select agent / persona |
-| `Ctrl+L` | Clear chat history (display only) |
-| `Ctrl+C` | Quit |
-| `↑` / `↓` | Scroll message history |
-| `PgUp` / `PgDn` | Scroll by page |
+| `Enter` | Send message (queues if agent is busy) |
+| `Shift+Enter` | Insert newline |
+| `Tab` | Next tab |
+| `Shift+Tab` | Previous tab |
+| `Ctrl+C` | Interrupt agent / clear draft / quit |
+| `Ctrl+D` | Exit TUI |
+| `Ctrl+L` | New session |
+| `Ctrl+X` | Remove last queued message |
+| `Esc` | Interrupt running agent |
+| `?` | Open help overlay panel |
+| `T` | Toggle agent tree sidebar |
+| `c` | Switch to Chat tab |
+| `d` | Switch to Dashboard tab |
+| `a` | Switch to Agents tab |
+| `s` | Switch to Settings tab |
+| `q` | Quit (when not in chat input) |
+| `p` | Pause/resume (dashboard demo) |
+| `j/k` | Navigate agent list |
+| `r` | Refresh agent list |
 
 ---
 
@@ -42,75 +93,27 @@ go build -o agent-studio-tui .
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--url` | `ws://localhost:8765` | WebSocket endpoint |
-| `--persona` | _(interactive)_ | Persona ID to use (skips agent selection screen) |
-| `--session` | _(new)_ | Resume an existing session by ID |
-| `--no-color` | `false` | Disable ANSI color output |
+| `--url` | `http://localhost:8080` | agentic-core HTTP API URL |
 
 ---
 
 ## Features
 
-- **Streaming tokens** — responses stream character-by-character just like the web UI
-- **HITL prompts** — human-in-the-loop escalation dialogs render inline
-- **Tool call display** — shows tool names and arguments as the agent executes them
-- **Session resume** — pass `--session <id>` to continue a previous conversation
-
----
-
-## Ralph Patterns
-
-The TUI implements 20 Ralph patterns across four categories.
-
-### Core Engine
-
-| Pattern | Description |
-|---------|-------------|
-| TUI-01 | Autonomous execution loop (5 phases: plan → act → observe → reflect → respond) |
-| TUI-02 | Session persistence and crash recovery |
-| TUI-03 | Completion token detection (stream end, error, HITL gate) |
-| TUI-04 | Event-driven architecture — 22 typed event kinds |
-
-### UI Views
-
-| Pattern | Description |
-|---------|-------------|
-| TUI-05 | Single-key navigation (no mouse required) |
-| TUI-06 | Dashboard view showing live status, progress bar, and running cost |
-| TUI-07 | Agent tree visualisation for multi-agent workflows |
-
-### Configuration
-
-| Pattern | Description |
-|---------|-------------|
-| TUI-08 | Hierarchical config — 5-tier TOML (global → project → agent → session → flag) |
-| TUI-09 | Prompt templates using Go `text/template` |
-| TUI-10 | Theme system with 5 built-in themes |
-| TUI-11 | Pluggable error strategies: retry, skip, or abort |
-
-### Advanced Execution
-
-| Pattern | Description |
-|---------|-------------|
-| TUI-12 | Parallel execution via git worktrees for isolated sub-agent runs |
-| TUI-13 | Headless mode — structured JSON logs for CI pipelines |
-| TUI-14 | Iteration logging to JSONL for offline analysis |
-
-### Remote Management
-
-| Pattern | Description |
-|---------|-------------|
-| TUI-15 | Remote instance management with HMAC-SHA256 authentication |
-| TUI-16 | Plugin registry supporting Agent and Tracker plugin types |
-| TUI-17 | Connection status indicators (connected / reconnecting / offline) |
-
-### Task Management
-
-| Pattern | Description |
-|---------|-------------|
-| TUI-18 | PRD-as-Fuel task format — feed a product spec directly as the agent's goal |
-| TUI-19 | Cost-aware model tiering — automatically selects cheaper models for routine steps |
-| TUI-20 | Agent scratchpad backed by a persistent `TODO.md` file |
+- **Non-blocking input queue** — type while agent processes, messages auto-drain
+- **Slash commands** — `/help`, `/clear`, `/new`, `/quit`, `/retry`, `/undo`, `/queue`, `/details`
+- **Markdown rendering** — assistant responses render headings, bold, italic, code, lists, blockquotes
+- **Tool activity panel** — live progress of tool calls with completion/failure states
+- **Streaming elapsed timer** — shows per-response duration in the viewport
+- **Help overlay** — `?` opens a modal panel with all keybindings and commands
+- **Agent state in status bar** — real-time connection status and agent lifecycle
+- **Queue preview** — shows queued messages in the chat view
+- **Agent tree sidebar** — `T` toggles a tree view of multi-agent execution
+- **Tab-based navigation** — Chat, Dashboard, Agents, Settings
+- **Dashboard** — live status, progress bar, task tracking, token/cost estimation
+- **Agent list** — browse and select registered personas
+- **Theme system** — dark, catppuccin, dracula, solarized, high-contrast
+- **Streaming tokens** — responses stream in real-time
+- **5 built-in themes** — switch via `/theme` command
 
 ---
 
@@ -118,19 +121,8 @@ The TUI implements 20 Ralph patterns across four categories.
 
 | Component | Technology |
 |-----------|------------|
-| Language | Go 1.22+ |
-| TUI framework | Bubble Tea (Charm) |
-| Configuration | TOML (5-level inheritance) |
-| Authentication | HMAC-SHA256 for remote instances |
-| Logging | Structured JSONL |
-| Parallelism | git worktrees for isolation |
-
----
-
-## Connecting to a Remote Instance
-
-```bash
-./agent-studio-tui --url wss://your-agent-studio.example.com
-```
-
-The TUI uses the same WebSocket protocol as the Flutter UI — see [WebSocket Protocol](api/websocket.md) for message format details.
+| Language | Go 1.26+ |
+| TUI framework | Bubble Tea v2 (Charm ecosystem) |
+| Styling | Lipgloss v2 |
+| API transport | HTTP REST + Ollama-compatible streaming |
+| Build tool | Go toolchain |
