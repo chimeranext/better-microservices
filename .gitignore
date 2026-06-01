@@ -9,6 +9,9 @@ build/
 .turbo/
 out/
 
+# ---- MkDocs generated site (built by CI, not committed) ----
+docs/site/site/
+
 # ---- Python ----
 .venv/
 venv/

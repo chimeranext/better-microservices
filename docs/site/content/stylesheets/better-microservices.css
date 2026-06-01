@@ -1,0 +1,112 @@
+/* =============================================================================
+   better-microservices Brand Palette
+   Indigo (plataforma) + Amber (acento) + Cyan (tech/eventbus)
+   Primary: #3949ab — indigo
+   ============================================================================= */
+
+:root {
+  /* Primary: Indigo */
+  --bms-primary: #3949ab;
+  --bms-primary-light: #5965c8;
+  --bms-primary-dark: #283593;
+  /* Secondary: Amber */
+  --bms-secondary: #f59e0b;
+  --bms-secondary-light: #fbbf24;
+  /* Accent: Cyan */
+  --bms-accent: #06b6d4;
+  /* Neutrals */
+  --bms-bg: #f6f7fb;
+  --bms-text: #1b1f3b;
+  --bms-muted: #5b6178;
+  /* Status */
+  --bms-success: #059669;
+  --bms-warning: #d97706;
+  --bms-error: #dc2626;
+}
+
+[data-md-color-scheme="slate"] {
+  --bms-bg: #14172a;
+  --bms-text: #e6e9f5;
+  --bms-muted: #9aa1bf;
+}
+
+/* =============================================================================
+   Material theme overrides (light + dark)
+   ============================================================================= */
+
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: var(--bms-primary);
+  --md-primary-fg-color--light: var(--bms-primary-light);
+  --md-primary-fg-color--dark: var(--bms-primary-dark);
+  --md-accent-fg-color: var(--bms-accent);
+  --md-default-bg-color: var(--bms-bg);
+  --md-default-fg-color: var(--bms-text);
+  --md-typeset-a-color: var(--bms-primary);
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: var(--bms-primary-dark);
+  --md-primary-fg-color--light: var(--bms-primary);
+  --md-primary-fg-color--dark: #1c237a;
+  --md-accent-fg-color: var(--bms-accent);
+  --md-default-bg-color: var(--bms-bg);
+  --md-default-fg-color: var(--bms-text);
+  --md-typeset-a-color: var(--bms-accent);
+}
+
+/* Header */
+.md-header {
+  background-color: var(--bms-primary);
+}
+
+/* Tabs strip */
+.md-tabs {
+  background-color: var(--bms-primary-dark);
+}
+
+/* Admonitions */
+.md-typeset .admonition.note,
+.md-typeset details.note {
+  border-color: var(--bms-primary);
+}
+.md-typeset .admonition.warning,
+.md-typeset details.warning {
+  border-color: var(--bms-secondary);
+}
+.md-typeset .admonition.success,
+.md-typeset details.success {
+  border-color: var(--bms-success);
+}
+
+/* Code blocks */
+.md-typeset code {
+  color: var(--bms-primary);
+}
+[data-md-color-scheme="slate"] .md-typeset code {
+  color: var(--bms-accent);
+}
+
+/* Tables */
+.md-typeset table:not([class]) th {
+  background-color: var(--bms-primary);
+  color: #fff;
+}
+
+/* Buttons */
+.md-typeset .md-button--primary {
+  background-color: var(--bms-primary);
+  border-color: var(--bms-primary);
+  color: #fff;
+}
+.md-typeset .md-button--primary:hover {
+  background-color: var(--bms-primary-light);
+  border-color: var(--bms-primary-light);
+}
+
+/* Footer */
+.md-footer {
+  background-color: var(--bms-primary-dark);
+}
+.md-footer-meta {
+  background-color: #1c237a;
+}
