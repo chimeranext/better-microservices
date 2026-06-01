@@ -1,32 +1,86 @@
-# License
+# Business Source License 1.1
 
-This project is licensed under the **Business Source License 1.1** (BSL 1.1).
+License text copyright © 2023 MariaDB plc, All Rights Reserved.
+"Business Source License" is a trademark of MariaDB plc.
 
-## Parameters
+Copyright © 2026 Andrés (Luis Andrés Peña Castillo, GitHub: lapc506,
+andres@dojocoding.io) — intellectual author of payments-core.
+Licensed and published by ChimeraNext Shared Services LLC.
 
-| Parameter | Value |
-|---|---|
-| **Licensor** | Luis Andrés Peña Castillo |
-| **Licensed Work** | payments-core (this repository) |
-| **Change Date** | 2031-04-18 (five years from the initial release) |
-| **Change License** | Apache License, Version 2.0 |
-| **Additional Use Grant** | You may use, copy, modify, and self-host the Licensed Work for internal purposes or for your own organization's workflows, including as a sidecar in your own deployments. You **may not** provide the Licensed Work or a derivative to third parties as a managed or hosted commercial payments-processing service. |
+payments-core is licensed under the Business Source License agreement below.
 
-## Full text
+payments-core occasionally includes source code that is derived from or bundles
+third-party code, and may comprise multiple programming languages (a polyglot
+service). Such third-party components remain under their own original licenses;
+this situation is noted in the license header at the top of the affected files
+and/or in a THIRD-PARTY-NOTICES file. Full authorship information can be derived
+from the version control history.
+--------------------------------------------------------------------------------
 
-The full BSL 1.1 legal text is the standard template published by MariaDB at
-<https://mariadb.com/bsl11/>. This repository adopts that template **verbatim**,
-substituting only the four parameters listed above.
+payments-core BUSINESS SOURCE LICENSE AGREEMENT
 
-## On the Change Date
+Parameters
 
-On 2031-04-18 the Licensed Work automatically becomes available under the
-Change License (Apache 2.0), at which point all restrictions in the Additional
-Use Grant cease to apply.
+## Licensor
 
-## Siblings
+ChimeraNext Shared Services LLC (hereinafter, "Licensor").
 
-This license is intentionally consistent with the sibling `-core` repositories
-`agentic-core` and `invoice-core`, which also use BSL 1.1. `marketplace-core`
-uses MIT, reflecting its lower commercial-reuse risk profile (see the
-ecosystem governance rubric).
+The intellectual author and copyright holder of the original work is
+Andrés (Luis Andrés Peña Castillo, GitHub: lapc506, andres@dojocoding.io).
+
+## Licensed Work
+
+payments-core Version 0.0.1 or later.
+The Licensed Work is © 2026 Andrés (lapc506), licensed and published by
+ChimeraNext Shared Services LLC.
+First publicly available: 2026-04-18.
+
+### Additional Use Grant
+
+You may make production use of the Licensed Work, provided Your use does not include offering the Licensed Work to third parties on a hosted or embedded basis in order to compete with the Licensor's paid version(s) of the Licensed Work. For purposes of this license:
+
+-- A "competitive offering" is a Product that is offered to third parties on a paid basis, including through paid support arrangements, that significantly overlaps with the capabilities of the Licensor's paid version(s) of the Licensed Work. If Your Product is not a competitive offering when You first make it generally available, it will not become a competitive offering later due to the Licensor releasing a new version of the Licensed Work with additional capabilities. In addition, Products that are not provided on a paid basis are not competitive.
+
+-- "Product" means software that is offered to end users to manage in their own environments or offered as a service on a hosted basis.
+
+-- "Embedded" means including the source code or executable code from the Licensed Work in a competitive offering. "Embedded" also means packaging the competitive offering in such a way that the Licensed Work must be accessed or downloaded for the competitive offering to operate.
+
+Hosting or using the Licensed Work(s) for internal purposes within an organization is not considered a competitive offering.
+The Licensor considers your organization to include all of your affiliates under common control.
+
+For binding interpretive guidance on using the Licensor's products under the Business Source License, please refer to the official documentation or create an issue on this same repository.
+
+## Change Date
+
+2031-04-18 (five years from the first publicly available distribution of the Licensed Work).
+
+## Change License
+
+[Non-Profit Open Software License ("Non-Profit OSL") 3.0](https://trustee.ietf.org/assets/licenses/non-profit-osl-3/)
+
+For information about alternative licensing arrangements for the Licensed Work,
+please create an issue on this same repository.
+
+## Notice
+
+Business Source License 1.1
+
+### Terms
+
+The Licensor hereby grants you the right to copy, modify, create derivative works, redistribute, and make non-production use of the Licensed Work.
+
+The Licensor may make an Additional Use Grant, above, permitting limited production use.
+
+Effective on the Change Date, or the fifth anniversary of the first publicly available distribution of a specific version of the Licensed Work under this License, whichever comes first, the Licensor hereby grants you rights under the terms of the Change License, and the rights granted in the paragraph above terminate.
+
+If your use of the Licensed Work does not comply with the requirements currently in effect as described in this License, you must purchase a commercial license from the Licensor, its affiliated entities, or authorized resellers, or you must refrain from using the Licensed Work.
+
+All copies of the original and modified Licensed Work, and derivative works of the Licensed Work, are subject to this License. This License applies separately for each version of the Licensed Work and the Change Date may vary for each version of the Licensed Work released by Licensor.
+
+You must conspicuously display this License on each original or modified copy of the Licensed Work. If you receive the Licensed Work in original or modified form from a third party, the terms and conditions set forth in this License apply to your use of that work.
+
+Any use of the Licensed Work in violation of this License will automatically terminate your rights under this License for the current and all other versions of the Licensed Work.
+
+This License does not grant you any right in any trademark or logo of Licensor or its affiliates (provided that you may use a trademark or logo of Licensor as expressly required by this License).
+
+TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSED WORK IS PROVIDED ON AN "AS IS" BASIS. LICENSOR HEREBY DISCLAIMS ALL WARRANTIES AND CONDITIONS, EXPRESS OR IMPLIED, INCLUDING (WITHOUT LIMITATION) WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, AND TITLE.

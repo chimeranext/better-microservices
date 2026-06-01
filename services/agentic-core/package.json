@@ -2,6 +2,7 @@
   "name": "@chimeranext/agentic-core",
   "version": "0.0.0",
   "private": true,
+  "license": "BUSL-1.1",
   "description": "Polyglot service (Python + Go + Dart). Thin Turbo passthrough — real scripts wired in sub-project #3.",
   "scripts": {
     "build": "echo '[agentic-core] build delegated to native tooling (uv / go / flutter) — see openspec sub-project #3'",

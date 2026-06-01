@@ -7,7 +7,7 @@ name = "agentic-core"
 version = "0.1.0"
 description = "Production-ready Python library for AI agent orchestration"
 readme = "README.md"
-license = "MIT"
+license = "BUSL-1.1"
 requires-python = ">=3.12"
 dependencies = [
     "pydantic>=2.0",

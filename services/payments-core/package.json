@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "description": "One payments sidecar for the -core ecosystem (Stripe, OnvoPay, Tilopay, dLocal, Revolut, Convera, Ripple, Apple/Google Pay verify).",
-  "license": "BSL-1.1",
+  "license": "BUSL-1.1",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

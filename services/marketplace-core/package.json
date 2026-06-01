@@ -20,7 +20,7 @@
     "proto/",
     "appchain/",
     "README.md",
-    "LICENSE"
+    "LICENSE.md"
   ],
   "scripts": {
     "build": "tsup",
@@ -51,8 +51,8 @@
     "type": "git",
     "url": "git+https://github.com/lapc506/marketplace-core.git"
   },
-  "author": "Luis Andres Pena Castillo",
-  "license": "MIT",
+  "author": "Andrés (lapc506) <andres@dojocoding.io>",
+  "license": "BUSL-1.1",
   "engines": {
     "node": ">=20.11.0"
   },
