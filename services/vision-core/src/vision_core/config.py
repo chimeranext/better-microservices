@@ -26,6 +26,15 @@ class Settings(BaseSettings):
     # VLM diagnosis runtime — ALWAYS CLOUD (Tier 1), never edge-local.
     vllm_url: str = ""            # vLLM InferenceService (Qwen-VL / LLaVA)
 
+    # NVIDIA build.nvidia.com hosted NIM endpoints — the fastest Phase-1 path to
+    # REAL inference with NO local GPU (call hosted Triton/VLM NIMs). SERVER-SIDE
+    # ONLY — never expose in any client/web. Per environment the value is a secret:
+    #   staging    -> the "internal_staging" key
+    #   production -> the "public_prod" key (still backend-only despite the name)
+    # NEVER commit the value; inject via env/secret. See SECRETS.md.
+    nvidia_api_key: str = ""      # VISION_NVIDIA_API_KEY — bearer for NIM endpoints
+    nvidia_base_url: str = "https://integrate.api.nvidia.com/v1"
+
     # Object storage (MinIO/S3 via s3fs) — the data backbone for weights,
     # COCO-style datasets, and captures (the KServe/Katib/KFP s3fs workaround).
     minio_endpoint: str = "http://minio.vision-core.svc:9000"
