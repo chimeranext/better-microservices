@@ -4,6 +4,16 @@
 > Phases marked **🚧 GATED** require explicit owner go-ahead (outward-facing / hard to reverse).
 > `$ROOT` = `/home/kvttvrsis/Documentos/GitHub/chimeranext/better-microservices`.
 
+## Status (2026-05-31)
+
+- ✅ **Phase 0** — OpenSpec scaffold + change docs + spike brief.
+- ✅ **Phase 1** — pre-flight commits (`agentic-core` 32 lines, `filing-core` plans); all repos clean; no cache leaks.
+- ✅ **Phase 2** — filter-repo + merge → `/tmp/bms-mono`, 223 commits, history preserved, 19 agentic branches.
+- ✅ **Phase 3** — root layer (pnpm/Turbo/OpenSpec/placeholders) + **swap**: `$ROOT` is now the monorepo clone.
+- ✅ **Phase 4** — pushed to `chimeranext/better-microservices` (main + 19 branches); remote verified.
+- 🚧 **Phase 5** — issue plan generated (`issue-migration-plan.md`); **pending owner approval** before creation.
+- ⏳ **Phase 6** — archive `lapc506` repos (after issues).
+
 ## Phase 0 — Spec & scaffold (local, safe)
 
 - [x] `openspec/project.md` (governance)
