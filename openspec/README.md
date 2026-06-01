@@ -13,7 +13,11 @@ Living index of decision records for `better-microservices`. Governance:
 | [`2026-06-01-landing-configurator`](./changes/2026-06-01-landing-configurator/) | `platform` | proposal · design · tasks | Modeled — pending implementation |
 | [`2026-06-01-vision-core`](./changes/2026-06-01-vision-core/) | `vision-core` | proposal · design · tasks | **Merged 2026-06-01** — scaffold (7th service; serves vertivolatam) |
 | [`2026-06-01-geospatial-core`](./changes/2026-06-01-geospatial-core/) | `geospatial-core` | proposal · design · tasks | **Merged 2026-06-01** — scaffold (8th service; serves habitanexus) |
-| [`2026-06-01-vertivo-nvidia-physical-ai`](./changes/2026-06-01-vertivo-nvidia-physical-ai/) | `vision-core` + Vertivo | proposal · design · tasks | Research spike (2 digital twins + SDG + Inception/Marketplace path) |
+
+> The **Vertivo × NVIDIA Physical AI** strategy spike (2 digital twins + synthetic data +
+> Inception/Marketplace) lives in the **`vertivolatam/monorepo`** repo
+> (`openspec/changes/2026-06-01-vertivo-nvidia-physical-ai/`) — it is Vertivo's strategy, not a
+> better-microservices service. `vision-core` here is the engine it consumes.
 
 ## Roadmap (sub-projects)
 
