@@ -11,8 +11,8 @@
 - ✅ **Phase 2** — filter-repo + merge → `/tmp/bms-mono`, 223 commits, history preserved, 19 agentic branches.
 - ✅ **Phase 3** — root layer (pnpm/Turbo/OpenSpec/placeholders) + **swap**: `$ROOT` is now the monorepo clone.
 - ✅ **Phase 4** — pushed to `chimeranext/better-microservices` (main + 19 branches); remote verified.
-- 🚧 **Phase 5** — issue plan generated (`issue-migration-plan.md`); **pending owner approval** before creation.
-- ⏳ **Phase 6** — archive `lapc506` repos (after issues).
+- ✅ **Phase 5** — labels (70) + milestones (8) + **68 issues** created (epics + 1:1 + mirrors + platform #2 + foundation #1); back-references on source issues.
+- 🚧 **Phase 6** — archive `lapc506` repos (**pending owner go-ahead**). Note: monorepo issue #18 (filing Task A4) should be pinned manually via the GitHub UI.
 
 ## Phase 0 — Spec & scaffold (local, safe)
 

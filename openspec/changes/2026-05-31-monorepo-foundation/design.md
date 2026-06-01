@@ -1,6 +1,6 @@
 # Monorepo Foundation — Architecture
 
-**Issue:** _to be created_ (`service:cross-repo`)
+**Issue:** [#1](https://github.com/chimeranext/better-microservices/issues/1) (`service:cross-repo`)
 **Status:** Design approved 2026-05-31
 **Depends on:** nothing (this is the base change)
 **PDR:** [`proposal.md`](./proposal.md)

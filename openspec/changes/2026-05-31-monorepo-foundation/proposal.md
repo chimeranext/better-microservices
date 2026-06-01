@@ -4,7 +4,7 @@
 **Owner:** Andrés (andres@dojocoding.io)
 **Status:** Design approved — pending implementation
 **Domain:** `platform`
-**Tracking issue:** _to be created (`service:cross-repo`)_
+**Tracking issue:** [#1](https://github.com/chimeranext/better-microservices/issues/1) (`service:cross-repo`)
 
 ---
 
