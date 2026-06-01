@@ -1,0 +1,888 @@
+syntax = "proto3";
+
+package marketplace_core;
+
+// ============================================================
+// MARKETPLACE CORE — gRPC Service Definitions
+// Production-ready shared library for marketplace orchestration.
+// Shopify-inspired API patterns for rental, retail, service,
+// and peer-to-peer marketplaces.
+//
+// Design principles:
+// - Agnostic to transaction type (rental, purchase, booking)
+// - Public storefront queries require NO authentication
+// - Attribute validation via JSON Schema registry
+// - Fulfillment types are multi-select with domain-specific rules
+// - Traceability via pluggable adapters (hash-chain or blockchain)
+// ============================================================
+
+// --- ADMIN SERVICE (authenticated, vendor-facing) ---
+
+service MarketplaceAdmin {
+  // Products
+  rpc CreateProduct(CreateProductRequest) returns (Product);
+  rpc UpdateProduct(UpdateProductRequest) returns (Product);
+  rpc ArchiveProduct(ArchiveProductRequest) returns (Product);
+  rpc GetProduct(GetProductRequest) returns (Product);
+  rpc ListProducts(ListProductsRequest) returns (ProductPage);
+
+  // Variants
+  rpc CreateVariant(CreateVariantRequest) returns (Variant);
+  rpc UpdateVariant(UpdateVariantRequest) returns (Variant);
+  rpc DeleteVariant(DeleteVariantRequest) returns (Empty);
+  rpc BulkCreateVariants(BulkCreateVariantsRequest) returns (BulkVariantsResponse);
+
+  // Collections
+  rpc CreateCollection(CreateCollectionRequest) returns (Collection);
+  rpc UpdateCollection(UpdateCollectionRequest) returns (Collection);
+  rpc DeleteCollection(DeleteCollectionRequest) returns (Empty);
+  rpc AddProductsToCollection(CollectionProductsRequest) returns (Collection);
+  rpc RemoveProductsFromCollection(CollectionProductsRequest) returns (Collection);
+
+  // Vendors
+  rpc RegisterVendor(RegisterVendorRequest) returns (Vendor);
+  rpc UpdateVendor(UpdateVendorRequest) returns (Vendor);
+  rpc VerifyVendor(VerifyVendorRequest) returns (Vendor);
+
+  // Storefronts
+  rpc CreateStorefront(CreateStorefrontRequest) returns (Storefront);
+  rpc UpdateStorefront(UpdateStorefrontRequest) returns (Storefront);
+
+  // Media
+  rpc UploadMedia(stream UploadMediaRequest) returns (MediaAsset);
+  rpc DeleteMedia(DeleteMediaRequest) returns (Empty);
+
+  // Schema Registry
+  rpc RegisterSchema(RegisterSchemaRequest) returns (AttributeSchema);
+  rpc GetSchema(GetSchemaRequest) returns (AttributeSchema);
+  rpc ListSchemas(ListSchemasRequest) returns (SchemaList);
+  rpc ValidateAttributes(ValidateAttributesRequest) returns (ValidationResult);
+
+  // Health
+  rpc HealthCheck(Empty) returns (HealthStatus);
+}
+
+// --- STOREFRONT SERVICE (public, NO auth required) ---
+
+service MarketplaceStorefront {
+  rpc BrowseProducts(BrowseRequest) returns (ProductPage);
+  rpc GetProductDetail(GetProductRequest) returns (Product);
+  rpc SearchProducts(SearchRequest) returns (ProductPage);
+  rpc ListCollections(ListCollectionsRequest) returns (CollectionPage);
+  rpc GetCollection(GetCollectionRequest) returns (Collection);
+  rpc GetStorefront(GetStorefrontRequest) returns (Storefront);
+  rpc GetVendorProfile(GetVendorProfileRequest) returns (VendorProfile);
+}
+
+// --- TRANSACTION SERVICE (adapter-driven) ---
+
+service MarketplaceTransaction {
+  rpc ConfirmTransaction(ConfirmTransactionRequest) returns (TransactionResult);
+  rpc CancelTransaction(CancelTransactionRequest) returns (TransactionResult);
+  rpc GetTransactionStatus(GetTransactionStatusRequest) returns (TransactionStatus);
+}
+
+// --- INVENTORY SERVICE ---
+
+service MarketplaceInventory {
+  rpc ReserveInventory(InventoryRequest) returns (InventoryResult);
+  rpc ReleaseInventory(InventoryRequest) returns (InventoryResult);
+  rpc AdjustInventory(AdjustInventoryRequest) returns (InventoryResult);
+  rpc GetAvailability(GetAvailabilityRequest) returns (AvailabilityInfo);
+}
+
+// --- TRACEABILITY SERVICE (optional) ---
+
+service MarketplaceTraceability {
+  rpc RecordOrigin(RecordOriginRequest) returns (TraceEvent);
+  rpc RecordTransfer(RecordTransferRequest) returns (TraceEvent);
+  rpc RecordTransformation(RecordTransformationRequest) returns (TraceEvent);
+  rpc GetChain(GetChainRequest) returns (TraceChain);
+  rpc VerifyChain(VerifyChainRequest) returns (VerifyChainResult);
+}
+
+// --- REPUTATION SERVICE ---
+
+service MarketplaceReputation {
+  rpc SubmitRating(SubmitRatingRequest) returns (Rating);
+  rpc GetReputation(GetReputationRequest) returns (ReputationScore);
+  rpc GetReviewHistory(GetReviewHistoryRequest) returns (ReviewHistory);
+}
+
+// ============================================================
+// MESSAGES — Core Entities
+// ============================================================
+
+message Empty {}
+
+// --- Product ---
+
+message Product {
+  string id = 1;
+  string vendor_id = 2;
+  string title = 3;
+  string description = 4;
+  string slug = 5;
+  ProductStatus status = 6;
+  string product_type = 7;
+  repeated string tags = 8;
+  repeated MediaAsset media = 9;
+  GeoLocation geo = 10;
+  string schema_ref = 11;
+  map<string, string> attributes = 12;
+  repeated Variant variants = 13;
+  repeated string collection_ids = 14;
+  SEO seo = 15;
+  string created_at = 16;
+  string updated_at = 17;
+}
+
+enum ProductStatus {
+  PRODUCT_STATUS_UNSPECIFIED = 0;
+  PRODUCT_STATUS_DRAFT = 1;
+  PRODUCT_STATUS_ACTIVE = 2;
+  PRODUCT_STATUS_ARCHIVED = 3;
+}
+
+// --- Variant ---
+
+message Variant {
+  string id = 1;
+  string product_id = 2;
+  string title = 3;
+  string sku = 4;
+  Money price = 5;
+  Money compare_at_price = 6;
+  repeated Option options = 7;
+  InventoryPolicy inventory_policy = 8;
+  repeated FulfillmentType fulfillment_types = 9;
+  AvailabilityRule availability = 10;
+  InventoryInfo inventory = 11;
+  bool available = 12;
+  int32 position = 13;
+  map<string, string> metadata = 14;
+  string created_at = 15;
+  string updated_at = 16;
+}
+
+enum InventoryPolicy {
+  INVENTORY_POLICY_UNSPECIFIED = 0;
+  INVENTORY_POLICY_TRACK = 1;
+  INVENTORY_POLICY_SINGLE = 2;
+  INVENTORY_POLICY_UNTRACK = 3;
+  INVENTORY_POLICY_CAPACITY = 4;
+}
+
+enum FulfillmentType {
+  FULFILLMENT_TYPE_UNSPECIFIED = 0;
+  FULFILLMENT_TYPE_PHYSICAL = 1;
+  FULFILLMENT_TYPE_DIGITAL = 2;
+  FULFILLMENT_TYPE_IN_PERSON = 3;
+  FULFILLMENT_TYPE_ONGOING = 4;
+}
+
+// --- Collection ---
+
+message Collection {
+  string id = 1;
+  string title = 2;
+  string slug = 3;
+  string description = 4;
+  CollectionType type = 5;
+  repeated CollectionRule rules = 6;
+  SortOrder sort_order = 7;
+  MediaAsset image = 8;
+  SEO seo = 9;
+  repeated string product_ids = 10;
+  string created_at = 11;
+  string updated_at = 12;
+}
+
+enum CollectionType {
+  COLLECTION_TYPE_UNSPECIFIED = 0;
+  COLLECTION_TYPE_MANUAL = 1;
+  COLLECTION_TYPE_SMART = 2;
+}
+
+message CollectionRule {
+  string field = 1;
+  string operator = 2;
+  string value = 3;
+}
+
+enum SortOrder {
+  SORT_ORDER_UNSPECIFIED = 0;
+  SORT_ORDER_MANUAL = 1;
+  SORT_ORDER_BEST_SELLING = 2;
+  SORT_ORDER_PRICE_ASC = 3;
+  SORT_ORDER_PRICE_DESC = 4;
+  SORT_ORDER_CREATED_DESC = 5;
+  SORT_ORDER_TITLE_ASC = 6;
+}
+
+// --- Vendor ---
+
+message Vendor {
+  string id = 1;
+  string name = 2;
+  string slug = 3;
+  VerificationStatus verification = 4;
+  string identity_doc = 5;
+  Contact contact = 6;
+  GeoLocation geo = 7;
+  map<string, string> metadata = 8;
+  string created_at = 9;
+  string updated_at = 10;
+}
+
+enum VerificationStatus {
+  VERIFICATION_STATUS_UNSPECIFIED = 0;
+  VERIFICATION_STATUS_UNVERIFIED = 1;
+  VERIFICATION_STATUS_PENDING = 2;
+  VERIFICATION_STATUS_VERIFIED = 3;
+}
+
+message VendorProfile {
+  string id = 1;
+  string name = 2;
+  string slug = 3;
+  VerificationStatus verification = 4;
+  GeoLocation geo = 5;
+  ReputationScore reputation = 6;
+  int32 product_count = 7;
+  string member_since = 8;
+}
+
+// --- Storefront ---
+
+message Storefront {
+  string id = 1;
+  string vendor_id = 2;
+  string slug = 3;
+  string name = 4;
+  string description = 5;
+  MediaAsset logo = 6;
+  MediaAsset banner = 7;
+  map<string, string> theme = 8;
+  bool is_public = 9;
+  string custom_domain = 10;
+  SEO seo = 11;
+  string created_at = 12;
+  string updated_at = 13;
+}
+
+// --- Media ---
+
+message MediaAsset {
+  string id = 1;
+  MediaOwnerType owner_type = 2;
+  string owner_id = 3;
+  MediaType type = 4;
+  string url = 5;
+  string alt_text = 6;
+  int32 width = 7;
+  int32 height = 8;
+  int32 duration_seconds = 9;
+  int64 size_bytes = 10;
+  string mime_type = 11;
+  string created_at = 12;
+}
+
+enum MediaOwnerType {
+  MEDIA_OWNER_UNSPECIFIED = 0;
+  MEDIA_OWNER_PRODUCT = 1;
+  MEDIA_OWNER_VARIANT = 2;
+  MEDIA_OWNER_VENDOR = 3;
+  MEDIA_OWNER_STOREFRONT = 4;
+}
+
+enum MediaType {
+  MEDIA_TYPE_UNSPECIFIED = 0;
+  MEDIA_TYPE_IMAGE = 1;
+  MEDIA_TYPE_VIDEO = 2;
+  MEDIA_TYPE_DOCUMENT = 3;
+}
+
+// --- Attribute Schema ---
+
+message AttributeSchema {
+  string id = 1;
+  string domain = 2;
+  string name = 3;
+  int32 version = 4;
+  string json_schema = 5;
+  repeated string required_fields = 6;
+  string ui_hints = 7;
+  FulfillmentRules fulfillment_rules = 8;
+  InventoryRules inventory_rules = 9;
+  AvailabilityRules availability_rules = 10;
+  string created_at = 11;
+  string updated_at = 12;
+}
+
+message FulfillmentRules {
+  repeated FulfillmentTypeSet allowed = 1;
+  repeated FulfillmentTypeSet forbidden = 2;
+  repeated FulfillmentType defaults = 3;
+}
+
+message FulfillmentTypeSet {
+  repeated FulfillmentType types = 1;
+}
+
+message InventoryRules {
+  repeated InventoryPolicy allowed_policies = 1;
+  InventoryPolicy default_policy = 2;
+}
+
+message AvailabilityRules {
+  repeated AvailabilityType allowed_types = 1;
+  bool required = 2;
+}
+
+// ============================================================
+// MESSAGES — Value Objects
+// ============================================================
+
+message Money {
+  string amount = 1;
+  string currency = 2;
+}
+
+message GeoLocation {
+  double lat = 1;
+  double lng = 2;
+  string address = 3;
+  string city = 4;
+  string state = 5;
+  string country = 6;
+  string postal_code = 7;
+}
+
+message SEO {
+  string title = 1;
+  string description = 2;
+  string og_image = 3;
+  string canonical_url = 4;
+}
+
+message Contact {
+  string phone = 1;
+  string email = 2;
+  string whatsapp = 3;
+}
+
+message Option {
+  string name = 1;
+  string value = 2;
+}
+
+message InventoryInfo {
+  int32 quantity = 1;
+  int32 reserved = 2;
+  int32 available = 3;
+}
+
+// --- Availability ---
+
+message AvailabilityRule {
+  AvailabilityType type = 1;
+  repeated TimeSlot schedule = 2;
+  string start_date = 3;
+  string end_date = 4;
+  string expiry_date = 5;
+  int32 shelf_life_days = 6;
+  string best_before = 7;
+  repeated Season seasons = 8;
+  repeated string blackout_dates = 9;
+  int32 lead_time_hours = 10;
+}
+
+enum AvailabilityType {
+  AVAILABILITY_TYPE_UNSPECIFIED = 0;
+  AVAILABILITY_TYPE_ALWAYS = 1;
+  AVAILABILITY_TYPE_CALENDAR = 2;
+  AVAILABILITY_TYPE_DATE_RANGE = 3;
+  AVAILABILITY_TYPE_EXPIRABLE = 4;
+  AVAILABILITY_TYPE_SEASONAL = 5;
+}
+
+message TimeSlot {
+  int32 day_of_week = 1;
+  string start_time = 2;
+  string end_time = 3;
+  string timezone = 4;
+}
+
+message Season {
+  string name = 1;
+  int32 start_month = 2;
+  int32 end_month = 3;
+}
+
+// --- Traceability ---
+
+message TraceEvent {
+  string id = 1;
+  string product_id = 2;
+  string event_type = 3;
+  string description = 4;
+  string from_party = 5;
+  string to_party = 6;
+  GeoLocation location = 7;
+  string timestamp = 8;
+  string record_hash = 9;
+  string previous_hash = 10;
+  int32 sequence_number = 11;
+  map<string, string> metadata = 12;
+}
+
+message TraceChain {
+  string product_id = 1;
+  repeated TraceEvent events = 2;
+  bool integrity_verified = 3;
+}
+
+// --- Reputation ---
+
+message Rating {
+  string id = 1;
+  string from_id = 2;
+  string to_id = 3;
+  string product_id = 4;
+  string transaction_id = 5;
+  int32 score = 6;
+  string comment = 7;
+  string created_at = 8;
+}
+
+message ReputationScore {
+  string entity_id = 1;
+  double average_score = 2;
+  int32 total_ratings = 3;
+  map<string, int32> score_distribution = 4;
+  string last_updated = 5;
+}
+
+message ReviewHistory {
+  string entity_id = 1;
+  repeated Rating ratings = 2;
+  int32 total = 3;
+}
+
+// ============================================================
+// MESSAGES — Requests & Responses
+// ============================================================
+
+// --- Product Requests ---
+
+message CreateProductRequest {
+  string vendor_id = 1;
+  string title = 2;
+  string description = 3;
+  string product_type = 4;
+  repeated string tags = 5;
+  string schema_ref = 6;
+  map<string, string> attributes = 7;
+  GeoLocation geo = 8;
+  SEO seo = 9;
+}
+
+message UpdateProductRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  repeated string tags = 4;
+  map<string, string> attributes = 5;
+  GeoLocation geo = 6;
+  SEO seo = 7;
+  ProductStatus status = 8;
+}
+
+message ArchiveProductRequest {
+  string id = 1;
+}
+
+message GetProductRequest {
+  string id = 1;
+  string slug = 2;
+}
+
+message ListProductsRequest {
+  string vendor_id = 1;
+  ProductStatus status = 2;
+  int32 limit = 3;
+  string cursor = 4;
+}
+
+message ProductPage {
+  repeated Product products = 1;
+  string next_cursor = 2;
+  int32 total = 3;
+}
+
+// --- Variant Requests ---
+
+message CreateVariantRequest {
+  string product_id = 1;
+  string title = 2;
+  string sku = 3;
+  Money price = 4;
+  Money compare_at_price = 5;
+  repeated Option options = 6;
+  InventoryPolicy inventory_policy = 7;
+  repeated FulfillmentType fulfillment_types = 8;
+  AvailabilityRule availability = 9;
+  int32 initial_quantity = 10;
+}
+
+message UpdateVariantRequest {
+  string id = 1;
+  string title = 2;
+  Money price = 3;
+  Money compare_at_price = 4;
+  repeated Option options = 5;
+  repeated FulfillmentType fulfillment_types = 6;
+  AvailabilityRule availability = 7;
+}
+
+message DeleteVariantRequest {
+  string id = 1;
+}
+
+message BulkCreateVariantsRequest {
+  string product_id = 1;
+  repeated CreateVariantRequest variants = 2;
+}
+
+message BulkVariantsResponse {
+  repeated Variant variants = 1;
+  repeated UserError errors = 2;
+}
+
+// --- Collection Requests ---
+
+message CreateCollectionRequest {
+  string title = 1;
+  string description = 2;
+  CollectionType type = 3;
+  repeated CollectionRule rules = 4;
+  SortOrder sort_order = 5;
+  SEO seo = 6;
+}
+
+message UpdateCollectionRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  SortOrder sort_order = 4;
+  SEO seo = 5;
+}
+
+message DeleteCollectionRequest {
+  string id = 1;
+}
+
+message CollectionProductsRequest {
+  string collection_id = 1;
+  repeated string product_ids = 2;
+}
+
+message GetCollectionRequest {
+  string id = 1;
+  string slug = 2;
+}
+
+message CollectionPage {
+  repeated Collection collections = 1;
+  string next_cursor = 2;
+  int32 total = 3;
+}
+
+message ListCollectionsRequest {
+  string vendor_id = 1;
+  CollectionType type = 2;
+  int32 limit = 3;
+  string cursor = 4;
+}
+
+// --- Vendor Requests ---
+
+message RegisterVendorRequest {
+  string name = 1;
+  Contact contact = 2;
+  GeoLocation geo = 3;
+  map<string, string> metadata = 4;
+}
+
+message UpdateVendorRequest {
+  string id = 1;
+  string name = 2;
+  Contact contact = 3;
+  GeoLocation geo = 4;
+}
+
+message VerifyVendorRequest {
+  string id = 1;
+  string identity_doc = 2;
+  string verification_method = 3;
+}
+
+message GetVendorProfileRequest {
+  string id = 1;
+  string slug = 2;
+}
+
+// --- Storefront Requests ---
+
+message CreateStorefrontRequest {
+  string vendor_id = 1;
+  string name = 2;
+  string description = 3;
+  SEO seo = 4;
+}
+
+message UpdateStorefrontRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  map<string, string> theme = 4;
+  bool is_public = 5;
+  string custom_domain = 6;
+  SEO seo = 7;
+}
+
+message GetStorefrontRequest {
+  string id = 1;
+  string slug = 2;
+}
+
+// --- Media Requests ---
+
+message UploadMediaRequest {
+  MediaOwnerType owner_type = 1;
+  string owner_id = 2;
+  MediaType type = 3;
+  string filename = 4;
+  string alt_text = 5;
+  bytes chunk = 6;
+}
+
+message DeleteMediaRequest {
+  string id = 1;
+}
+
+// --- Search / Browse Requests ---
+
+message BrowseRequest {
+  string collection_id = 1;
+  string vendor_id = 2;
+  repeated FulfillmentType fulfillment_types = 3;
+  Money price_min = 4;
+  Money price_max = 5;
+  GeoLocation near = 6;
+  double radius_km = 7;
+  repeated string tags = 8;
+  SortOrder sort = 9;
+  int32 limit = 10;
+  string cursor = 11;
+}
+
+message SearchRequest {
+  string query = 1;
+  string collection_id = 2;
+  repeated FulfillmentType fulfillment_types = 3;
+  Money price_min = 4;
+  Money price_max = 5;
+  GeoLocation near = 6;
+  double radius_km = 7;
+  repeated string tags = 8;
+  map<string, string> attribute_filters = 9;
+  SortOrder sort = 10;
+  int32 limit = 11;
+  string cursor = 12;
+}
+
+// --- Schema Requests ---
+
+message RegisterSchemaRequest {
+  string domain = 1;
+  string name = 2;
+  string json_schema = 3;
+  repeated string required_fields = 4;
+  string ui_hints = 5;
+  FulfillmentRules fulfillment_rules = 6;
+  InventoryRules inventory_rules = 7;
+  AvailabilityRules availability_rules = 8;
+}
+
+message GetSchemaRequest {
+  string schema_ref = 1;
+}
+
+message ListSchemasRequest {
+  string domain = 1;
+}
+
+message SchemaList {
+  repeated AttributeSchema schemas = 1;
+}
+
+message ValidateAttributesRequest {
+  string schema_ref = 1;
+  map<string, string> attributes = 2;
+  repeated FulfillmentType fulfillment_types = 3;
+  InventoryPolicy inventory_policy = 4;
+}
+
+message ValidationResult {
+  bool valid = 1;
+  repeated UserError errors = 2;
+}
+
+// --- Transaction Requests ---
+
+message ConfirmTransactionRequest {
+  string product_id = 1;
+  string variant_id = 2;
+  string buyer_id = 3;
+  int32 quantity = 4;
+  map<string, string> metadata = 5;
+}
+
+message CancelTransactionRequest {
+  string transaction_id = 1;
+  string reason = 2;
+}
+
+message GetTransactionStatusRequest {
+  string transaction_id = 1;
+}
+
+message TransactionResult {
+  string transaction_id = 1;
+  bool success = 2;
+  string status = 3;
+  repeated UserError errors = 4;
+}
+
+message TransactionStatus {
+  string transaction_id = 1;
+  string status = 2;
+  string product_id = 3;
+  string variant_id = 4;
+  string buyer_id = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+// --- Inventory Requests ---
+
+message InventoryRequest {
+  string variant_id = 1;
+  int32 quantity = 2;
+  string reason = 3;
+}
+
+message AdjustInventoryRequest {
+  string variant_id = 1;
+  int32 delta = 2;
+  string reason = 3;
+}
+
+message InventoryResult {
+  string variant_id = 1;
+  bool success = 2;
+  InventoryInfo inventory = 3;
+  repeated UserError errors = 4;
+}
+
+message GetAvailabilityRequest {
+  string variant_id = 1;
+  string date = 2;
+}
+
+message AvailabilityInfo {
+  string variant_id = 1;
+  bool available = 2;
+  AvailabilityRule rule = 3;
+  InventoryInfo inventory = 4;
+  repeated TimeSlot open_slots = 5;
+}
+
+// --- Traceability Requests ---
+
+message RecordOriginRequest {
+  string product_id = 1;
+  string origin_party = 2;
+  GeoLocation origin_location = 3;
+  string description = 4;
+  map<string, string> metadata = 5;
+}
+
+message RecordTransferRequest {
+  string product_id = 1;
+  string from_party = 2;
+  string to_party = 3;
+  GeoLocation location = 4;
+  string description = 5;
+  map<string, string> metadata = 6;
+}
+
+message RecordTransformationRequest {
+  string product_id = 1;
+  repeated string input_product_ids = 2;
+  string description = 3;
+  map<string, string> metadata = 4;
+}
+
+message GetChainRequest {
+  string product_id = 1;
+}
+
+message VerifyChainRequest {
+  string product_id = 1;
+}
+
+message VerifyChainResult {
+  string product_id = 1;
+  bool verified = 2;
+  int32 event_count = 3;
+  string first_event = 4;
+  string last_event = 5;
+}
+
+// --- Reputation Requests ---
+
+message SubmitRatingRequest {
+  string from_id = 1;
+  string to_id = 2;
+  string product_id = 3;
+  string transaction_id = 4;
+  int32 score = 5;
+  string comment = 6;
+}
+
+message GetReputationRequest {
+  string entity_id = 1;
+}
+
+message GetReviewHistoryRequest {
+  string entity_id = 1;
+  int32 limit = 2;
+  string cursor = 3;
+}
+
+// --- Shared ---
+
+message UserError {
+  repeated string field = 1;
+  string message = 2;
+}
+
+message HealthStatus {
+  bool healthy = 1;
+  string version = 2;
+  int32 active_vendors = 3;
+  int32 active_products = 4;
+}

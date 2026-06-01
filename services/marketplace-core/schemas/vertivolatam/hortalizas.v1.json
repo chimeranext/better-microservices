@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema://vertivo/hortaliza:v1",
+  "title": "Hortaliza (Vertivolatam)",
+  "description": "Hortalizas frescas con trazabilidad desde invernadero al cliente.",
+  "type": "object",
+  "x-ui-order": [
+    "harvestDate",
+    "greenhouseId",
+    "sensorReadings",
+    "originGeo",
+    "imageGallery",
+    "organic",
+    "blockchainQrUrl"
+  ],
+  "x-ui-browse-fields": ["harvestDate", "organic", "originGeo"],
+  "required": ["harvestDate", "greenhouseId"],
+  "properties": {
+    "harvestDate": {
+      "type": "string",
+      "format": "date",
+      "title": "Harvest date"
+    },
+    "greenhouseId": {
+      "type": "string",
+      "title": "Greenhouse UUID"
+    },
+    "sensorReadings": {
+      "type": "array",
+      "title": "Latest sensor readings",
+      "x-ui-hint": "sensor",
+      "x-ui-unit": "°C",
+      "items": { "type": "number" }
+    },
+    "originGeo": {
+      "type": "object",
+      "title": "Origin",
+      "x-ui-hint": "geo",
+      "properties": {
+        "lat": { "type": "number" },
+        "lng": { "type": "number" }
+      }
+    },
+    "imageGallery": {
+      "type": "array",
+      "title": "Gallery",
+      "x-ui-hint": "image-gallery",
+      "items": { "type": "string", "format": "uri" }
+    },
+    "organic": {
+      "type": "boolean",
+      "title": "Organic certified",
+      "x-ui-true-label": "Certified organic",
+      "x-ui-false-label": "Conventional"
+    },
+    "blockchainQrUrl": {
+      "type": "string",
+      "format": "uri",
+      "title": "Trace QR"
+    }
+  }
+}

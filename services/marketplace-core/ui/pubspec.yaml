@@ -1,0 +1,40 @@
+name: marketplace_storefront
+description: "Standalone Storefront for marketplace-core — JSON Schema-driven"
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management — Riverpod, no magic codegen.
+  flutter_riverpod: ^2.5.0
+
+  # Navigation.
+  go_router: ^14.0.0
+
+  # gRPC + protobuf — talks to marketplace-core server on :50051.
+  # Must track protoc_plugin's output format — 25.0.0 emits protobuf 6.x code,
+  # and grpc 5.x brings the matching protobuf 6.x constraint.
+  grpc: ^5.1.0
+  protobuf: ^6.0.0
+
+  # JSON Schema — parses merchant schemas at boot and drives the UI
+  # in PR-5 (schema renderer).
+  json_schema: ^5.1.0
+
+  # Transitive but imported directly by generated proto code — declare it.
+  fixnum: ^1.1.0
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
