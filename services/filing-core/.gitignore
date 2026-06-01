@@ -1,0 +1,75 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.pnpm-store/
+
+# TypeScript
+dist/
+build/
+*.tsbuildinfo
+
+# Testing
+coverage/
+.nyc_output/
+.vitest/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Secrets (CRITICAL: never commit TRIBU-CR / SAT / DIAN credentials)
+*.p12
+*.pem
+*.key
+*.crt
+*.cer
+*.sdg
+certs/
+.certs/
+secrets/
+tribu-cr-credentials/
+sat-csd/
+
+# Taxpayer data test fixtures (never commit real cédulas/RFCs)
+fixtures/real-*
+fixtures/pii-*
+
+# Logs
+logs/
+*.log
+
+# Runtime / temp
+tmp/
+.tmp/
+*.pid
+
+# Docker
+.docker/
+
+# Helm
+charts/*/charts/
+charts/*/Chart.lock
+
+# OS
+Thumbs.db
+ehthumbs.db
+
+# Generated proto
+src/generated/
+proto/gen/
+
+# Storybook / docs builds
+storybook-static/
+.docusaurus/
+docs/_build/
