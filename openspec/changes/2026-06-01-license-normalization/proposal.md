@@ -40,8 +40,8 @@ with per-service parameters substituted from a single template:
 | **Licensor** (BSL party) | **ChimeraNext Shared Services LLC** |
 | **Intellectual author / copyright** | **Andrés (Luis Andrés Peña Castillo, GitHub: lapc506, andres@dojocoding.io)** |
 | **Licensed Work** | the service name (`<service>`), Version 0.0.1 or later |
-| **Change License** | **Apache License, Version 2.0** (uniform) |
-| **Change Date** | **4 years** from each service's first publicly available distribution (first commit), fixed per service |
+| **Change License** | **Non-Profit Open Software License ("Non-Profit OSL") 3.0** (uniform) |
+| **Change Date** | **5 years** from each service's first publicly available distribution (first commit), fixed per service |
 | **Additional Use Grant** | standard BSL non-compete production-use grant (generic, polyglot/third-party safe) |
 | **SPDX in manifest** | `BUSL-1.1` |
 
@@ -67,11 +67,12 @@ Concrete per-service Change Dates and the full parameter table live in
 1. **Licensor entity** "ChimeraNext Shared Services LLC" — assumed a real/forming
    legal entity that holds publishing rights. Confirm exact legal name & that it is
    the correct BSL party (vs. the individual author).
-2. **Change License = Apache 2.0** uniformly — this **overrides** the Non-Profit
-   OSL 3.0 that 3 services previously used. Confirm Apache 2.0 is desired for the
-   compliance/filing/invoice trio too.
-3. **Change Date = 4 years** uniformly — this **shortens** the previous 5-year
-   horizon (compliance/filing/invoice/payments). Confirm 4y is intended.
+
+The Change License (**Non-Profit OSL 3.0**) and Change Date horizon (**5 years**)
+were set explicitly by the owner: preserve the original spirit of the 3 services
+that were already BSL, and apply that same template uniformly to `agentic-core`,
+`marketplace-core`, and `payments-core` (the latter reverts from its drifted
+Apache 2.0 / fixed-2031 parameters).
 
 ## References
 

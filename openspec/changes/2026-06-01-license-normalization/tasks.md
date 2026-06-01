@@ -9,7 +9,8 @@
 - ✅ Normalized 4 existing BSL files + added BSL to the 2 that had none.
 - ✅ SPDX `BUSL-1.1` set in every manifest.
 - ✅ OpenSpec change authored.
-- ⏳ Owner confirmation of Licensor entity + Apache 2.0 + 4y horizon (see proposal).
+- ✅ Owner-corrected policy applied: Change License = Non-Profit OSL 3.0, Change Date = +5y.
+- ⏳ Owner confirmation of Licensor entity "ChimeraNext Shared Services LLC" (see proposal).
 
 ## Phase 0 — Audit (done)
 
@@ -21,15 +22,15 @@
 
 ## Phase 1 — Normalize the existing 4
 
-- [x] `services/compliance-core/LICENSE.md` — Licensor → company, author → Andrés, Apache 2.0, Change Date 2030-04-16.
-- [x] `services/filing-core/LICENSE.md` — same template, Change Date 2030-04-16.
-- [x] `services/invoice-core/LICENSE.md` — same template, Change Date 2030-04-16.
-- [x] `services/payments-core/LICENSE.md` — replace short form with uniform template, Change Date 2030-04-18; drop inaccurate "Siblings" note.
+- [x] `services/compliance-core/LICENSE.md` — Licensor → company, author → Andrés, Non-Profit OSL 3.0, Change Date 2031-04-16.
+- [x] `services/filing-core/LICENSE.md` — same template, Change Date 2031-04-16.
+- [x] `services/invoice-core/LICENSE.md` — same template, Change Date 2031-04-16.
+- [x] `services/payments-core/LICENSE.md` — replace short form with uniform template (revert Apache 2.0 → Non-Profit OSL 3.0), Change Date 2031-04-18; drop inaccurate "Siblings" note.
 
 ## Phase 2 — Add BSL to the 2 unlicensed services
 
-- [x] `services/agentic-core/LICENSE.md` — new, Change Date 2030-03-25; polyglot/third-party header.
-- [x] `services/marketplace-core/LICENSE.md` — new, Change Date 2030-04-13; polyglot/third-party header.
+- [x] `services/agentic-core/LICENSE.md` — new, Non-Profit OSL 3.0, Change Date 2031-03-25; polyglot/third-party header.
+- [x] `services/marketplace-core/LICENSE.md` — new, Non-Profit OSL 3.0, Change Date 2031-04-13; polyglot/third-party header.
 
 ## Phase 3 — Manifest SPDX
 
@@ -45,4 +46,5 @@
 
 - [x] `git add -A` + commit (Co-Authored-By trailer).
 - [x] `git push -u origin chore/license-normalization`.
-- [ ] Open PR; **do not merge to `main`** until owner confirms the 3 flagged parameters.
+- [x] Re-commit owner-corrected policy (OSL 3.0 / +5y) + force-push.
+- [ ] Open PR; **do not merge to `main`** until owner confirms the Licensor entity.

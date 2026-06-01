@@ -52,11 +52,11 @@ For binding interpretive guidance on using the Licensor's products under the Bus
 
 ## Change Date
 
-2030-04-13 (four years from the first publicly available distribution of the Licensed Work).
+2031-04-13 (five years from the first publicly available distribution of the Licensed Work).
 
 ## Change License
 
-Apache License, Version 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+[Non-Profit Open Software License ("Non-Profit OSL") 3.0](https://trustee.ietf.org/assets/licenses/non-profit-osl-3/)
 
 For information about alternative licensing arrangements for the Licensed Work,
 please create an issue on this same repository.
@@ -71,7 +71,7 @@ The Licensor hereby grants you the right to copy, modify, create derivative work
 
 The Licensor may make an Additional Use Grant, above, permitting limited production use.
 
-Effective on the Change Date, or the fourth anniversary of the first publicly available distribution of a specific version of the Licensed Work under this License, whichever comes first, the Licensor hereby grants you rights under the terms of the Change License, and the rights granted in the paragraph above terminate.
+Effective on the Change Date, or the fifth anniversary of the first publicly available distribution of a specific version of the Licensed Work under this License, whichever comes first, the Licensor hereby grants you rights under the terms of the Change License, and the rights granted in the paragraph above terminate.
 
 If your use of the Licensed Work does not comply with the requirements currently in effect as described in this License, you must purchase a commercial license from the Licensor, its affiliated entities, or authorized resellers, or you must refrain from using the Licensed Work.
 
