@@ -1,0 +1,28 @@
+# gitleaks configuration for better-microservices
+# Extends the default ruleset and allowlists verified NON-secrets:
+# test fixtures, detector decoy keys, and empty env-var placeholders.
+# (Audited 2026-06-01 before making the repo public source-available.)
+
+title = "better-microservices gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Verified test fixtures / placeholders — not real secrets"
+
+# Test trees: services keep their secret-like values only in tests/fixtures.
+paths = [
+  '''services/.*/tests?/.*''',
+  '''services/payments-core/openspec/changes/tilopay-adapter-p1/design\.md''',
+]
+
+# Belt-and-suspenders: the specific decoy values, in case they move files.
+regexes = [
+  '''whsec_test_0123456789''',
+  '''idem-key-ok-12345''',
+  '''test-secret-key-that-is-long-enough-for-hs256''',
+  '''wrong-secret-that-is-long-enough-for-hs256''',
+  '''sk-abc123456789xyz0123456789''',
+  '''eyJhbGciOiJIUzI1NiJ9\.eyJzdWIiOiIxMjM0NTY3ODkwIn0\..*''',
+]
