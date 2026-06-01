@@ -1,0 +1,46 @@
+# values-vllm-cpu.yaml -- Enable vLLM sidecar in CPU-only mode
+#
+# Usage: helm upgrade agentic-core ./deployment/helm/agentic-core \
+#          -f deployment/helm/agentic-core/values-vllm-cpu.yaml \
+#          -n agentic-core
+#
+# Notes:
+#   - CPU inference is SLOW (10-100x slower than GPU)
+#   - Suitable for testing / CI only, not production
+#   - Uses vLLM's experimental CPU backend via --device cpu
+#   - Model defaults to a small 3B-parameter model for reasonable CPU perf
+
+# values-vllm-cpu.yaml -- Enable vLLM sidecar in CPU-only mode
+#
+# Usage: helm upgrade agentic-core ./deployment/helm/agentic-core \
+#          -f deployment/helm/agentic-core/values-vllm-cpu.yaml \
+#          -n agentic-core
+#
+# Notes:
+#   - CPU inference is SLOW (10-100x slower than GPU)
+#   - Suitable for testing / CI only, not production
+#   - Uses vLLM's experimental CPU backend via --device cpu
+#   - Model defaults to a small 8B-parameter model for reasonable CPU perf
+
+inference:
+  vllm:
+    enabled: true
+    gpu:
+      enabled: false
+    model: ibm-granite/granite-4.1-8b-instruct
+    extraArgs:
+      - "--device"
+      - "cpu"
+    env:
+      CUDA_VISIBLE_DEVICES: ""
+    resources:
+      requests:
+        cpu: 4000m
+        memory: 8Gi
+      limits:
+        cpu: 8000m
+        memory: 16Gi
+
+replicaCount: 1
+autoscaling:
+  enabled: false

@@ -1,0 +1,27 @@
+name: agent_studio
+description: Agent Studio — Flutter Web UI for agentic-core
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.0.0
+  go_router: ^14.0.0
+  http: ^1.0.0
+  web_socket_channel: ^3.0.0
+  flutter_quill: ^11.0.0
+  xterm: ^4.0.0
+  graphic: ^2.0.0
+  genui: ^0.8.0
+  logging: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

@@ -1,0 +1,88 @@
+# Standalone Agent Studio — docker compose up → localhost:8080
+services:
+  agentic-core:
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8765:8765"
+    environment:
+      AGENTIC_MODE: standalone
+      AGENTIC_REDIS_URL: redis://redis:6379
+      AGENTIC_POSTGRES_DSN: postgresql://agentic:agentic@postgres:5432/agentic
+      AGENTIC_FALKORDB_URL: redis://falkordb:6380
+    volumes:
+      - agents:/app/agents
+      - studio_config:/app/config
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      falkordb:
+        condition: service_healthy
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: agentic
+      POSTGRES_PASSWORD: agentic
+      POSTGRES_DB: agentic
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentic"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  falkordb:
+    image: falkordb/falkordb:latest
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6379", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  vllm:
+    profiles:
+      - gpu
+    image: vllm/vllm-openai:latest
+    command:
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
+      - "--model"
+      - "${VLLM_MODEL:-deepseek-ai/DeepSeek-R1-Distill-Qwen-7B}"
+    ports:
+      - "8000:8000"
+    environment:
+      CUDA_VISIBLE_DEVICES: "0"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 6
+      start_period: 120s
+
+volumes:
+  pgdata:
+  agents:
+  studio_config:

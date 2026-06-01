@@ -1,0 +1,72 @@
+replicaCount: 2
+
+image:
+  repository: ghcr.io/lapc506/agentic-core
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+mode: standalone  # standalone | sidecar
+
+service:
+  websocket:
+    port: 8765
+  grpc:
+    port: 50051
+  metrics:
+    port: 9090
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+env:
+  AGENTIC_MODE: standalone
+  AGENTIC_REDIS_URL: redis://redis:6379
+  AGENTIC_POSTGRES_DSN: postgresql://agentic:agentic@postgres:5432/agentic
+  AGENTIC_FALKORDB_URL: redis://falkordb:6380
+
+probes:
+  liveness:
+    path: /health
+    initialDelaySeconds: 10
+    periodSeconds: 15
+  readiness:
+    path: /ready
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 70
+
+serviceMonitor:
+  enabled: true
+  interval: 15s
+
+inference:
+  vllm:
+    enabled: false
+    gpu:
+      enabled: true
+      count: 1
+    image:
+      repository: vllm/vllm-openai
+      tag: latest
+    model: deepseek-ai/DeepSeek-R1-Distill-Qwen-7B
+    port: 8000
+    extraArgs: []
+    env:
+      CUDA_VISIBLE_DEVICES: "0"
+    resources:
+      requests:
+        cpu: 2000m
+        memory: 8Gi
+      limits:
+        cpu: 4000m
+        memory: 16Gi

@@ -1,0 +1,24 @@
+# values-vllm.yaml — Enable vLLM sidecar for local LLM inference
+#
+# Usage: helm upgrade agentic-core ./deployment/helm/agentic-core \
+#          -f deployment/helm/agentic-core/values-vllm.yaml \
+#          -n agentic-core
+#
+# Requires: GPU node with NVIDIA drivers and nvidia-container-toolkit
+
+inference:
+  vllm:
+    enabled: true
+    gpu:
+      enabled: true
+      count: 1
+    model: deepseek-ai/DeepSeek-R1-Distill-Qwen-7B  # Change to your model
+    # Alternative models:
+    #   - mistralai/Mistral-7B-Instruct-v0.3
+    #   - ibm-granite/granite-4.1-8b-instruct
+    #   - meta-llama/Llama-3.2-3B-Instruct
+
+# Scale down for GPU efficiency (vLLM shares GPU)
+replicaCount: 1
+autoscaling:
+  enabled: false
