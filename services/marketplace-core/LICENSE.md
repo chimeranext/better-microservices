@@ -4,12 +4,12 @@ License text copyright © 2023 MariaDB plc, All Rights Reserved.
 "Business Source License" is a trademark of MariaDB plc.
 
 Copyright © 2026 Andrés (Luis Andrés Peña Castillo, GitHub: lapc506,
-andres@dojocoding.io) — intellectual author of payments-core.
+andres@dojocoding.io) — intellectual author of marketplace-core.
 Licensed and published by ChimeraNext Shared Services LLC.
 
-payments-core is licensed under the Business Source License agreement below.
+marketplace-core is licensed under the Business Source License agreement below.
 
-payments-core occasionally includes source code that is derived from or bundles
+marketplace-core occasionally includes source code that is derived from or bundles
 third-party code, and may comprise multiple programming languages (a polyglot
 service). Such third-party components remain under their own original licenses;
 this situation is noted in the license header at the top of the affected files
@@ -17,7 +17,7 @@ and/or in a THIRD-PARTY-NOTICES file. Full authorship information can be derived
 from the version control history.
 --------------------------------------------------------------------------------
 
-payments-core BUSINESS SOURCE LICENSE AGREEMENT
+marketplace-core BUSINESS SOURCE LICENSE AGREEMENT
 
 Parameters
 
@@ -30,10 +30,10 @@ Andrés (Luis Andrés Peña Castillo, GitHub: lapc506, andres@dojocoding.io).
 
 ## Licensed Work
 
-payments-core Version 0.0.1 or later.
+marketplace-core Version 0.0.1 or later.
 The Licensed Work is © 2026 Andrés (lapc506), licensed and published by
 ChimeraNext Shared Services LLC.
-First publicly available: 2026-04-18.
+First publicly available: 2026-04-13.
 
 ### Additional Use Grant
 
@@ -52,7 +52,7 @@ For binding interpretive guidance on using the Licensor's products under the Bus
 
 ## Change Date
 
-2030-04-18 (four years from the first publicly available distribution of the Licensed Work).
+2030-04-13 (four years from the first publicly available distribution of the Licensed Work).
 
 ## Change License
 

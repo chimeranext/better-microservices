@@ -2,6 +2,7 @@
   "name": "invoice-core",
   "private": true,
   "version": "0.1.0-dev",
+  "license": "BUSL-1.1",
   "packageManager": "pnpm@9.12.0",
   "engines": {
     "node": ">=22.11.0"
