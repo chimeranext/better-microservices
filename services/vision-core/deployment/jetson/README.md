@@ -1,6 +1,13 @@
-# Jetson edge deployment
+# Tier 2 — Edge (Jetson Orin), Phase 2
 
-Real-time per-frame segmentation on/near the Vertivo greenhouse robot.
+Runs the lightweight **DETECTION** model in-greenhouse for latency / bandwidth /
+resilience — **once models converge AND Jetson Orin supply recovers**. Until then,
+Phase 1 keeps detection in the cloud (KServe Triton) and the on-camera OpenMV
+tier (Tier 0) handles the cheap pre-trigger.
+
+**The VLM diagnosis tier STAYS CLOUD** even in Phase 2 — it is too heavy for the
+Jetson. The edge detector calls the cloud vLLM ONLY on low-confidence detections
+(`LowConfidenceFlagged` escalation).
 
 ## Why edge
 
@@ -8,6 +15,13 @@ Real-time per-frame segmentation on/near the Vertivo greenhouse robot.
 - Mirrors the NVIDIA AgTech pattern: SeeTree (Jetson TX2 image processing),
   Bilberry (Jetson weed recognition, −92% chemicals). Edge does **real-time
   triage**; cloud does **authoritative diagnosis + retraining**.
+
+## Edge model license — prefer RF-DETR (Apache-2.0)
+
+On **shipped** edge devices, prefer **RF-DETR (Apache-2.0)** to avoid YOLO's
+**AGPL-3.0** (YOLO on a commercial edge device needs an Ultralytics Enterprise
+license). Both stay behind `DetectionRuntimePort`; RF-DETR is the recommended
+shipped edge default.
 
 ## Stack
 

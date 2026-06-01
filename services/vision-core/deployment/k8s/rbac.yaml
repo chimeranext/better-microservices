@@ -1,0 +1,61 @@
+# RBAC for the Kubeflow pipeline's KServe deploy step.
+#
+# CRITICAL (design.md section 6): the KFP pipeline component that creates/updates
+# the InferenceService needs EXPLICIT admin permissions on serving.kserve.io
+# resources — KServe deploy fails silently/with RBAC errors otherwise. This is the
+# documented gotcha from the ISS/Kubeflow case study. Bind this Role to the
+# pipeline ServiceAccount (and to vision-core-kserve, used by the InferenceServices
+# to pull weights from MinIO).
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vision-core-kserve
+  namespace: vision-core
+secrets:
+  # MinIO/S3 credentials so KServe storage-initializer can pull s3:// weights.
+  - name: vision-core-minio-creds
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: vision-core-kserve-deployer
+  namespace: vision-core
+rules:
+  - apiGroups: ["serving.kserve.io"]
+    resources: ["inferenceservices", "inferenceservices/status"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["serviceaccounts", "secrets"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: vision-core-pipeline-kserve-deployer
+  namespace: vision-core
+subjects:
+  # The KFP pipeline-runner ServiceAccount that runs the KServe deploy component.
+  - kind: ServiceAccount
+    name: pipeline-runner
+    namespace: vision-core
+roleRef:
+  kind: Role
+  name: vision-core-kserve-deployer
+  apiGroup: rbac.authorization.k8s.io
+---
+# MinIO credentials secret (S3-compatible) consumed via s3fs + KServe storageUri.
+# Replace the placeholder values out-of-band (sealed-secrets / external-secrets).
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vision-core-minio-creds
+  namespace: vision-core
+  annotations:
+    serving.kserve.io/s3-endpoint: "minio.vision-core.svc:9000"
+    serving.kserve.io/s3-usehttps: "0"
+    serving.kserve.io/s3-region: "us-east-1"
+type: Opaque
+stringData:
+  AWS_ACCESS_KEY_ID: "REPLACE_ME"
+  AWS_SECRET_ACCESS_KEY: "REPLACE_ME"

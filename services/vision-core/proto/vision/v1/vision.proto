@@ -1,18 +1,35 @@
 syntax = "proto3";
 
 // vision.v1 — the stable contract vertivolatam (and any AgTech consumer) calls.
-// Generic segmentation in; the consumer maps results onto its own domain rows
-// (e.g. Vertivo's DiseaseDetection / PestIdentification / NutritionalDeficiency).
+// Generic segmentation/diagnosis in; the consumer maps results onto its own
+// domain rows (e.g. Vertivo's DiseaseDetection / PestIdentification /
+// NutritionalDeficiency).
+//
+// EXECUTOR / CLIENT: the EXECUTOR of vision-core is Vertivo's **Serverpod 3.4.1
+// backend** (`apps/vertivo_server`, Dart) — specifically its
+// `PhytopathologyEndpoint`. The Raspberry orchestrator (`apps/raspberry`, Python)
+// is the EDGE CAPTURE layer only: it publishes captures over MQTT (EMQX) and the
+// Serverpod backend ingests them. The full chain is:
+//
+//   raspberry (camera/OpenMV, MQTT) -> vertivo_server (Serverpod ingest endpoint)
+//     -> vision-core gRPC (Triton detection + vLLM diagnosis)
+//     -> vertivo_server persists DiseaseDetection / PestIdentification
+//     -> alerts + treatment_recommendation
+//
+// Dart <-> Python crossing: vertivo_server consumes this .proto via a generated
+// **grpc-dart** client (package:grpc + protoc_plugin), OR via vision-core's REST
+// mirror. See openspec design.md section 5 for the cross-language integration.
 package vision.v1;
 
-// SegmentationService — image & video segmentation for AgTech.
+// SegmentationService — DETECTION tier (Triton/KServe): bounding boxes, masks,
+// confidence. The fast, structured-output primitive. YOLO26 / RF-DETR-Seg.
 service SegmentationService {
   // Unary: one image -> one Segmentation. User-uploaded diagnosis photos,
   // per-snapshot greenhouse checks (Agrio-style image-upload ergonomics).
   rpc SegmentImage(SegmentImageRequest) returns (SegmentImageResponse);
 
   // Server-streaming: a video/stream -> a Segmentation per sampled frame.
-  // Real-time edge (Jetson) monitoring.
+  // Phase-2 edge (Jetson) burst video for fast-moving insects.
   rpc SegmentVideo(SegmentVideoRequest) returns (stream SegmentationResponse);
 
   // Model registry queries.
@@ -21,6 +38,39 @@ service SegmentationService {
 
   // gRPC Health v1 convention (platform standard).
   rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// DiagnosisService — VLM tier (vLLM/KServe, ALWAYS CLOUD). A vision-language
+// model (Qwen-VL / LLaVA) turns an image (+ optional detection context) into a
+// human-readable diagnosis: disease type + name, severity, free-text rationale,
+// and a recommended-action hint. Too heavy for edge; on Tier-2 it is called
+// ONLY for low-confidence detections escalated from the in-greenhouse detector.
+service DiagnosisService {
+  // Unary: one image (+ optional Segmentation context) -> one Diagnosis.
+  rpc DiagnoseImage(DiagnoseImageRequest) returns (DiagnoseImageResponse);
+}
+
+// CaptureIngestService — submits a greenhouse capture for inference. The CALLER
+// is normally **vertivo_server** (Serverpod), which has already received the
+// capture event from the Raspberry orchestrator over MQTT (EMQX) on topic
+// `vertivo/{user_id}/greenhouse/{greenhouse_id}/...`. The orchestrator (Vertivo's
+// CUSTOM orchestrator, NOT generic OpenPLC) uploads the OpenMV high-res photo to
+// object storage (MinIO/S3) and publishes the ref + metadata, NOT the bytes, over
+// the constrained greenhouse link; the backend forwards that ref here. (A direct
+// MqttCaptureIngestAdapter bridge is also supported for backend-bypass dev/edge.)
+service CaptureIngestService {
+  // vertivo_server (or the MQTT bridge) submits a capture for inference.
+  // Phase 1: time-lapse photos (batch). Phase 2: motion-triggered bursts.
+  rpc SubmitCapture(SubmitCaptureRequest) returns (SubmitCaptureResponse);
+}
+
+// ActiveLearningService — HITL loop (NOT RLHF). A low-confidence inference is
+// surfaced to an agronomist who corrects the bounding box / label; the correction
+// is written back to the MinIO COCO-style dataset and triggers (new-data / drift /
+// schedule) a Kubeflow retrain. This is the authoritative-tier feedback path.
+service ActiveLearningService {
+  // Agronomist submits a corrected annotation for a flagged capture.
+  rpc SubmitCorrection(SubmitCorrectionRequest) returns (SubmitCorrectionResponse);
 }
 
 // ---- Task & model selection -------------------------------------------------
@@ -133,6 +183,87 @@ message ListModelsResponse {
 message GetModelForCropRequest {
   string crop = 1;
   Task task = 2;
+}
+
+// ---- VLM diagnosis (DiagnosisService) ---------------------------------------
+
+message DiagnoseImageRequest {
+  ImageInput image = 1;
+  // Optional detection context from the Triton tier: passing the Segmentation
+  // lets the VLM ground its diagnosis on the located lesions/pests rather than
+  // re-finding them. On Tier-2 edge this is the low-confidence escalation path.
+  Segmentation detection_context = 2;
+  string crop_hint = 3;
+  string trace_id = 4;
+}
+
+message Diagnosis {
+  string disease_type = 1;   // -> Vertivo diseaseType (fungal/bacterial/viral/...)
+  string disease_name = 2;   // -> Vertivo diseaseName
+  string severity = 3;       // -> Vertivo severity (mild/moderate/severe/critical)
+  float confidence = 4;      // -> Vertivo confidence (VLM self-reported)
+  string diagnosis_text = 5; // free-text agronomic rationale (the VLM's prose)
+  string recommended_action = 6;            // hint -> Vertivo TreatmentRecommendation
+  repeated string anatomical_parts = 7;     // -> Vertivo anatomicalParts
+  string model_version = 8;                 // VLM id -> Vertivo aiModelVersion
+  string trace_id = 9;
+}
+
+message DiagnoseImageResponse {
+  Diagnosis diagnosis = 1;
+}
+
+// ---- Capture ingest (CaptureIngestService) ----------------------------------
+
+enum CaptureKind {
+  CAPTURE_KIND_UNSPECIFIED = 0;
+  CAPTURE_KIND_TIMELAPSE_PHOTO = 1;  // Phase 1 default — disease evolves slowly
+  CAPTURE_KIND_MOTION_BURST = 2;     // Phase 2 — OpenMV motion-triggered insect burst
+  CAPTURE_KIND_ON_DEMAND = 3;        // operator/agronomist requested
+}
+
+// Mirrors the Vertivo Raspberry orchestrator's MQTT message shape
+// (JSON: device_id, greenhouse_id, timestamp, value/ref). vision-core receives
+// the object-storage ref, not the raw bytes, over the constrained link.
+message SubmitCaptureRequest {
+  string device_id = 1;       // orchestrator device id: "{hostname}-{mac:012x}"
+  string user_id = 2;         // from topic vertivo/{user_id}/...
+  string greenhouse_id = 3;   // from topic .../greenhouse/{greenhouse_id}/...
+  uint32 plant_id = 4;        // -> Vertivo DiseaseDetection.plantId
+  CaptureKind kind = 5;
+  string image_ref = 6;       // s3://minio/captures/... (orchestrator-uploaded)
+  string mime_type = 7;
+  double timestamp_unix = 8;  // orchestrator time.time() epoch seconds
+  string crop_hint = 9;
+  // Pre-trigger signal from the on-camera Tier-0 FOMO model ("is there
+  // something?"). Lets vision-core prioritize / skip cheap captures.
+  float pretrigger_confidence = 10;
+  string trace_id = 11;
+}
+
+message SubmitCaptureResponse {
+  string capture_id = 1;       // vision-core handle for the queued capture
+  bool accepted = 2;
+  string detail = 3;
+}
+
+// ---- Active learning / HITL (ActiveLearningService) -------------------------
+
+message SubmitCorrectionRequest {
+  string capture_id = 1;       // the flagged capture being corrected
+  string agronomist_id = 2;    // -> Vertivo confirmedBy
+  // The corrected ground truth the agronomist drew/relabeled.
+  repeated Mask corrected_masks = 3;
+  string corrected_disease_name = 4;
+  string corrected_severity = 5;
+  string notes = 6;            // -> Vertivo notes
+  string trace_id = 7;
+}
+
+message SubmitCorrectionResponse {
+  bool accepted = 1;
+  string dataset_ref = 2;      // s3://minio/datasets/... where it was written
+  bool retrain_triggered = 3;  // true if this correction tripped the retrain rule
 }
 
 // ---- Health -----------------------------------------------------------------

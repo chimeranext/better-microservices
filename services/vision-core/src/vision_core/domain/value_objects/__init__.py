@@ -104,3 +104,72 @@ class CropLabel:
 
     name: str
     aliases: tuple[str, ...] = field(default_factory=tuple)
+
+
+class CaptureKind(StrEnum):
+    """How a greenhouse capture was produced (capture phasing, design.md s.4)."""
+
+    TIMELAPSE_PHOTO = "timelapse_photo"   # Phase 1 default — disease evolves slowly
+    MOTION_BURST = "motion_burst"         # Phase 2 — OpenMV-triggered insect burst
+    ON_DEMAND = "on_demand"               # operator/agronomist requested
+
+
+@dataclass(frozen=True)
+class Capture:
+    """A greenhouse capture submitted for inference (CaptureIngestPort).
+
+    Mirrors the Vertivo Raspberry orchestrator's MQTT message shape: it carries
+    an object-storage ``image_ref`` (MinIO/S3), NOT raw bytes — the orchestrator
+    uploads the OpenMV high-res photo and sends the ref over the constrained link.
+    ``user_id`` / ``greenhouse_id`` come from the topic
+    ``vertivo/{user_id}/greenhouse/{greenhouse_id}/...``. The usual CALLER is
+    vertivo_server (Serverpod), which received the MQTT event first.
+    """
+
+    device_id: str          # orchestrator id "{hostname}-{mac:012x}"
+    user_id: str
+    greenhouse_id: str
+    plant_id: int           # -> Vertivo DiseaseDetection.plantId
+    kind: CaptureKind
+    image_ref: str          # s3://minio/captures/...
+    timestamp_unix: float   # orchestrator time.time() epoch seconds
+    mime_type: str = "image/jpeg"
+    crop_hint: str | None = None
+    pretrigger_confidence: float = 0.0   # Tier-0 on-camera FOMO pre-trigger score
+    trace_id: str | None = None
+
+
+@dataclass(frozen=True)
+class Diagnosis:
+    """VLM diagnosis result (VlmDiagnosisPort).
+
+    Maps onto Vertivo's DiseaseDetection text/severity fields — see
+    openspec/changes/2026-06-01-vision-core/design.md section 5.
+    """
+
+    disease_type: str = ""        # -> Vertivo diseaseType
+    disease_name: str = ""        # -> Vertivo diseaseName
+    severity: str = ""            # -> Vertivo severity
+    confidence: float = 0.0       # -> Vertivo confidence
+    diagnosis_text: str = ""      # free-text agronomic rationale (VLM prose)
+    recommended_action: str = ""  # hint -> Vertivo TreatmentRecommendation
+    anatomical_parts: tuple[str, ...] = field(default_factory=tuple)
+    model_version: str = ""       # VLM id -> Vertivo aiModelVersion
+    trace_id: str | None = None
+
+
+@dataclass(frozen=True)
+class Correction:
+    """An agronomist HITL correction (ActiveLearningPort).
+
+    The corrected ground truth is written back to the MinIO COCO-style dataset
+    and may trip the Kubeflow retrain rule.
+    """
+
+    capture_id: str
+    agronomist_id: str              # -> Vertivo confirmedBy
+    corrected_masks: tuple[Mask, ...]
+    corrected_disease_name: str = ""
+    corrected_severity: str = ""
+    notes: str = ""                 # -> Vertivo notes
+    trace_id: str | None = None

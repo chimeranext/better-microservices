@@ -8,20 +8,38 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="VISION_", env_nested_delimiter="__")
 
-    # Deployment tier picks the default model family (design.md section 2/3).
-    # "edge" -> YOLO-seg on Jetson; "cloud" -> RF-DETR-seg on Kubeflow/KServe.
+    # Deployment tier (design.md sections 2/3 — 3-tier phased topology):
+    #   "cloud" -> Phase 1: KServe Triton (detection) + vLLM (diagnosis), the
+    #              authoritative tier where HITL/active-learning retraining lives.
+    #   "edge"  -> Phase 2: Jetson Orin runs detection in-greenhouse; the VLM
+    #              STAYS cloud (called only on low-confidence escalations).
     tier: str = "cloud"
 
     grpc_port: int = 50051
     rest_port: int = 8080
     health_port: int = 9090
 
-    # Edge: in-process TensorRT/cuDNN. Cloud: remote KServe endpoint URL.
+    # Detection runtime. Edge: in-process TensorRT/cuDNN. Cloud: KServe Triton URL.
     inference_local: bool = True
-    kserve_url: str = ""
+    kserve_url: str = ""          # Triton detection InferenceService (Tier 1/2)
 
-    # Escalate edge results below this confidence to the cloud model.
+    # VLM diagnosis runtime — ALWAYS CLOUD (Tier 1), never edge-local.
+    vllm_url: str = ""            # vLLM InferenceService (Qwen-VL / LLaVA)
+
+    # Object storage (MinIO/S3 via s3fs) — the data backbone for weights,
+    # COCO-style datasets, and captures (the KServe/Katib/KFP s3fs workaround).
+    minio_endpoint: str = "http://minio.vision-core.svc:9000"
+    minio_access_key: str = ""
+    minio_secret_key: str = ""
+
+    # MQTT (EMQX) capture ingest — Vertivo orchestrator contract bridge.
+    mqtt_broker_url: str = "mqtt://emqx-listeners:1883"
+
+    # Escalate detections below this confidence to the cloud VLM diagnosis tier.
     low_confidence_threshold: float = 0.45
+
+    # HITL: accumulated agronomist corrections that trip a new-data retrain.
+    retrain_after_corrections: int = 50
 
 
 def load_settings() -> Settings:

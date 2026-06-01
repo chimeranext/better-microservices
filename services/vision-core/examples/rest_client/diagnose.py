@@ -14,17 +14,30 @@ import httpx  # part of the 'cloud'/'rest' extras
 
 
 def main(image_path: str, base_url: str = "http://localhost:8080") -> None:
+    # 1) Detection (Triton tier) — structured masks/boxes.
     with open(image_path, "rb") as fh:
         files = {"image": (image_path, fh, "image/jpeg")}
         data = {"task": "disease", "crop_hint": "lettuce"}
         resp = httpx.post(f"{base_url}/v1/segment", files=files, data=data, timeout=30)
     resp.raise_for_status()
     seg = resp.json()
-    print(f"model_version       : {seg['model_version']}")
+    print(f"model_version        : {seg['model_version']}")
     print(f"affected_area_percent: {seg['affected_area_percent']:.1f}%")
-    print(f"severity            : {seg['severity']}")
+    print(f"severity             : {seg['severity']}")
     for m in seg["masks"]:
         print(f"  - {m['class_name']} ({m['confidence']:.2f}) on {m['anatomical_part']}")
+
+    # 2) Diagnosis (vLLM tier, always cloud) — human-readable disease + rationale.
+    with open(image_path, "rb") as fh:
+        files = {"image": (image_path, fh, "image/jpeg")}
+        data = {"crop_hint": "lettuce"}
+        resp = httpx.post(f"{base_url}/v1/diagnose", files=files, data=data, timeout=60)
+    resp.raise_for_status()
+    dx = resp.json()
+    print(f"\ndiagnosis            : {dx['disease_name']} ({dx['disease_type']})")
+    print(f"severity             : {dx['severity']}  conf={dx['confidence']:.2f}")
+    print(f"rationale            : {dx['diagnosis_text']}")
+    print(f"recommended_action   : {dx['recommended_action']}")
 
 
 if __name__ == "__main__":

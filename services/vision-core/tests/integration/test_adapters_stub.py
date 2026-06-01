@@ -40,3 +40,37 @@ async def test_rfdetr_adapter_stub_raises() -> None:
 @pytest.mark.skip(reason="apply Phase 3: requires real weights + 'yolo' extra")
 async def test_yolo_real_inference() -> None:  # pragma: no cover
     ...
+
+
+# ---- MLOps tier adapter stubs (design.md sections 2/3) ----------------------
+
+
+async def test_triton_detection_stub_raises() -> None:
+    from vision_core.adapters.secondary.triton_detection_adapter import (
+        TritonDetectionAdapter,
+    )
+
+    adapter = TritonDetectionAdapter()
+    assert await adapter.is_local() is False
+    with pytest.raises(NotImplementedError):
+        await adapter.detect(Image(url="https://x/y.jpg"), model_id="yolo26-seg")
+
+
+async def test_vllm_diagnosis_stub_raises() -> None:
+    from vision_core.adapters.secondary.vllm_diagnosis_adapter import (
+        VllmDiagnosisAdapter,
+    )
+
+    adapter = VllmDiagnosisAdapter()
+    with pytest.raises(NotImplementedError):
+        await adapter.diagnose(Image(url="https://x/y.jpg"))
+
+
+async def test_s3fs_object_storage_stub_raises() -> None:
+    from vision_core.adapters.secondary.s3fs_object_storage_adapter import (
+        S3fsObjectStorageAdapter,
+    )
+
+    adapter = S3fsObjectStorageAdapter()
+    with pytest.raises(NotImplementedError):
+        await adapter.get_bytes("s3://vision-core-captures/x.jpg")

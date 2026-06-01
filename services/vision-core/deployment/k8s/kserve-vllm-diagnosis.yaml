@@ -1,0 +1,32 @@
+# KServe InferenceService — TIER 1 VLM DIAGNOSIS (vLLM runtime). ALWAYS CLOUD.
+# Serves a vision-language model (Qwen-VL / LLaVA) behind VlmDiagnosisPort: image
+# (+ optional detection context) -> disease type/name, severity, free-text
+# rationale. Too heavy for edge; in Phase 2 it stays cloud and is invoked ONLY on
+# low-confidence detections escalated from the in-greenhouse Jetson detector.
+#
+# vLLM is exposed OpenAI-compatible; vision-core posts a multimodal
+# chat/completions request with a structured-output prompt.
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: vision-core-vllm-diagnosis
+  namespace: vision-core
+  annotations:
+    serving.kserve.io/deploymentMode: Serverless
+spec:
+  predictor:
+    serviceAccountName: vision-core-kserve
+    minReplicas: 0          # VLM is expensive — scale-to-zero when idle
+    maxReplicas: 2
+    model:
+      modelFormat:
+        name: vllm
+      runtime: kserve-vllmserver
+      # Base VLM weights from MinIO (or HF cache); LoRA crop-adapters can layer on.
+      storageUri: "s3://vision-core-models/vlm/qwen2-vl-7b/"
+      args:
+        - "--max-model-len=8192"
+        - "--dtype=float16"
+      resources:
+        limits:
+          nvidia.com/gpu: "1"
