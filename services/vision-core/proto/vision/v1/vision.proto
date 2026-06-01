@@ -1,0 +1,149 @@
+syntax = "proto3";
+
+// vision.v1 — the stable contract vertivolatam (and any AgTech consumer) calls.
+// Generic segmentation in; the consumer maps results onto its own domain rows
+// (e.g. Vertivo's DiseaseDetection / PestIdentification / NutritionalDeficiency).
+package vision.v1;
+
+// SegmentationService — image & video segmentation for AgTech.
+service SegmentationService {
+  // Unary: one image -> one Segmentation. User-uploaded diagnosis photos,
+  // per-snapshot greenhouse checks (Agrio-style image-upload ergonomics).
+  rpc SegmentImage(SegmentImageRequest) returns (SegmentImageResponse);
+
+  // Server-streaming: a video/stream -> a Segmentation per sampled frame.
+  // Real-time edge (Jetson) monitoring.
+  rpc SegmentVideo(SegmentVideoRequest) returns (stream SegmentationResponse);
+
+  // Model registry queries.
+  rpc ListModels(ListModelsRequest) returns (ListModelsResponse);
+  rpc GetModelForCrop(GetModelForCropRequest) returns (ModelDescriptor);
+
+  // gRPC Health v1 convention (platform standard).
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// ---- Task & model selection -------------------------------------------------
+
+enum Task {
+  TASK_UNSPECIFIED = 0;
+  TASK_DISEASE = 1;       // crop/plant disease lesions
+  TASK_PEST = 2;          // pest detection
+  TASK_DEFICIENCY = 3;    // nutritional deficiency patterns
+  TASK_SPECIES = 4;       // plant-species ID
+  TASK_MONITORING = 5;    // generic crop monitoring / health
+}
+
+enum ModelFamily {
+  MODEL_FAMILY_UNSPECIFIED = 0;
+  MODEL_FAMILY_YOLO_SEG = 1;     // Ultralytics YOLO-seg (edge default; AGPL-3.0)
+  MODEL_FAMILY_RFDETR_SEG = 2;   // RF-DETR-Seg (cloud default; Apache-2.0)
+}
+
+// ---- Image input ------------------------------------------------------------
+
+message ImageInput {
+  oneof source {
+    bytes content = 1;   // raw image bytes (PNG/JPEG)
+    string url = 2;      // image URL (e.g. Vertivo imageUrl)
+  }
+  string mime_type = 3;
+}
+
+message SegmentImageRequest {
+  ImageInput image = 1;
+  Task task = 2;
+  string crop_hint = 3;            // e.g. "lettuce" — routes to a per-crop model
+  ModelFamily model_pref = 4;      // optional override of the tier default
+  string trace_id = 5;
+}
+
+message SegmentVideoRequest {
+  oneof source {
+    string stream_uri = 1;   // rtsp://, file://, device index
+    bytes chunk = 2;         // (future) chunked upload
+  }
+  Task task = 3;
+  string crop_hint = 4;
+  ModelFamily model_pref = 5;
+  uint32 frame_stride = 6;   // segment every Nth frame (0 = adaptive)
+  string trace_id = 7;
+}
+
+// ---- Segmentation output ----------------------------------------------------
+
+message BoundingBox {
+  float x = 1;   // top-left, normalized [0,1]
+  float y = 2;
+  float w = 3;
+  float h = 4;
+}
+
+message Mask {
+  string class_name = 1;          // -> Vertivo diseaseName / diseaseType
+  uint32 class_id = 2;
+  float confidence = 3;           // -> Vertivo confidence
+  BoundingBox box = 4;
+  // Pixel mask, one of:
+  repeated float polygon = 5;     // normalized [x0,y0,x1,y1,...] contour
+  bytes rle = 6;                  // COCO RLE (compact masks)
+  string anatomical_part = 7;     // -> Vertivo anatomicalParts (leaf/stem/...)
+}
+
+message Segmentation {
+  repeated Mask masks = 1;
+  uint32 image_width = 2;
+  uint32 image_height = 3;
+  float affected_area_percent = 4;  // -> Vertivo affectedAreaPercent (AreaQuantifier)
+  string severity = 5;              // -> Vertivo severity (SeverityScorer)
+  string model_version = 6;         // -> Vertivo aiModelVersion (ModelRegistryPort)
+  string image_ref = 7;             // -> Vertivo imageUrl (passthrough)
+  string trace_id = 8;
+}
+
+message SegmentImageResponse {
+  Segmentation segmentation = 1;
+}
+
+message SegmentationResponse {
+  Segmentation segmentation = 1;
+  uint64 frame_index = 2;
+  double timestamp_ms = 3;
+}
+
+// ---- Model registry ---------------------------------------------------------
+
+message ModelDescriptor {
+  string id = 1;                 // e.g. "rf-detr-seg-l@vertivo-lettuce-2026.06"
+  ModelFamily family = 2;
+  Task task = 3;
+  string version = 4;
+  repeated string crop_scope = 5;  // crops this model is fine-tuned for
+  string license = 6;             // "Apache-2.0" | "AGPL-3.0" | "Enterprise"
+}
+
+message ListModelsRequest {
+  Task task = 1;
+}
+
+message ListModelsResponse {
+  repeated ModelDescriptor models = 1;
+}
+
+message GetModelForCropRequest {
+  string crop = 1;
+  Task task = 2;
+}
+
+// ---- Health -----------------------------------------------------------------
+
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+  }
+  ServingStatus status = 1;
+}

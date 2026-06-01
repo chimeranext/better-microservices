@@ -1,0 +1,24 @@
+# KServe InferenceService — serves the cloud RF-DETR-Seg model (InferencePort
+# remote target). Fed by the Kubeflow training pipeline (register -> promote).
+# Triton/torchserve runtime + GPU autoscaling; canary rollout on new versions.
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: vision-core-rfdetr-seg
+  namespace: vision-core
+  annotations:
+    serving.kserve.io/deploymentMode: Serverless
+spec:
+  predictor:
+    minReplicas: 0          # scale-to-zero between batch sweeps
+    maxReplicas: 4
+    model:
+      modelFormat:
+        name: triton
+      runtime: kserve-tritonserver
+      # storageUri is populated by the Kubeflow pipeline's register step with the
+      # promoted, per-crop fine-tuned RF-DETR-Seg engine (-> Vertivo aiModelVersion).
+      storageUri: "s3://vision-core-models/rfdetr-seg/generic-2026.06/"
+      resources:
+        limits:
+          nvidia.com/gpu: "1"
