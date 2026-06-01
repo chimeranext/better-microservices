@@ -463,9 +463,12 @@ multimodal model than agentic-core's `MediaPort`.
 - ➖ s3fs/MinIO is load-bearing: the KFP-artifact workaround means data-access
   bugs surface as pipeline failures; needs explicit creds + KServe RBAC.
 - ➖ Scaffold ships stubs; cold-start accuracy waits on per-crop retraining.
-- ⚠️ **Owner decisions** (see `tasks.md`): shipped edge license (YOLO vs RF-DETR);
-  grpc-dart vs REST for the Serverpod↔vision-core call; VLM choice
-  (Qwen-VL/LLaVA) + size; retrain-trigger thresholds.
+- ✅ **Owner decisions (2026-06-01, merged):** transport = **grpc-dart** (typed +
+  streaming, generated from `vision.proto`); shipped edge model = **RF-DETR
+  (Apache-2.0)** — YOLO26 stays behind the port but needs an Ultralytics Enterprise
+  license if ever chosen for commercial edge.
+- ⚠️ **Still open (Phase 3 tuning):** VLM choice (Qwen-VL vs LLaVA) + size +
+  per-crop LoRA; retrain-trigger thresholds (new-data `N` / drift metric / cadence).
 
 ## 9. Research sources
 
