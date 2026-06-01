@@ -1,0 +1,125 @@
+// geospatial-core — gRPC contract for satellite/aerial land-use derivation.
+// SPDX-License-Identifier: BUSL-1.1
+// © 2026 Andrés (lapc506), licensed and published by ChimeraNext Shared Services LLC.
+//
+// Primary consumer: habitanexus. Land-use / land-cover from Sentinel-2 + HLS,
+// aggregated onto H3, exported for flutter_maplibre_gl + h3_flutter.
+
+syntax = "proto3";
+
+package geospatial.v1;
+
+service LandUseService {
+  // Derive a wall-to-wall land-use layer for an AOI WITHOUT a cadastral map.
+  rpc DeriveLandUse(DeriveLandUseRequest) returns (LandUseResult);
+
+  // Aggregate an existing derivation onto H3 cells (res 8/10/11).
+  rpc IndexAOI(IndexAOIRequest) returns (H3Rollup);
+
+  // Export the render contract consumed by the habitanexus map.
+  rpc ExportMapTiles(ExportMapTilesRequest) returns (MapTilePayload);
+
+  // Per-parcel land-use query (UC-1 / UC-2).
+  rpc GetLandUseForParcel(ParcelRequest) returns (LandUseResult);
+
+  rpc HealthCheck(Empty) returns (HealthStatus);
+}
+
+message Empty {}
+
+// WGS84 lon/lat ring; H3 requires WGS84.
+message LngLat { double lng = 1; double lat = 2; }
+message Polygon { repeated LngLat ring = 1; }
+
+message AOI {
+  Polygon footprint = 1;          // parcel footprint or municipal boundary
+  string label = 2;               // optional caller reference (e.g. listing id)
+}
+
+enum ImageryProvider {
+  PROVIDER_UNSPECIFIED = 0;
+  SENTINEL2 = 1;                  // 10 m, 5-day; default for AOI <= ~5 ha
+  HLS = 2;                        // 30 m, ~2-3 day; municipal / multi-date composite
+  EARTH_ENGINE = 3;              // broker over S2 + HLS + weak-label sources
+}
+
+// Enumerated land-use vocabulary — shared across proto, GeoJSON and H3 payload.
+enum LandUseClass {
+  LANDUSE_UNKNOWN = 0;
+  BUILT = 1;
+  BARE_SOIL = 2;
+  VEGETATION = 3;
+  WATER = 4;
+  ROAD = 5;
+}
+
+message DeriveLandUseRequest {
+  AOI aoi = 1;
+  ImageryProvider provider = 2;   // UNSPECIFIED -> service applies selection rule
+  string time_window_start = 3;   // RFC3339; empty -> most recent clear scene
+  string time_window_end = 4;
+  int32 h3_resolution = 5;        // default 11
+}
+
+message SourceInfo {
+  ImageryProvider provider = 1;
+  string scene = 2;               // e.g. T16PHV_20260520
+  string observed_at = 3;         // RFC3339
+}
+
+message LandUsePolygon {
+  Polygon geometry = 1;
+  LandUseClass land_use = 2;
+  double confidence = 3;
+  double area_m2 = 4;
+}
+
+message LandUseResult {
+  repeated LandUsePolygon polygons = 1;   // dissolved per-class
+  H3Rollup rollup = 2;
+  SourceInfo source = 3;
+  double built_area_m2 = 4;               // UC-2 canon-cap prior (advisory)
+}
+
+message IndexAOIRequest { AOI aoi = 1; int32 h3_resolution = 2; }
+
+message H3Cell {
+  string h3 = 1;                  // 64-bit H3 id as hex string
+  LandUseClass land_use = 2;
+  double confidence = 3;
+  double area_m2 = 4;
+  double ndvi = 5;                // optional vegetation index
+}
+
+message H3Rollup {
+  int32 resolution = 1;           // 8 | 10 | 11
+  repeated H3Cell cells = 2;
+}
+
+enum ExportFormat {
+  EXPORT_UNSPECIFIED = 0;
+  H3_CELLS = 1;                   // primary; consumed by h3_flutter client-side
+  GEOJSON = 2;                    // dissolved per-class polygons
+  MVT = 3;                        // vector tiles for large AOIs
+}
+
+message ExportMapTilesRequest {
+  AOI aoi = 1;
+  ExportFormat format = 2;
+  int32 h3_resolution = 3;
+  string target_crs = 4;          // e.g. EPSG:4326 (H3) or EPSG:5367 (CR B2G)
+}
+
+message MapTilePayload {
+  string schema = 1;              // geospatial-core/landuse-h3/v1
+  ExportFormat format = 2;
+  string crs = 3;
+  H3Rollup h3 = 4;                // when format = H3_CELLS
+  bytes geojson = 5;              // when format = GEOJSON
+  string tile_url_template = 6;   // when format = MVT
+  SourceInfo source = 7;
+}
+
+message ParcelRequest { AOI parcel = 1; int32 h3_resolution = 2; }
+
+message HealthStatus { string status = 1; string version = 2; }
