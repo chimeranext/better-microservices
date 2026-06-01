@@ -1,0 +1,12 @@
+{
+  "name": "@chimeranext/geospatial-core",
+  "version": "0.0.0",
+  "private": true,
+  "license": "BUSL-1.1",
+  "description": "Satellite/aerial land-use AI service (Python). Thin Turbo passthrough — real scripts delegate to native tooling (uv / rasterio / h3).",
+  "scripts": {
+    "build": "echo '[geospatial-core] build delegated to native tooling (uv / hatchling) — see openspec change 2026-06-01-geospatial-core'",
+    "test": "echo '[geospatial-core] test delegated to native tooling (pytest) — see openspec change 2026-06-01-geospatial-core'",
+    "lint": "echo '[geospatial-core] lint delegated to native tooling (ruff / mypy) — see openspec change 2026-06-01-geospatial-core'"
+  }
+}
