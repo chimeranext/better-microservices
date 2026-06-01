@@ -1,0 +1,77 @@
+name: Docs site (MkDocs → GitHub Pages)
+
+# Construye el sitio Material for MkDocs en docs/site/ y lo publica en GitHub Pages.
+#
+# IMPORTANTE: Pages debe habilitarse una sola vez en la configuración del repo
+# (Settings → Pages → Build and deployment → Source: "GitHub Actions").
+# Ese paso está restringido al owner del repo y NO se puede automatizar desde
+# este workflow. Hasta que se habilite, el job `deploy` fallará en el paso
+# `actions/deploy-pages` aunque el `build` sea correcto.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/site/**"
+      - "services/**/docs/**"
+      - ".github/workflows/docs.yml"
+  pull_request:
+    paths:
+      - "docs/site/**"
+      - "services/**/docs/**"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Permite un único deploy concurrente, cancelando runs intermedios.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # historial completo para git-revision-date-localized
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r docs/site/requirements.txt
+
+      - name: Build site
+        # No se usa --strict: algunos docs de servicio (p. ej.
+        # marketplace-core/design/schema-extensions.md) enlazan a archivos
+        # ../../schemas/*.json que viven fuera del árbol de documentación.
+        # Son enlaces heredados del repo origen; no se editan aquí.
+        run: mkdocs build -f docs/site/mkdocs.yml
+
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/site/site
+
+  deploy:
+    # Solo despliega desde main; requiere que Pages esté habilitado en Settings.
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

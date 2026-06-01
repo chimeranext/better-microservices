@@ -1,0 +1,272 @@
+# =============================================================================
+# Material for MkDocs — better-microservices
+# Monorepo de microservicios source-available, seleccionables de forma independiente
+# Una pestaña por servicio + Common (material transversal)
+# =============================================================================
+
+site_name: better-microservices
+site_description: "Monorepo de microservicios source-available — una pestaña por servicio + Common"
+site_url: https://chimeranext.github.io/better-microservices/
+repo_url: https://github.com/chimeranext/better-microservices
+repo_name: chimeranext/better-microservices
+edit_uri: edit/main/docs/site/content/
+
+docs_dir: content
+site_dir: site
+
+# Las páginas de cada servicio se enlazan por symlink desde
+# services/<name>/docs/ — MkDocs sigue los symlinks al construir.
+
+# Excluir ruido del subárbol de cada servicio que NO debe publicarse:
+#  - sitios MkDocs ya construidos (HTML/JSON) que viven dentro de los docs;
+#  - el mkdocs.yml propio de cada servicio (su sitio individual);
+#  - symlinks rotos/duplicados heredados del repo (specs/superpowers en
+#    agentic-core apunta a rutas locales absolutas inexistentes);
+#  - metadatos de otras herramientas (myst.yml).
+exclude_docs: |
+  agentic-core/site/site/
+  agentic-core/site/mkdocs.yml
+  agentic-core/specs/myst.yml
+  agentic-core/specs/superpowers/
+  payments-core/requirements.txt
+  payments-core/mkdocs.yml
+  # El análisis del bus de eventos está duplicado byte-a-byte en 5 servicios;
+  # se publica una sola vez en Common (content/common/eventbus-broker-analysis.md).
+  agentic-core/architecture/eventbus-broker-analysis.md
+  compliance-core/architecture/eventbus-broker-analysis.md
+  invoice-core/architecture/eventbus-broker-analysis.md
+  marketplace-core/architecture/eventbus-broker-analysis.md
+  payments-core/architecture/eventbus-broker-analysis.md
+
+# =============================================================================
+# Theme Configuration
+# =============================================================================
+theme:
+  name: material
+  language: es
+  palette:
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Cambiar a modo oscuro
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Cambiar a modo claro
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.path
+    - navigation.top
+    - navigation.indexes
+    - search.highlight
+    - search.share
+    - search.suggest
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.action.edit
+    - content.action.view
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+
+# =============================================================================
+# Plugins
+# =============================================================================
+plugins:
+  - search:
+      lang: es
+  # Optional plugins — require pip install -r requirements.txt
+  # GitHub Actions workflow installs all deps automatically.
+  # - mermaid2:
+  #     version: 11.4.1
+  #     theme: base
+  # - git-revision-date-localized:
+  #     enable_creation_date: true
+  # - minify:
+  #     minify_html: true
+
+# =============================================================================
+# Markdown Extensions
+# =============================================================================
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      title: En esta página
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      normalize_issue_symbols: true
+      repo_url_shorthand: true
+      user: chimeranext
+      repo: better-microservices
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+# =============================================================================
+# Navigation — Home + una sección por servicio + Common
+# =============================================================================
+nav:
+  - Inicio: index.md
+
+  - agentic-core:
+      - agentic-core-readme.md           # README del servicio = index del tab (navigation.indexes)
+      - "Docs · Overview": agentic-core/site/docs/index.md
+      - Getting Started:
+          - Quick Start: agentic-core/site/docs/getting-started.md
+          - Standalone Mode: agentic-core/site/docs/standalone.md
+          - TUI: agentic-core/site/docs/tui.md
+      - API Reference:
+          - REST API: agentic-core/site/docs/api/rest.md
+          - WebSocket: agentic-core/site/docs/api/websocket.md
+          - Ollama API: agentic-core/site/docs/api/ollama.md
+          - A2A Protocol: agentic-core/site/docs/api/a2a.md
+      - Guides:
+          - Providers: agentic-core/site/docs/guides/providers.md
+          - Agent Personas: agentic-core/site/docs/guides/personas.md
+          - SOUL.md: agentic-core/site/docs/guides/soul-md.md
+      - Architecture:
+          - Overview: agentic-core/site/docs/architecture/overview.md
+          - Deployment: agentic-core/site/docs/architecture/deployment.md
+      - Specs & Plans:
+          - WhatsApp Adapter Spec: agentic-core/specs/whatsapp-adapter.md
+          - "Phase 1 — Core Transport (plan)": agentic-core/superpowers/plans/2026-03-25-phase1-core-transport-runtime.md
+          - "Phase 1 — Design": agentic-core/superpowers/specs/2026-03-25-agentic-core-phase1-design.md
+          - "Standalone Backend Docker (plan)": agentic-core/superpowers/plans/2026-04-08-standalone-backend-docker.md
+          - "Standalone Agent Studio (design)": agentic-core/superpowers/specs/2026-04-08-standalone-agent-studio-design.md
+          - "Flutter Web UI (plan)": agentic-core/superpowers/plans/2026-04-09-flutter-web-ui.md
+          - "Channel Config Debug Panel (design)": agentic-core/superpowers/specs/2026-04-09-channel-config-debug-panel-design.md
+      - Operations:
+          - Disaster Recovery: agentic-core/disaster-recovery.md
+          - GitHub Workspace Setup: agentic-core/github-workspace-setup-report.md
+          - Nice-to-Have Features: agentic-core/nice-to-have-features.md
+
+  - compliance-core:
+      - compliance-core-readme.md         # README del servicio = index del tab
+      - Design Specification: compliance-core/superpowers/specs/2026-04-16-compliance-core-design.md
+      - "Fase 1 — Implementation Plan": compliance-core/superpowers/plans/2026-04-16-compliance-core-phase-1-plan.md
+      - Packages:
+          - "@compliance-core/core": compliance-core-pkg-core.md
+          - "@compliance-core/proto": compliance-core-pkg-proto.md
+
+  - filing-core:
+      - filing-core-readme.md             # README del servicio = index del tab
+      - Preliminary Design: filing-core/superpowers/specs/2026-04-16-filing-core-design.md
+      - "Trigger + Skeleton Activation Plan": filing-core/superpowers/plans/2026-04-16-filing-core-trigger-and-skeleton-plan.md
+
+  - invoice-core:
+      - invoice-core-readme.md            # README del servicio = index del tab
+      - Design Specification: invoice-core/superpowers/specs/2026-04-16-invoice-core-design.md
+      - "Fase 1 — Implementation Plan": invoice-core/superpowers/plans/2026-04-16-invoice-core-phase-1-plan.md
+      - Packages:
+          - "@lapc506/invoice-core-core": invoice-core-pkg-core.md
+
+  - marketplace-core:
+      - marketplace-core-readme.md        # README del servicio = index del tab
+      - Design:
+          - JSON Schema Renderer: marketplace-core/design/json-schema-renderer.md
+          - ReputationPort: marketplace-core/design/reputation-port.md
+          - "Schema Extensions (x-ui-*)": marketplace-core/design/schema-extensions.md
+          - Standalone Storefront: marketplace-core/design/standalone-mode.md
+      - References (ISO):
+          - "ISO 22000 — Food Safety": marketplace-core/references/iso-22000-food-safety.md
+          - "ISO 22005 — Traceability": marketplace-core/references/iso-22005-traceability.md
+          - "ISO 28000 — Supply Chain Security": marketplace-core/references/iso-28000-supply-chain-security.md
+          - "ISO 28004-2 — Implementation Guide": marketplace-core/references/iso-28004-2-implementation-guide.md
+
+  - payments-core:
+      - payments-core-readme.md           # README del servicio = index del tab
+      - "Docs · Overview": payments-core/content/index.md
+      - Governance:
+          - Overview: payments-core/content/docs/governance/index.md
+          - Rubric: payments-core/content/docs/governance/rubric.md
+      - Architecture: payments-core/content/docs/architecture/index.md
+      - Ports:
+          - Overview: payments-core/content/docs/ports/index.md
+          - EscrowPort: payments-core/content/docs/ports/escrow.md
+      - Adapters:
+          - Overview: payments-core/content/docs/adapters/index.md
+          - Stripe: payments-core/content/docs/adapters/stripe.md
+          - OnvoPay: payments-core/content/docs/adapters/onvopay.md
+      - Integrations:
+          - Overview: payments-core/content/docs/integrations/index.md
+          - Consumers:
+              - Overview: payments-core/content/docs/integrations/consumers/index.md
+              - AduaNext: payments-core/content/docs/integrations/consumers/aduanext.md
+      - Donations & Crowdfunding:
+          - Overview: payments-core/content/docs/donations/index.md
+          - "Crowdfunding (deferred)": payments-core/content/docs/donations/crowdfunding.md
+      - Security: payments-core/content/docs/security/index.md
+      - API:
+          - Overview: payments-core/content/docs/api/index.md
+          - Reference: payments-core/content/docs/api/reference.md
+      - References: payments-core/content/docs/references/index.md
+      - Legal: payments-core/content/docs/legal/index.md
+      - Operations: payments-core/content/docs/operations/index.md
+
+  - Common:
+      - Overview: common/index.md
+      - Bus de Eventos (consolidado): common/eventbus-broker-analysis.md
+
+# =============================================================================
+# Extra
+# =============================================================================
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/chimeranext/better-microservices
+  generator: false
+
+dev_addr: 0.0.0.0:8001
+
+extra_css:
+  - stylesheets/better-microservices.css
+
+extra_javascript:
+  - javascripts/mermaid-init.mjs
