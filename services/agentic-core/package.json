@@ -1,0 +1,11 @@
+{
+  "name": "@chimeranext/agentic-core",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Polyglot service (Python + Go + Dart). Thin Turbo passthrough — real scripts wired in sub-project #3.",
+  "scripts": {
+    "build": "echo '[agentic-core] build delegated to native tooling (uv / go / flutter) — see openspec sub-project #3'",
+    "test": "echo '[agentic-core] test delegated to native tooling (pytest / go test) — see openspec sub-project #3'",
+    "lint": "echo '[agentic-core] lint delegated to native tooling (ruff / go vet) — see openspec sub-project #3'"
+  }
+}

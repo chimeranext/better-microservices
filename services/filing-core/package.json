@@ -1,0 +1,11 @@
+{
+  "name": "@chimeranext/filing-core",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Regulatory filing service (deferred → 2027). Thin Turbo passthrough — real scripts wired in sub-project #3.",
+  "scripts": {
+    "build": "echo '[filing-core] deferred service — no build yet (see openspec sub-project #3)'",
+    "test": "echo '[filing-core] deferred service — no tests yet'",
+    "lint": "echo '[filing-core] deferred service — no lint yet'"
+  }
+}

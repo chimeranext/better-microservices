@@ -1,0 +1,49 @@
+# ---- Dependencies ----
+node_modules/
+.pnpm-store/
+
+# ---- Build outputs ----
+dist/
+build/
+.next/
+.turbo/
+out/
+
+# ---- Python ----
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+
+# ---- Go ----
+*.test
+*.out
+bin/
+
+# ---- Dart / Flutter ----
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# ---- Coverage / logs ----
+coverage/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# ---- Env / secrets ----
+.env
+.env.local
+.env.*.local
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
