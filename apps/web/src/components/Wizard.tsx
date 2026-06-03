@@ -6,6 +6,7 @@ import { Button } from "@/components/ui";
 import { StepServices } from "@/components/steps/Services";
 import { StepInfra } from "@/components/steps/Infra";
 import { StepAddons } from "@/components/steps/Addons";
+import { StepReview } from "@/components/steps/Review";
 
 const STEPS = ["Services", "Infra", "Addons", "Review"] as const;
 
@@ -36,7 +37,7 @@ export function Wizard() {
         {step === 0 && <StepServices model={model} patch={patch} onViewReadme={() => {}} />}
         {step === 1 && <StepInfra model={model} patch={patch} />}
         {step === 2 && <StepAddons model={model} patch={patch} />}
-        {step === 3 && <p className="text-muted-foreground">Review step (Task 12)</p>}
+        {step === 3 && <StepReview model={model} />}
       </div>
       <div className="mt-6 flex justify-between">
         <Button variant="secondary" disabled={step === 0} onClick={() => setStep((s) => s - 1)}>Back</Button>
