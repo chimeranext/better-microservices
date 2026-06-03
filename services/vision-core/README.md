@@ -112,7 +112,7 @@ Secondary Adapters (UltralyticsYOLO, RF-DETR, ModelRegistry, VideoStream)
 | Port | Role | Adapters |
 |---|---|---|
 | `SegmentationModelPort` | *what* a model outputs (Image → Segmentation) | `UltralyticsYOLOAdapter`, `RFDETRAdapter` |
-| `InferencePort` | *where* it runs (Jetson TensorRT vs cloud KServe) | `LocalTensorRTAdapter`, `KServeInferenceAdapter` |
+| `InferencePort` | *where* it runs (Jetson TensorRT vs hosted/cloud) | `NimInferenceAdapter` (Phase-1 hosted NIM, **no GPU**), `LocalTensorRTAdapter` |
 | `VideoStreamPort` | decode a stream → frames, with sampling | `OpenCVVideoStreamAdapter`, `GStreamerJetsonAdapter` |
 | `ModelRegistryPort` | resolve/pull/promote models per crop | `LocalFsModelRegistryAdapter`, `KubeflowModelRegistryAdapter` |
 | **`ObjectStoragePort`** | MinIO/S3 via **s3fs** (weights · datasets · captures) | `S3fsObjectStorageAdapter` |
@@ -138,6 +138,32 @@ make typecheck     # mypy
 > resolution) is **real and tested**. Model adapters and the gRPC/REST servers are
 > **stubs that raise `NotImplementedError`** — inference is wired in apply Phase 3.
 > See [`tasks.md`](../../openspec/changes/2026-06-01-vision-core/tasks.md).
+
+## Phase-1 hosted NIM inference (no local GPU)
+
+`NimInferenceAdapter` (`InferencePort`) gives **real inference reachable WITHOUT a
+local GPU** by calling NVIDIA's hosted NIM endpoints at
+`https://integrate.api.nvidia.com/v1` (build.nvidia.com) instead of standing up an
+in-cluster KServe Triton/vLLM runtime. They are OpenAI-compatible `/v1/...`
+endpoints, so the model code above the port is unchanged when the deployment later
+moves to self-hosted KServe. `payload` is a serialized OpenAI-style
+chat-completions request body (the image rides in the message `content`); the
+adapter injects `model_id` as the `model` field, POSTs with a Bearer token, and
+returns the raw response bytes. `is_local()` is `False`.
+
+```bash
+# SERVER-SIDE ONLY — this is a secret; never expose it in any client/web build.
+export VISION_NVIDIA_API_KEY="nvapi-…"        # bearer for the hosted NIM endpoints
+export VISION_INFERENCE_LOCAL=false           # select the cloud (NIM) InferencePort
+# optional: override the default base URL
+# export VISION_NVIDIA_BASE_URL="https://integrate.api.nvidia.com/v1"
+```
+
+`runtime.build_inference_port(settings)` returns the `NimInferenceAdapter` whenever
+`VISION_NVIDIA_API_KEY` is set and `VISION_INFERENCE_LOCAL=false`. The live
+integration smoke test (`tests/integration/test_nim_inference_live.py`) **skips**
+unless `VISION_NVIDIA_API_KEY` is set, so CI is unaffected when the key is absent.
+See [`SECRETS.md`](./SECRETS.md) for staging/production key handling.
 
 ## vertivolatam integration
 
