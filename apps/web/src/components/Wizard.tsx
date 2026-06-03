@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { defaultModel, type WizardModel } from "@/lib/wizard";
 import { decodeState, encodeState } from "@/lib/url-state";
 import { Button } from "@/components/ui";
+import { StepServices } from "@/components/steps/Services";
 
 const STEPS = ["Services", "Infra", "Addons", "Review"] as const;
 
@@ -30,7 +31,7 @@ export function Wizard() {
       </ol>
       <div data-testid="wizard-body">
         {/* Step bodies are added in Tasks 10–12; render placeholders keyed by step for now */}
-        {step === 0 && <p className="text-muted-foreground">Services step (Task 10)</p>}
+        {step === 0 && <StepServices model={model} patch={patch} onViewReadme={() => {}} />}
         {step === 1 && <p className="text-muted-foreground">Infra step (Task 11)</p>}
         {step === 2 && <p className="text-muted-foreground">Addons step (Task 11)</p>}
         {step === 3 && <p className="text-muted-foreground">Review step (Task 12)</p>}
