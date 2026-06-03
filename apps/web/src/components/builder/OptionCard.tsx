@@ -8,9 +8,10 @@ export interface OptionCardProps {
   selected: boolean;
   disabled?: string;
   onClick: () => void;
+  onViewReadme?: () => void;
 }
 
-export function OptionCard({ title, desc, selected, disabled, onClick }: OptionCardProps) {
+export function OptionCard({ title, desc, selected, disabled, onClick, onViewReadme }: OptionCardProps) {
   const isDisabled = !!disabled;
   const activate = () => {
     if (!isDisabled) onClick();
@@ -51,6 +52,18 @@ export function OptionCard({ title, desc, selected, disabled, onClick }: OptionC
         )}
       </div>
       <span className="text-sm text-muted-foreground">{desc}</span>
+      {onViewReadme && !isDisabled && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onViewReadme();
+          }}
+          className="mt-2 w-fit text-xs text-brand-secondary hover:underline focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        >
+          View README
+        </button>
+      )}
     </div>
   );
 }

@@ -8,10 +8,12 @@ export interface CategorySectionProps {
   category: Category;
   model: WizardModel;
   patch: (p: Partial<WizardModel>) => void;
+  onViewReadme: (slug: string) => void;
 }
 
-export function CategorySection({ category, model, patch }: CategorySectionProps) {
-  const hints = category.id === "services" ? dependencyHints(model.services) : [];
+export function CategorySection({ category, model, patch, onViewReadme }: CategorySectionProps) {
+  const isServices = category.id === "services";
+  const hints = isServices ? dependencyHints(model.services) : [];
   return (
     <section className="space-y-3">
       <h3 className="font-mono text-sm uppercase tracking-wide text-brand-tertiary">
@@ -26,6 +28,7 @@ export function CategorySection({ category, model, patch }: CategorySectionProps
             selected={opt.isSelected(model)}
             disabled={opt.disabled}
             onClick={() => patch(opt.apply(model))}
+            onViewReadme={isServices ? () => onViewReadme(opt.value) : undefined}
           />
         ))}
       </div>

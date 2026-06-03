@@ -5,6 +5,7 @@ import { categories } from "@/lib/categories";
 import { decodeState, encodeState } from "@/lib/url-state";
 import { randomModel } from "@/lib/randomize";
 import { defaultModel, type WizardModel } from "@/lib/wizard";
+import { ReadmeDrawer } from "@/components/ReadmeDrawer";
 import { BuilderSidebar } from "./BuilderSidebar";
 import { CategorySection } from "./CategorySection";
 
@@ -26,6 +27,7 @@ function projectTree(model: WizardModel): string {
 
 export function Builder() {
   const [model, setModel] = useState<WizardModel>(defaultModel);
+  const [readme, setReadme] = useState<string | null>(null);
 
   useEffect(() => {
     setModel(decodeState(new URLSearchParams(window.location.search)));
@@ -57,7 +59,13 @@ export function Builder() {
 
           <TabsContent value="configure" className="space-y-8">
             {categories.map((c) => (
-              <CategorySection key={c.id} category={c} model={model} patch={patch} />
+              <CategorySection
+                key={c.id}
+                category={c}
+                model={model}
+                patch={patch}
+                onViewReadme={setReadme}
+              />
             ))}
           </TabsContent>
 
@@ -80,6 +88,8 @@ export function Builder() {
           </TabsContent>
         </Tabs>
       </main>
+
+      <ReadmeDrawer slug={readme} onClose={() => setReadme(null)} />
     </div>
   );
 }
