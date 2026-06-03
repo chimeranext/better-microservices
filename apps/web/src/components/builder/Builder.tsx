@@ -10,7 +10,7 @@ import { BuilderSidebar } from "./BuilderSidebar";
 import { CategorySection } from "./CategorySection";
 
 function projectTree(model: WizardModel): string {
-  // Tree-building lines copied from src/components/steps/Review.tsx.
+  // Project-tree preview rendered in the PREVIEW tab.
   return [
     `${model.name}/`,
     "  services/",
