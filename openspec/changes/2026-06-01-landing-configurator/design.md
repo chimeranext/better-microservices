@@ -74,6 +74,32 @@ apps/web (Next.js + Shadcn)                     create-better-microservices (#7,
 - **URL-encoded wizard state** (query/hash) → shareable "here's my stack" links (growth loop).
 - Static-exportable (Vercel or GitHub Pages). Lives in the monorepo workspace (Turbo).
 
+## Design tokens — Chimera palette (shared brand)
+
+The `apps/web` portal **reuses the ChimeraNext "Chimera" tonal palette** so the
+product portal and the parent studio site (`chimeranext/website`) share one brand
+system. **Canonical source:** `chimeranext/website` design spec
+(`docs/superpowers/specs/2026-06-03-chimeranext-landing-design.md` §6) — generated
+Material-3 `SchemeTonalSpot` style, mirroring AltruPets' token structure.
+
+Map the palette onto Shadcn's CSS variables / Tailwind theme (dark base):
+
+- **Brand (4 hues):** primary violet `#7C5CFF` · secondary blue `#3B82F6` ·
+  tertiary cyan `#22D3EE` · accent magenta `#EC4899` (accent = pops / secondary
+  CTAs only). Brand gradient (cool): `linear-gradient(90deg,#7C5CFF,#3B82F6,#22D3EE)`.
+  Each hue ships its full tonal ramp (tones 10–95).
+- **Neutral (violet-tinted) surfaces:** `--background #08060F` · base `#0C0A14` ·
+  elevated `#12101F` · content `#16131F` · card `#1C1830` · border `#2A2640`.
+- **Text:** primary `#ECE8F2` · secondary `#837C99`.
+- **Status:** success `#34D399` · warning `#FBBF24` · destructive `#FB7185`.
+- **Type:** Sora (headings) · Inter (body) · JetBrains Mono (service slugs / code).
+- Shadcn primary → violet `#7C5CFF`; ring/secondary → blue; service `*-core` pills
+  use mono + cyan/violet accents (consistent with the studio site's "Built on" pills).
+
+DRY note: if both portals are built, factor these into a shared `@chimeranext/tokens`
+(CSS vars + Tailwind preset) both consume; until then this section + the canonical
+spec are the SSOT.
+
 ## What we will NOT build in this change
 
 - The `create-better-microservices` CLI (#7) — only its **command contract** is fixed here.
