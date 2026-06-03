@@ -4,6 +4,8 @@ import { defaultModel, type WizardModel } from "@/lib/wizard";
 import { decodeState, encodeState } from "@/lib/url-state";
 import { Button } from "@/components/ui";
 import { StepServices } from "@/components/steps/Services";
+import { StepInfra } from "@/components/steps/Infra";
+import { StepAddons } from "@/components/steps/Addons";
 
 const STEPS = ["Services", "Infra", "Addons", "Review"] as const;
 
@@ -32,8 +34,8 @@ export function Wizard() {
       <div data-testid="wizard-body">
         {/* Step bodies are added in Tasks 10–12; render placeholders keyed by step for now */}
         {step === 0 && <StepServices model={model} patch={patch} onViewReadme={() => {}} />}
-        {step === 1 && <p className="text-muted-foreground">Infra step (Task 11)</p>}
-        {step === 2 && <p className="text-muted-foreground">Addons step (Task 11)</p>}
+        {step === 1 && <StepInfra model={model} patch={patch} />}
+        {step === 2 && <StepAddons model={model} patch={patch} />}
         {step === 3 && <p className="text-muted-foreground">Review step (Task 12)</p>}
       </div>
       <div className="mt-6 flex justify-between">
