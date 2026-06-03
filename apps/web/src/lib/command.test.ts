@@ -23,4 +23,13 @@ describe("compileCommand", () => {
   it("does not emit --embed for the submodule default", () => {
     expect(compileCommand(defaultModel)).not.toContain("--embed");
   });
+  it("replaces an unsafe project name (command-injection hardening)", () => {
+    const cmd = compileCommand({ ...defaultModel, name: "evil; rm -rf ~" });
+    expect(cmd.startsWith("npx create-better-microservices my-startup")).toBe(true);
+    expect(cmd).not.toContain("rm -rf");
+  });
+  it("preserves a valid project name", () => {
+    const cmd = compileCommand({ ...defaultModel, name: "acme-app" });
+    expect(cmd.startsWith("npx create-better-microservices acme-app")).toBe(true);
+  });
 });

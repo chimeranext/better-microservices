@@ -4,7 +4,7 @@ import { Check, Copy, X } from "lucide-react";
 import { Button } from "@/components/ui";
 import { categories } from "@/lib/categories";
 import { compileCommand } from "@/lib/command";
-import { defaultModel, type WizardModel } from "@/lib/wizard";
+import { defaultModel, sanitizeProjectName, type WizardModel } from "@/lib/wizard";
 
 export interface BuilderSidebarProps {
   model: WizardModel;
@@ -80,7 +80,7 @@ export function BuilderSidebar({ model, patch, onRandomize, onReset, onShare }: 
           id="project-name"
           data-testid="project-name"
           value={model.name}
-          onChange={(e) => patch({ name: e.target.value })}
+          onChange={(e) => patch({ name: sanitizeProjectName(e.target.value) })}
           placeholder="my-startup"
           className="block w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         />

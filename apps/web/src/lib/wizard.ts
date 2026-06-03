@@ -23,3 +23,14 @@ export const defaultModel: WizardModel = {
   orchestration: "docker-compose", gateway: false, observability: false,
   ci: "github-actions", addons: [], embed: "submodule",
 };
+
+// Canonical rule for a safe project name: starts alphanumeric, then
+// alphanumerics / dot / underscore / hyphen, max 64 chars. This is the
+// charset that is safe to interpolate into a copyable shell command.
+export const PROJECT_NAME_RE = /^[a-z0-9][a-z0-9._-]{0,63}$/i;
+
+export function sanitizeProjectName(s: string): string {
+  // strip anything outside the allowed charset; trim to 64; ensure it starts alphanumeric
+  const cleaned = s.replace(/[^a-zA-Z0-9._-]/g, "").slice(0, 64).replace(/^[._-]+/, "");
+  return cleaned;
+}

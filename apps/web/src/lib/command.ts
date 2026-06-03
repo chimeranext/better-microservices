@@ -1,7 +1,9 @@
-import type { WizardModel } from "./wizard";
+import { PROJECT_NAME_RE, type WizardModel } from "./wizard";
 
 export function compileCommand(m: WizardModel): string {
-  const parts = [`npx create-better-microservices ${m.name || "my-startup"}`];
+  // Defense-in-depth: never interpolate an unsafe name into the copyable command.
+  const safeName = PROJECT_NAME_RE.test(m.name) && m.name ? m.name : "my-startup";
+  const parts = [`npx create-better-microservices ${safeName}`];
   parts.push(`--services ${[...m.services].sort().join(",") || "payments-core"}`);
   parts.push(`--db ${m.db}`);
   parts.push(`--broker ${m.broker}`);

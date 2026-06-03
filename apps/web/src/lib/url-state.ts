@@ -1,4 +1,4 @@
-import { defaultModel, ADDONS, type WizardModel, type Broker, type Orchestration, type Ci, type Embed, type Addon } from "./wizard";
+import { defaultModel, ADDONS, PROJECT_NAME_RE, type WizardModel, type Broker, type Orchestration, type Ci, type Embed, type Addon } from "./wizard";
 import { selectableServices } from "./services";
 
 const BROKERS: Broker[] = ["nats", "kafka", "redis"];
@@ -26,8 +26,10 @@ const oneOf = <T,>(v: string | null, allowed: readonly T[], fb: T): T => (allowe
 export function decodeState(p: URLSearchParams): WizardModel {
   const services = (p.get("services")?.split(",").filter((s) => SLUGS.includes(s))) ?? defaultModel.services;
   const addons = (p.get("addons")?.split(",").filter((a) => (ADDONS as readonly string[]).includes(a)) as Addon[]) ?? [];
+  const rawName = p.get("name");
+  const name = rawName && PROJECT_NAME_RE.test(rawName) ? rawName : defaultModel.name;
   return {
-    name: p.get("name") || defaultModel.name,
+    name,
     services: services.length ? services : defaultModel.services,
     db: "postgres",
     broker: oneOf(p.get("broker"), BROKERS, defaultModel.broker),

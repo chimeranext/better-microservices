@@ -16,4 +16,9 @@ describe("url-state", () => {
   it("omits default values from the encoded string (short URLs)", () => {
     expect(encodeState(defaultModel)).toBe("");
   });
+  it("rejects a malicious project name and falls back to the default", () => {
+    // ?name=x%3B%20rm%20-rf%20~  →  "x; rm -rf ~"
+    const decoded = decodeState(new URLSearchParams("name=x%3B%20rm%20-rf%20~"));
+    expect(decoded.name).toBe(defaultModel.name);
+  });
 });
