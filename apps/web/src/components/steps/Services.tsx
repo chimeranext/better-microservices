@@ -33,7 +33,7 @@ export function StepServices({ model, patch, onViewReadme }: {
         })}
       </div>
       {hints.map((h, i) => (
-        <p key={i} className={`mt-3 text-sm ${h.level === "warn" ? "text-accent" : "text-brand-tertiary"}`}>⚠ {h.message}</p>
+        <p key={i} className={`mt-3 text-sm ${h.level === "warn" ? "text-warning" : "text-brand-tertiary"}`}>⚠ {h.message}</p>
       ))}
     </div>
   );

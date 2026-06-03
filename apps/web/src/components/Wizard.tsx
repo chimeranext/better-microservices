@@ -27,6 +27,17 @@ export function Wizard() {
 
   return (
     <section id="configure" className="my-12 rounded-2xl border border-border bg-card p-6">
+      <div className="mb-5">
+        <label className="text-sm font-semibold text-muted-foreground" htmlFor="project-name">Project name</label>
+        <input
+          id="project-name"
+          data-testid="project-name"
+          value={model.name}
+          onChange={(e) => patch({ name: e.target.value })}
+          placeholder="my-startup"
+          className="mt-1 block w-full max-w-xs rounded-md border border-border bg-background px-3 py-2 font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        />
+      </div>
       <ol className="mb-6 flex gap-2 text-sm">
         {STEPS.map((s, i) => (
           <li key={s} className={i === step ? "font-semibold text-brand-secondary" : "text-muted-foreground"}>
@@ -35,7 +46,6 @@ export function Wizard() {
         ))}
       </ol>
       <div data-testid="wizard-body">
-        {/* Step bodies are added in Tasks 10–12; render placeholders keyed by step for now */}
         {step === 0 && <StepServices model={model} patch={patch} onViewReadme={setReadme} />}
         {step === 1 && <StepInfra model={model} patch={patch} />}
         {step === 2 && <StepAddons model={model} patch={patch} />}
