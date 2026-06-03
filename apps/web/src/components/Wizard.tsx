@@ -7,12 +7,14 @@ import { StepServices } from "@/components/steps/Services";
 import { StepInfra } from "@/components/steps/Infra";
 import { StepAddons } from "@/components/steps/Addons";
 import { StepReview } from "@/components/steps/Review";
+import { ReadmeDrawer } from "@/components/ReadmeDrawer";
 
 const STEPS = ["Services", "Infra", "Addons", "Review"] as const;
 
 export function Wizard() {
   const [model, setModel] = useState<WizardModel>(defaultModel);
   const [step, setStep] = useState(0);
+  const [readme, setReadme] = useState<string | null>(null);
 
   useEffect(() => { setModel(decodeState(new URLSearchParams(window.location.search))); }, []);
   useEffect(() => {
@@ -34,7 +36,7 @@ export function Wizard() {
       </ol>
       <div data-testid="wizard-body">
         {/* Step bodies are added in Tasks 10–12; render placeholders keyed by step for now */}
-        {step === 0 && <StepServices model={model} patch={patch} onViewReadme={() => {}} />}
+        {step === 0 && <StepServices model={model} patch={patch} onViewReadme={setReadme} />}
         {step === 1 && <StepInfra model={model} patch={patch} />}
         {step === 2 && <StepAddons model={model} patch={patch} />}
         {step === 3 && <StepReview model={model} />}
@@ -43,6 +45,7 @@ export function Wizard() {
         <Button variant="secondary" disabled={step === 0} onClick={() => setStep((s) => s - 1)}>Back</Button>
         <Button disabled={step === STEPS.length - 1} onClick={() => setStep((s) => s + 1)}>Next</Button>
       </div>
+      <ReadmeDrawer slug={readme} onClose={() => setReadme(null)} />
     </section>
   );
 }
