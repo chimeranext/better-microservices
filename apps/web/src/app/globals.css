@@ -18,6 +18,10 @@
     --secondary-foreground: 0 0% 100%;
     --accent: 330 81% 60%;           /* #EC4899 magenta */
     --accent-foreground: 0 0% 100%;
+    --destructive: 351 95% 71%;          /* #FB7185 */
+    --destructive-foreground: 0 0% 100%;
+    --success: 160 84% 52%;              /* #34D399 */
+    --warning: 43 96% 56%;               /* #FBBF24 */
     --ring: 252 100% 68%;
   }
   * { @apply border-border; }
