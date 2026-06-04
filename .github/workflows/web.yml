@@ -1,0 +1,43 @@
+name: Web (configurator — build + test)
+
+# Builds and tests apps/web (the better-microservices landing / configurator).
+# Kept as a separate, minimal workflow: the existing docs.yml owns the GitHub
+# Pages `pages` concurrency group + MkDocs deploy, so adding a job there would be
+# intrusive. No deploy target is wired here yet (GitHub Pages vs Vercel — see
+# apps/web/README.md "Deploy — TODOs"); this only verifies build + tests.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - ".github/workflows/web.yml"
+  pull_request:
+    paths:
+      - "apps/web/**"
+      - ".github/workflows/web.yml"
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Enable corepack (pnpm)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: corepack pnpm install --frozen-lockfile
+
+      - name: Test
+        run: corepack pnpm --filter @better-microservices/web test
+
+      - name: Build
+        run: corepack pnpm --filter @better-microservices/web build

@@ -2,7 +2,7 @@
 
 > Implementation checklist for [`proposal.md`](./proposal.md) / [`design.md`](./design.md).
 > Owner directive: build with an **agent team per axis** (services/infra/addons cards,
-> command compiler, README drawer). Status: **design done; implementation not started.**
+> command compiler, README drawer). Status: **implemented as a single-page "builder" (better-t-stack /new layout) — PR #73.**
 
 ## Phase 0 — Design
 - [x] PDR (proposal.md), ADR (design.md), tasks.md
@@ -10,29 +10,30 @@
 - [ ] Create tracking issue (`service:cross-repo`, `type:feature`, `flag:epic`)
 
 ## Phase 1 — Scaffold `apps/web`
-- [ ] Next.js (App Router) + TS in `apps/web`, wired into pnpm workspace + Turbo.
-- [ ] Shadcn/ui + Tailwind init; base theme (dark/light), Inter + JetBrains Mono.
-- [ ] Marketing shell: hero + 6-services showcase + footer.
+- [x] Next.js (App Router) + TS in `apps/web` (static export), wired into pnpm workspace + Turbo.
+- [x] Shadcn/ui + Tailwind init; **Chimera palette** theme (dark), Sora + Inter + JetBrains Mono.
+- [x] Marketing shell at `/`: hero + 6-services showcase + footer + "Build your stack →" CTA to `/new`.
 
-## Phase 2 — Wizard shell & state
-- [ ] 4-step wizard component (Services → Infra → Addons → Review) with progress.
-- [ ] **URL-encoded state** (shareable configs) ⇄ wizard model.
-- [ ] Command compiler: wizard model → `npx create-better-microservices …` string.
+## Phase 2 — Builder shell & state (pivoted from a 4-step wizard → single-page builder at `/new`)
+- [x] Single-page **builder** at `/new` (better-t-stack /new layout): sticky sidebar + category sections + Randomize/Reset/Share.
+- [x] **URL-encoded state** (shareable configs) ⇄ model (`encodeState`/`decodeState`, defaults omitted).
+- [x] Command compiler: model → `npx create-better-microservices …` (live + Copy); project name validated/sanitized (clipboard-injection hardening).
 
-## Phase 3 — Step content (agent team per axis)
-- [ ] Step 1 Services: 6 cards (filing-core disabled "2027"), multi-select, dependency hints.
-- [ ] Step 2 Infra: db · broker (NATS/Kafka/Redis) · orchestration · gateway toggle.
-- [ ] Step 3 Addons: observability · ci · extra addons.
-- [ ] Step 4 Review: sticky command + copy · generated project-tree preview · docs links.
+## Phase 3 — Category sections (cards per axis)
+- [x] Services: 6 cards (filing-core disabled "2027"), multi-select, dependency hints.
+- [x] Infra: database · broker (NATS/Kafka/Redis) · orchestration · gateway (cards, with "No X" options).
+- [x] Addons: observability · ci · extra addons · embed (submodule/vendor).
+- [x] PREVIEW tab: project-tree preview + docs links; sidebar SELECTED STACK chips; Randomize.
 
 ## Phase 4 — README drawer (README-first)
-- [ ] `[View README]` on service/package cards → Shadcn `Sheet` rendering markdown.
-- [ ] Source raw `README.md` from `main` (fallback: build-time snapshot until repo public).
-- [ ] "Full docs ↗" link to the docs-site service tab.
+- [x] "View README" on builder service cards → Shadcn `Sheet` rendering markdown (`react-markdown`).
+- [x] Source raw `README.md` from `main`; falls back to the docs-site link until the repo is public.
+- [x] "Full docs ↗" link to the docs-site service tab.
 
 ## Phase 5 — Deploy
-- [ ] Static export + deploy target (Vercel or GitHub Pages alongside the docs site).
-- [ ] CI job in the monorepo workflow.
+- [x] Static export (`output: 'export'` → `apps/web/out/`).
+- [x] CI job in the monorepo workflow (`.github/workflows/web.yml`: build + test).
+- [ ] Pick the deploy target (Vercel vs GitHub Pages) and wire the publish step.
 
 ## Gated / dependencies
 - [ ] 🚧 Make repo public source-available (for raw README fetch + submodules).
