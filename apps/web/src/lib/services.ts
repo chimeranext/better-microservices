@@ -1,10 +1,10 @@
 export interface ServiceDef { slug: string; name: string; stack: string; blurb: string; disabled?: string; }
 export const services: ServiceDef[] = [
-  { slug: "agentic-core", name: "Agentic Core", stack: "Python · Go · Dart", blurb: "Agent runtime — LLM orchestration, TUI, tools." },
-  { slug: "compliance-core", name: "Compliance Core", stack: "Node", blurb: "KYC/AML, sanctions screening, audit." },
-  { slug: "filing-core", name: "Filing Core", stack: "Node", blurb: "Regulatory filing automation.", disabled: "2027" },
-  { slug: "invoice-core", name: "Invoice Core", stack: "Node", blurb: "E-invoicing (Hacienda CR v4.4, XAdES)." },
-  { slug: "marketplace-core", name: "Marketplace Core", stack: "Node · appchain · Flutter", blurb: "Storefront + schema-driven catalog." },
-  { slug: "payments-core", name: "Payments Core", stack: "Node", blurb: "Payment gateways, escrow, settlement." },
+  { slug: "agentic-core", name: "Agentic Core", stack: "Python · K8s sidecar", blurb: "Agent-orchestration gRPC sidecar. No domain graphs — yours stay in your monorepo." },
+  { slug: "compliance-core", name: "Compliance Core", stack: "TypeScript · gRPC", blurb: "KYC/KYB/AML, sanctions & proof-of-personhood — one gRPC sidecar over Persona/Ondato/Incode/WorldID." },
+  { slug: "filing-core", name: "Filing Core", stack: "TypeScript · gRPC", blurb: "Tax-declaration filing (TRIBU-CR, SAT MX, DIAN CO) — D-101/D-104/DIOT.", disabled: "2027" },
+  { slug: "invoice-core", name: "Invoice Core", stack: "TypeScript · gRPC", blurb: "Multi-country e-invoicing (CR v4.4 · MX · CO) — gRPC sidecar over the Hacienda SDK." },
+  { slug: "marketplace-core", name: "Marketplace Core", stack: "TypeScript · gRPC", blurb: "Marketplace-orchestration sidecar. Sagas & integrations stay in your monorepo." },
+  { slug: "payments-core", name: "Payments Core", stack: "TypeScript · gRPC", blurb: "One payments gRPC sidecar — intents, subscriptions, escrow, refunds, disputes, reconciliation." },
 ];
 export const selectableServices = services.filter((s) => !s.disabled);
