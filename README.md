@@ -22,6 +22,30 @@ a unified docs site, issue tracker, and build tooling. Inspired by the
 Each service keeps its **own license** — see the `LICENSE*` file inside each
 `services/<name>/`.
 
+## Why microservices? — isolation, not contagion
+
+Every `-core` is a **gRPC sidecar** that carries **no domain-specific business
+logic** — your domain graphs, transaction sagas, and integrations live in *your*
+monorepo, never inside the shared service (`agentic-core` and `marketplace-core`
+state this explicitly; `payments-core`, `compliance-core`, `invoice-core` expose
+their capabilities purely as gRPC contracts). That boundary is the whole point:
+
+- **No schema / primitive contagion.** A shared service that held domain logic
+  would couple every consumer to one team's changes. The `-core`s don't, so a
+  schema or contract change in one venture cannot drift into another.
+- **Failure isolation.** Sidecars talk over gRPC contracts, not a shared
+  database. One venture's incident — a payment-provider outage, a compliance edge
+  case — stays contained instead of cascading across the portfolio.
+- **Liability isolation.** Because no venture's domain or data lives inside a
+  shared core, an incident or regulatory action against one venture doesn't reach
+  the others through the infrastructure.
+
+You inherit the production-grade plumbing (payments, compliance, e-invoicing,
+marketplace, agents) and keep your business logic — and your blast radius — to
+yourself. The landing/configurator (`apps/web`) compiles your picks into the
+`create-better-microservices` command; each service's README is the source of
+truth for what it does.
+
 ## Repository layout
 
 ```
