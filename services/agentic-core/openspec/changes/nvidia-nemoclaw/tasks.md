@@ -6,7 +6,7 @@
 - [ ] **NM-03** Benchmark de latencia NIM vs proveedores actuales
 
 ## Integration (MEDIUM)
-- [ ] **NM-04** Adapter para NVIDIA NIM como LLM provider
+- [x] **NM-04** Adapter para NVIDIA NIM como LLM provider — cubierto por el change `nim-nemotron-provider` (llm_factory + provider nvidia en ModelConfig)
 - [ ] **NM-05** NemoClaw coordination patterns en LaneOrchestrator
 - [ ] **NM-06** GPU-aware task scheduling
 
