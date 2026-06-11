@@ -137,21 +137,9 @@ class ReactGraphTemplate(BaseAgentGraph):
         if mc is None:
             return None
 
-        try:
-            if mc.provider == "anthropic":
-                from langchain_anthropic import ChatAnthropic
+        from agentic_core.adapters.secondary.llm_factory import build_chat_model
 
-                return ChatAnthropic(
-                    model=mc.model,
-                    temperature=mc.temperature,
-                    max_tokens=mc.max_tokens,
-                )
-            # Extensible: add more providers here
-        except ImportError:
-            logger.warning(
-                "LLM provider %s not available (missing langchain adapter)", mc.provider
-            )
-        return None
+        return build_chat_model(mc)
 
     def _get_system_prompt(self) -> str:
         """Build a system prompt from the persona configuration."""

@@ -108,8 +108,36 @@ def test_non_alias_unchanged():
 
 
 def test_aliases_dict_has_expected_keys():
-    expected = {"fast", "balanced", "smart", "cheap", "powerful", "local"}
+    expected = {
+        "fast", "balanced", "smart", "cheap", "powerful", "local", "nemotron",
+    }
     assert set(MODEL_ALIASES.keys()) == expected
+
+
+# --- NVIDIA NIM provider tests (nim-nemotron-provider) ---
+
+
+def test_nvidia_provider_accepted():
+    mc = ModelConfig(provider="nvidia", model="nvidia/nemotron-3-ultra-550b-a55b")
+    assert mc.provider == "nvidia"
+    assert mc.model == "nvidia/nemotron-3-ultra-550b-a55b"
+
+
+def test_alias_nemotron():
+    mc = ModelConfig(model="nemotron")
+    assert mc.provider == "nvidia"
+    assert mc.model == "nvidia/nemotron-3-ultra-550b-a55b"
+
+
+def test_nvidia_with_custom_base_url_and_key_env():
+    mc = ModelConfig(
+        provider="nvidia",
+        model="nvidia/nemotron-3-super-120b-a12b",
+        base_url="http://nim.internal:8000/v1",
+        api_key_env="NVIDIA_API_KEY_STAGING",
+    )
+    assert mc.base_url == "http://nim.internal:8000/v1"
+    assert mc.api_key_env == "NVIDIA_API_KEY_STAGING"
 
 
 def test_alias_in_fallback():

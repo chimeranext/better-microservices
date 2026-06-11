@@ -5,7 +5,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, model_validator
 
 ProviderType = Literal[
-    "anthropic", "openai", "google", "azure", "ollama", "custom"
+    "anthropic", "openai", "google", "azure", "ollama", "nvidia", "custom"
 ]
 
 MODEL_ALIASES: dict[str, tuple[ProviderType, str]] = {
@@ -15,6 +15,7 @@ MODEL_ALIASES: dict[str, tuple[ProviderType, str]] = {
     "cheap": ("google", "gemini-2.5-flash"),
     "powerful": ("google", "gemini-2.5-pro"),
     "local": ("ollama", "llama3.3"),
+    "nemotron": ("nvidia", "nvidia/nemotron-3-ultra-550b-a55b"),
 }
 
 

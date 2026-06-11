@@ -1,0 +1,23 @@
+# Variante de calculator-agent corriendo sobre NVIDIA NIM (Nemotron 3 Ultra).
+# Requiere: export NVIDIA_API_KEY=<bearer de build.nvidia.com>
+# Mismo agente, distinto provider — solo cambia model_config.
+name: calculator-agent-nim
+role: "Math calculator"
+description: "Simple agent that can do arithmetic using tools, served by NVIDIA NIM"
+graph_template: react
+tools:
+  - add
+  - multiply
+model_config:
+  provider: nvidia
+  model: nvidia/nemotron-3-ultra-550b-a55b   # alias corto: nemotron
+  temperature: 0.6
+  max_tokens: 8192
+  # api_key_env: NVIDIA_API_KEY_STAGING      # default: NVIDIA_API_KEY
+  # base_url: http://nim.internal:8000/v1    # override para NIM self-hosted
+  fallback:
+    - provider: nvidia
+      model: nvidia/nemotron-3-super-120b-a12b   # lane mas liviano si Ultra excede SLO
+slo_targets:
+  latency_p99_ms: 10000
+  success_rate: 0.99
