@@ -1,0 +1,100 @@
+name: Pages (web app + docs → GitHub Pages)
+
+# Single owner of the GitHub Pages deployment for this repo.
+#
+# Layout served at the custom domain betterms.lapc506.me:
+#   /       → apps/web (Next.js static export, `output: export`)
+#   /docs   → MkDocs site
+#
+# This workflow replaces the deploy job that used to live in docs.yml and the
+# build/test-only web.yml: it builds both, assembles them into ONE Pages
+# artifact, and deploys on pushes to main. PRs build everything as validation
+# but never deploy. It owns the `pages` concurrency group so the two sites can
+# no longer race each other for the single Pages slot.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - "docs/site/**"
+      - "services/**/docs/**"
+      - ".github/workflows/pages.yml"
+  pull_request:
+    paths:
+      - "apps/web/**"
+      - "docs/site/**"
+      - "services/**/docs/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history for git-revision-date-localized (MkDocs)
+
+      # --- Web app (Next.js static export → apps/web/out) ---
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Enable corepack (pnpm)
+        run: corepack enable
+      - name: Install dependencies
+        run: corepack pnpm install --frozen-lockfile
+      - name: Test web
+        run: corepack pnpm --filter @better-microservices/web test
+      - name: Build web (static export → apps/web/out)
+        run: corepack pnpm --filter @better-microservices/web build
+
+      # --- Docs (MkDocs → docs/site/site) ---
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install docs dependencies
+        run: pip install -r docs/site/requirements.txt
+      - name: Build docs
+        run: mkdocs build -f docs/site/mkdocs.yml
+
+      # --- Assemble single Pages artifact: web app at /, docs at /docs ---
+      - name: Assemble Pages root
+        run: |
+          rm -rf _site
+          mkdir -p _site/docs
+          cp -r apps/web/out/. _site/
+          cp -r docs/site/site/. _site/docs/
+          touch _site/.nojekyll            # keep Next.js _next/ assets from Jekyll
+          echo "betterms.lapc506.me" > _site/CNAME
+
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
