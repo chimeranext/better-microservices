@@ -6,7 +6,7 @@
 
 site_name: better-microservices
 site_description: "Monorepo de microservicios source-available — una pestaña por servicio + Common"
-site_url: https://chimeranext.github.io/better-microservices/
+site_url: https://betterms.lapc506.me/docs/
 repo_url: https://github.com/chimeranext/better-microservices
 repo_name: chimeranext/better-microservices
 edit_uri: edit/main/docs/site/content/
