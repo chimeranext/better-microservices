@@ -1,0 +1,128 @@
+// timeseries-core — gRPC query contract for shared time-series (TimescaleDB).
+// SPDX-License-Identifier: BUSL-1.1
+// © 2026 Andrés (lapc506), licensed and published by ChimeraNext Shared Services LLC.
+//
+// DRAFT — produced by spike #76 (decision = defer extraction). Single source of
+// truth belongs in buf.build (Decision 2 of eventbus-broker-analysis.md). The
+// Resolution enum and DataPoint avg/min/max/count fields are isomorphic to the
+// TimescaleDB continuous aggregates 1m/5m/1h/1d (see design.md §7,§8).
+
+syntax = "proto3";
+
+package timeseries.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// ── Scoping (cross-product / multi-tenant) ──────────────────────────
+// Every query is scoped by tenant + product. `product` distinguishes the
+// cross-core source (vertivo, payments-core, marketplace-core, ...).
+message Scope {
+  string tenant_id = 1;             // multi-tenant; required
+  string product   = 2;             // "vertivo" | "payments-core" | ...
+  // Free dimensions: for Vertivo, greenhouse_id / measurement_type.
+  map<string, string> labels = 3;   // e.g. {"greenhouse_id":"42"}
+}
+
+// Rollup resolution → maps 1:1 to the continuous aggregates readings_{1m,5m,1h,1d}.
+enum Resolution {
+  RESOLUTION_UNSPECIFIED = 0;       // server picks via range→CAGG heuristic
+  RESOLUTION_RAW         = 1;       // raw hypertable rows, no aggregation
+  RESOLUTION_1M          = 2;
+  RESOLUTION_5M          = 3;
+  RESOLUTION_1H          = 4;
+  RESOLUTION_1D          = 5;       // "season" view
+}
+
+// Aggregations available per bucket (avg/min/max/count are the Vertivo rollups;
+// last is a recommended addition — design.md §V_final note).
+enum Aggregation {
+  AGGREGATION_UNSPECIFIED = 0;
+  AGGREGATION_AVG         = 1;
+  AGGREGATION_MIN         = 2;
+  AGGREGATION_MAX         = 3;
+  AGGREGATION_COUNT       = 4;
+  AGGREGATION_LAST        = 5;
+}
+
+// ── Ingest (command side) ───────────────────────────────────────────
+// Used by the JetStream consumer (domain metrics) and the MQTT subscriber
+// (sensor telemetry) once the service is extracted.
+message Reading {
+  Scope scope                        = 1;
+  string measurement                 = 2;   // temperature | ph | gmv | ...
+  double value                       = 3;   // the raw scalar
+  string unit                        = 4;
+  google.protobuf.Timestamp ts       = 5;
+}
+message IngestReadingsRequest  { repeated Reading readings = 1; }
+message IngestReadingsResponse { uint64 accepted = 1; }
+
+// ── Window query (query side) ───────────────────────────────────────
+message QueryWindowRequest {
+  Scope scope                       = 1;
+  string metric                     = 2;   // e.g. "temperature", "ph", "gmv"
+  google.protobuf.Timestamp start   = 3;   // inclusive
+  google.protobuf.Timestamp end     = 4;   // exclusive
+  Resolution resolution             = 5;   // bucket; server chooses if UNSPECIFIED
+  repeated Aggregation aggregations = 6;   // which columns to return
+  uint32 max_points                 = 7;   // downsampling cap (charts)
+}
+
+message DataPoint {
+  google.protobuf.Timestamp bucket = 1;    // time_bucket() of the rollup
+  double avg_value                 = 2;
+  double min_value                 = 3;
+  double max_value                 = 4;
+  uint64 sample_count              = 5;
+  double last_value                = 6;
+}
+
+message Series {
+  string metric              = 1;
+  map<string, string> labels = 2;          // resolved (greenhouse_id, measurement_type)
+  Resolution resolution      = 3;          // effective resolution served
+  repeated DataPoint points  = 4;
+}
+
+message QueryWindowResponse {
+  repeated Series series          = 1;
+  Resolution effective_resolution = 2;     // when request asked UNSPECIFIED
+}
+
+// Latest sample / instantaneous value per metric (dashboard cards).
+message GetLatestRequest  { Scope scope = 1; repeated string metrics = 2; }
+message GetLatestResponse {
+  message Latest {
+    string metric                = 1;
+    google.protobuf.Timestamp ts = 2;
+    double value                 = 3;
+    string unit                  = 4;
+  }
+  repeated Latest latest = 1;
+}
+
+// Discover available metrics for a scope (populate UI).
+message ListMetricsRequest  { Scope scope = 1; }
+message ListMetricsResponse {
+  message MetricInfo {
+    string metric                             = 1;
+    string unit                               = 2;
+    repeated Resolution available_resolutions = 3;
+  }
+  repeated MetricInfo metrics = 1;
+}
+
+message Empty {}
+message HealthStatus { string status = 1; string version = 2; }
+
+// ── Service ─────────────────────────────────────────────────────────
+service TimeSeriesQuery {
+  // Primary window query with rollup (dashboard/app charts).
+  rpc QueryWindow(QueryWindowRequest) returns (QueryWindowResponse);
+  // Server-side streaming for large windows / real-time (chunked; covers R6).
+  rpc QueryWindowStream(QueryWindowRequest) returns (stream Series);
+  rpc GetLatest(GetLatestRequest)     returns (GetLatestResponse);
+  rpc ListMetrics(ListMetricsRequest) returns (ListMetricsResponse);
+  rpc IngestReadings(IngestReadingsRequest) returns (IngestReadingsResponse);
+  rpc HealthCheck(Empty) returns (HealthStatus);
+}
