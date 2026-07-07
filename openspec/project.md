@@ -1,7 +1,7 @@
 # better-microservices — OpenSpec Project Governance
 
 > **Source of truth** for how decisions are recorded, tracked, and shipped in this
-> monorepo. Convention ported from `dojocoding/dojo-os`.
+> monorepo. Convention shared across the ChimeraNext monorepos.
 
 ## Overview
 

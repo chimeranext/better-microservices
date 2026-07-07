@@ -16,7 +16,7 @@ src/adapters/outbound/stripe/
 └── types.ts                               narrow Stripe SDK types we actually use
 ```
 
-## `stripe-client-factory.ts` (the factory pattern from DOJ-3287)
+## `stripe-client-factory.ts` (the pinned-SDK factory pattern)
 
 ```ts
 import Stripe from 'stripe';
@@ -184,7 +184,7 @@ The composition root validates these via Zod and fails to start if `STRIPE_SECRE
 
 ## Risks
 
-- **SDK version drift via Dependabot** — the root cause of DOJ-3287. Mitigation: exact pin `"stripe": "18.5.0"` (no `^`, no `~`), plus a repo-wide CI check that verifies the exact version matches the constant in `stripe-client-factory.ts`.
+- **SDK version drift via Dependabot** — the root cause of the SDK-drift incident. Mitigation: exact pin `"stripe": "18.5.0"` (no `^`, no `~`), plus a repo-wide CI check that verifies the exact version matches the constant in `stripe-client-factory.ts`.
 - **Webhook body tampering** — mitigated by verifying on the raw bytes before any JSON parse.
 - **Amount casts losing precision** — covered by the `bigint → number` guard. Documented in-code.
 - **Test-mode vs live-mode key mix-up** — mitigated by the Stripe SDK itself (it refuses cross-mode operations). We also log the key prefix (`sk_live_` vs `sk_test_`) at startup for visibility.
@@ -192,4 +192,4 @@ The composition root validates these via Zod and fails to start if `STRIPE_SECRE
 
 ## Rollback
 
-Revert the merge. Stripe flows stop working against `payments-core`; dojo-os's existing Edge Functions (until their deprecation PR merges) remain the fallback. Other gateways are unaffected. The factory pattern and error mapping can be re-applied when re-landing.
+Revert the merge. Stripe flows stop working against `payments-core`; learning-platform's existing Edge Functions (until their deprecation PR merges) remain the fallback. Other gateways are unaffected. The factory pattern and error mapping can be re-applied when re-landing.

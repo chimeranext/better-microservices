@@ -69,5 +69,5 @@ consolidated issue migration (gated), archiving origin repos (gated).
 
 - ADR: [`design.md`](./design.md)
 - Tasks: [`tasks.md`](./tasks.md)
-- Convention source: `dojocoding/dojo-os` `openspec/`
+- Convention shared across the ChimeraNext monorepos (`openspec/`)
 - Docs site reference: `habitanexus/monorepo/docs/site/` (Material for MkDocs)

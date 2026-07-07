@@ -3,7 +3,7 @@
 One payments sidecar for the `-core` ecosystem. `payments-core` is a gRPC service
 that exposes a uniform payment, donation, and money-movement surface on top of a
 swappable set of adapters (Stripe, OnvoPay, TiloPay, dLocal, Revolut Business,
-Convera, Ripple/XRPL, Apple Pay, Google Pay). Every consumer — `dojo-os`,
+Convera, Ripple/XRPL, Apple Pay, Google Pay). Every consumer — `learning-platform`,
 `altrupets`, `habitanexus`, `vertivolatam`, `aduanext` — talks to the same
 contract regardless of the underlying rail.
 

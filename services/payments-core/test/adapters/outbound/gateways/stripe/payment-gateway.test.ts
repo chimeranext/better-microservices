@@ -104,7 +104,7 @@ describe('StripePaymentGateway.initiate', () => {
     const adapter = new StripePaymentGateway({ client });
     await adapter.initiate({
       amount: usd(1234n),
-      consumer: 'dojo-os',
+      consumer: 'learning-platform',
       customerReference: 'cus_abc',
       idempotencyKey: key,
       metadata: { order_id: 'ord_1' },
@@ -116,7 +116,7 @@ describe('StripePaymentGateway.initiate', () => {
     expect(body.amount).toBe(1234);
     expect(body.currency).toBe('usd');
     expect(options.idempotencyKey).toBe(key);
-    expect(body.metadata['consumer']).toBe('dojo-os');
+    expect(body.metadata['consumer']).toBe('learning-platform');
     expect(body.metadata['customer_reference']).toBe('cus_abc');
   });
 
@@ -153,7 +153,7 @@ describe('StripePaymentGateway.initiate', () => {
     await expect(
       adapter.initiate({
         amount: usd(100n),
-        consumer: 'dojo-os',
+        consumer: 'learning-platform',
         customerReference: 'cus_x',
         idempotencyKey: key,
         metadata: {},
@@ -168,7 +168,7 @@ describe('StripePaymentGateway.initiate', () => {
     await expect(
       adapter.initiate({
         amount: usd(huge),
-        consumer: 'dojo-os',
+        consumer: 'learning-platform',
         customerReference: 'cus_x',
         idempotencyKey: key,
         metadata: {},
@@ -289,7 +289,7 @@ describe('StripePaymentGateway error mapping', () => {
     await expect(
       adapter.initiate({
         amount: usd(100n),
-        consumer: 'dojo-os',
+        consumer: 'learning-platform',
         customerReference: 'cus_x',
         idempotencyKey: key,
         metadata: {},

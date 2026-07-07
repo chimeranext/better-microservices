@@ -43,7 +43,7 @@ graph TB
     end
 
     subgraph CONSUMERS["Consumer backends"]
-        DO["dojo-os"]
+        DO["learning-platform"]
         AL["altrupets-api"]
         HN["habitanexus-api"]
         VT["vertivolatam-api"]

@@ -103,7 +103,7 @@ Idempotency is **first-class** on every mutating RPC: a required `idempotency_ke
 ```proto
 message PaymentSucceededEvent {
   string intent_id = 1;
-  string consumer = 2;             // e.g. "dojo-os" | "altrupets-api"
+  string consumer = 2;             // e.g. "learning-platform" | "altrupets-api"
   Money amount = 3;
   GatewayPreference gateway = 4;
   google.protobuf.Timestamp occurred_at = 5;

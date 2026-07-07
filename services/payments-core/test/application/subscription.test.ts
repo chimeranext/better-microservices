@@ -103,7 +103,7 @@ describe('makeCreateSubscription', () => {
 
     const r = await execute({
       id: 'sub_1',
-      consumer: 'dojo-os',
+      consumer: 'learning-platform',
       customerReference: 'tenant-42',
       planId: 'plan_pro',
       gateway: 'stripe',
@@ -127,7 +127,7 @@ describe('makeCreateSubscription', () => {
 
     const input = {
       id: 'sub_2',
-      consumer: 'dojo-os',
+      consumer: 'learning-platform',
       customerReference: 'tenant-42',
       planId: 'plan_pro',
       gateway: 'stripe' as const,
@@ -152,7 +152,7 @@ describe('makeCreateSubscription', () => {
 
     const r = await execute({
       id: 'sub_err',
-      consumer: 'dojo-os',
+      consumer: 'learning-platform',
       customerReference: 'tenant-42',
       planId: 'plan_pro',
       gateway: 'stripe',
@@ -178,7 +178,7 @@ describe('makeSwitchSubscription', () => {
   const seedActive = () => {
     const base = createSubscription({
       id: 'sub_a',
-      consumer: 'dojo-os',
+      consumer: 'learning-platform',
       customerReference: 'tenant-42',
       planId: 'plan_basic',
       idempotencyKey: key,
@@ -251,7 +251,7 @@ describe('makeCancelSubscription', () => {
     const seed: Subscription = {
       ...createSubscription({
         id: 'sub_c',
-        consumer: 'dojo-os',
+        consumer: 'learning-platform',
         customerReference: 'tenant-42',
         planId: 'plan_pro',
         idempotencyKey: key,

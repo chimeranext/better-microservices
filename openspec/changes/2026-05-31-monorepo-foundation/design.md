@@ -142,4 +142,4 @@ Each requires explicit owner go-ahead at execution time (hard to reverse):
 
 - PDR: [`proposal.md`](./proposal.md)
 - Checklist: [`tasks.md`](./tasks.md)
-- `git filter-repo` docs · `dojocoding/dojo-os` openspec convention
+- `git filter-repo` docs · the shared ChimeraNext OpenSpec convention

@@ -68,7 +68,7 @@ Turbo skeleton, OpenSpec governance, and consolidated issues — then archive or
 - History preserved via `git filter-repo --to-subdirectory-filter services/<name>/`
   + `git merge --allow-unrelated-histories` (no subtree, no fresh-copy).
 - Build the monorepo in a temp area; do not destructively touch origin folders until verified.
-- OpenSpec convention from `dojocoding/dojo-os` (no YAML frontmatter; bold metadata).
+- OpenSpec convention shared across the ChimeraNext monorepos (no YAML frontmatter; bold metadata).
 - Label taxonomy from `agentic-core` + orthogonal `service:*`.
 
 ### Verification Commands

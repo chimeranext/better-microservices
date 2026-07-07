@@ -118,7 +118,7 @@ describe('Subscription state machine', () => {
   const base = () =>
     createSubscription({
       id: 'sub_1',
-      consumer: 'dojo-os',
+      consumer: 'learning-platform',
       customerReference: 'tenant-42',
       planId: 'plan_pro',
       idempotencyKey: key,

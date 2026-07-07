@@ -1,5 +1,5 @@
 // =============================================================================
-// Stripe client factory — DOJ-3287 pattern.
+// Stripe client factory — pinned-SDK factory pattern.
 // -----------------------------------------------------------------------------
 // This is the ONLY file in the repo that imports the `stripe` package. Every
 // other adapter file imports the SDK types and the constructed client through
@@ -7,7 +7,7 @@
 // enforces that constraint.
 //
 // Why a factory:
-//   1. DOJ-3287 — sibling `dojo-os` had a production regression when
+//   1. the SDK-drift incident — sibling `learning-platform` had a production regression when
 //      Dependabot silently upgraded the Stripe SDK across edge functions that
 //      each instantiated `new Stripe(...)` directly. The fix centralised
 //      instantiation in `_shared/payments-core/stripe-client.ts`. We inherit

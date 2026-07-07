@@ -7,7 +7,7 @@ When a mobile consumer app uses Apple Pay or Google Pay, the device produces an 
 - **Client-side SDK work** — the frontend uses `flutter_stripe`, `@stripe/stripe-js`, or equivalent mobile SDKs to produce the token. This is **out of `payments-core`'s scope**.
 - **Server-side token handling** — `payments-core` receives the opaque token via `ConfirmCheckoutRequest.wallet_token` (already declared in `proto-contract-v1`) and forwards it to the selected gateway's verify/decrypt endpoint.
 
-The primary consumer is `dojo-os` mobile (iOS + Android). Their app ships wallet checkout as a native UX; the server needs to verify the payment succeeded without accepting an unverified device-produced blob.
+The primary consumer is `learning-platform` mobile (iOS + Android). Their app ships wallet checkout as a native UX; the server needs to verify the payment succeeded without accepting an unverified device-produced blob.
 
 ## Why P2
 
@@ -16,7 +16,7 @@ Stripe P0 already handles the Apple Pay / Google Pay case when the token is atta
 - The consumer routes the wallet token to a non-Stripe gateway (e.g. OnvoPay) that does not natively ingest Apple Pay payloads.
 - The consumer wants a gateway-agnostic audit of what the device certified, for fraud-analysis reasons, before dispatching to whichever gateway's processing flow.
 
-Both are niche today; dojo-os's v1 mobile flow uses Stripe's native integration. Hence P2.
+Both are niche today; learning-platform's v1 mobile flow uses Stripe's native integration. Hence P2.
 
 ## Scope
 

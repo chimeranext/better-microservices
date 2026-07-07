@@ -15,7 +15,7 @@ Design constraints:
 - Composite score 0.0-1.0 with structured results
 - Usable as middleware AND standalone scanner
 
-Modeled after dojo-agent-openclaw-plugin injection-detector.ts.
+Modeled after a sibling plugin injection-detector.ts.
 """
 
 from __future__ import annotations

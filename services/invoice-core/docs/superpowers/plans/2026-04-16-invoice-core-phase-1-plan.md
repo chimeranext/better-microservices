@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build invoice-core v0.1 MVP — a TypeScript hexagonal library that exposes gRPC (`:50061`) + REST (`:8766`) for Costa Rica electronic invoicing v4.4 (all 7 document types via `HaciendaCRAdapter` wrapping `@dojocoding/hacienda-sdk`), Mensaje Receptor end-to-end, inbound gateway + reconciliation scaffold, Redis queue with retry + circuit breaker, PostgreSQL persistence, CertificateVault (Vault + sealed-secrets + local FS), XAdES-EPES SignatureVerifier, full observability, dual deployment (sidecar + standalone), Dockerfile + docker-compose + Helm chart + Zensical/MyST docs scaffold.
+**Goal:** Build invoice-core v0.1 MVP — a TypeScript hexagonal library that exposes gRPC (`:50061`) + REST (`:8766`) for Costa Rica electronic invoicing v4.4 (all 7 document types via `HaciendaCRAdapter` wrapping `@chimeranext/hacienda-sdk`), Mensaje Receptor end-to-end, inbound gateway + reconciliation scaffold, Redis queue with retry + circuit breaker, PostgreSQL persistence, CertificateVault (Vault + sealed-secrets + local FS), XAdES-EPES SignatureVerifier, full observability, dual deployment (sidecar + standalone), Dockerfile + docker-compose + Helm chart + Zensical/MyST docs scaffold.
 
 **Architecture:** Hexagonal (Explicit Architecture). Primary adapters: gRPC (`:50061`) + REST (`:8766` standalone only). Application layer with 17 ports (5 fully wired in Fase 1, 12 interface-only for Fases 2-6). Pure domain with discriminated-union `Document` + `Taxpayer` + `DocumentSequence` + `Dispute` + value objects. Secondary adapters: `hacienda-cr` SDK, PostgreSQL (Drizzle), Redis (BullMQ), Vault/sealed-secrets, OTel, pino, Prometheus.
 
-**Tech Stack:** TypeScript 5.6 strict · Node 22 LTS · pnpm 9 · Vitest 2 · `@grpc/grpc-js` · buf codegen · PostgreSQL 16 · Redis 7 · Drizzle ORM · Fastify 5 · OpenTelemetry SDK · prom-client · pino · zod · `@dojocoding/hacienda-sdk` (CR v4.4 TaxAuthorityPort) · BullMQ (Redis queue) · opossum (circuit breaker) · xadesjs (signature verification).
+**Tech Stack:** TypeScript 5.6 strict · Node 22 LTS · pnpm 9 · Vitest 2 · `@grpc/grpc-js` · buf codegen · PostgreSQL 16 · Redis 7 · Drizzle ORM · Fastify 5 · OpenTelemetry SDK · prom-client · pino · zod · `@chimeranext/hacienda-sdk` (CR v4.4 TaxAuthorityPort) · BullMQ (Redis queue) · opossum (circuit breaker) · xadesjs (signature verification).
 
 ---
 
@@ -167,7 +167,7 @@ Middleware + composition:
 
 ### Adapters — secondary (45 files)
 
-`packages/adapter-hacienda-cr/src/` (wraps `@dojocoding/hacienda-sdk`):
+`packages/adapter-hacienda-cr/src/` (wraps `@chimeranext/hacienda-sdk`):
 
 - `index.ts`
 - `hacienda-cr-adapter.ts` — `TaxAuthorityPort` implementation.
@@ -2840,7 +2840,7 @@ gh issue create --repo lapc506/invoice-core \
 
 ---
 
-## Task 33 — HaciendaCRAdapter: builders + signer (wraps `@dojocoding/hacienda-sdk`)
+## Task 33 — HaciendaCRAdapter: builders + signer (wraps `@chimeranext/hacienda-sdk`)
 
 **Files:** `packages/adapter-hacienda-cr/src/{index,hacienda-cr-adapter,signer}.ts` + `builders/*` + tests using SDK sandbox fixtures.
 
@@ -2891,7 +2891,7 @@ Expected: builders + adapter green.
 
 ```bash
 git add packages/adapter-hacienda-cr/
-git commit -m "feat(hacienda-cr): wrap @dojocoding/hacienda-sdk as TaxAuthorityPort + ReceiverMessagePort"
+git commit -m "feat(hacienda-cr): wrap @chimeranext/hacienda-sdk as TaxAuthorityPort + ReceiverMessagePort"
 ```
 
 - [ ] **Step 7: Retro GitHub issue**
@@ -2900,7 +2900,7 @@ git commit -m "feat(hacienda-cr): wrap @dojocoding/hacienda-sdk as TaxAuthorityP
 gh issue create --repo lapc506/invoice-core \
   --title "[Fase 1] Task 33 — HaciendaCRAdapter (builders + signer)" \
   --label "phase/1,scope/hacienda-cr,type/feat,security/credentials,priority/p0" \
-  --body "Wraps @dojocoding/hacienda-sdk. 7 builders (01/02/03/04/08/09/MR). SDK errors → domain errors. Signing via CertificateVault Disposable."
+  --body "Wraps @chimeranext/hacienda-sdk. 7 builders (01/02/03/04/08/09/MR). SDK errors → domain errors. Signing via CertificateVault Disposable."
 ```
 
 ---
@@ -4359,7 +4359,7 @@ create 29 "Inbound + Mensaje Receptor"           "scope/app,type/feat,priority/p
 create 30 "ReconcileDocument"                    "scope/app,type/feat"                          "Fase 1 in-memory reconciliation engine."
 create 31 "Middleware chain"                     "scope/app,type/feat,security/pii,priority/p0" "Tracing + auth + idempotency + metrics + PII redaction."
 create 32 "Proto codegen pipeline"               "scope/proto,type/feat"                        "buf lint + breaking + codegen; 4 services declared."
-create 33 "HaciendaCRAdapter (builders + signer)" "scope/hacienda-cr,type/feat,security/credentials,priority/p0" "Wraps @dojocoding/hacienda-sdk; 7 builders; SDK errors → domain errors."
+create 33 "HaciendaCRAdapter (builders + signer)" "scope/hacienda-cr,type/feat,security/credentials,priority/p0" "Wraps @chimeranext/hacienda-sdk; 7 builders; SDK errors → domain errors."
 create 34 "Submitter + StatusPoller + metrics"   "scope/hacienda-cr,type/feat"                  "Exponential backoff + terminal-state poll + Prometheus metrics."
 create 35 "Postgres schema + migrations"         "scope/postgres,type/feat,security/pii"        "8 tables via Drizzle; claveNumerica unique index; JSONB payload."
 create 36 "DocumentRepositoryPg + TaxpayerRepositoryPg" "scope/postgres,type/feat,priority/p0"  "Pass shared port contracts."

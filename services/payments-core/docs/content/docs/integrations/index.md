@@ -20,5 +20,5 @@ external consumer applications.
 ## Consumer applications
 
 See [Consumers](consumers/index.md) for the five product surfaces that
-currently speak to `payments-core`: dojo-os, altrupets, habitanexus,
+currently speak to `payments-core`: learning-platform, altrupets, habitanexus,
 vertivolatam, aduanext.

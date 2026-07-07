@@ -23,7 +23,7 @@
 
 ## Phase 1 — OpenSpec change (done)
 
-- [x] `proposal.md` (PDR), `design.md` (ADR), `tasks.md` — dojo-os convention
+- [x] `proposal.md` (PDR), `design.md` (ADR), `tasks.md` — shared ChimeraNext OpenSpec convention
       (no YAML frontmatter; bold metadata under H1).
 
 ## Phase 2 — Scaffold (done)

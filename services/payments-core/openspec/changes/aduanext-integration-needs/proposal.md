@@ -14,7 +14,7 @@ AduaNext is unusual among our consumers:
 - **Marketplace-like triangle**: pymes contract freelance brokers for a single signature. Payment flows between three parties (pyme → platform → broker) with release contingent on regulatory events (DUA signed, DUA presented, DUA "levante" received).
 - **Optional post-v1 rails**: SINPE / Banco Central CR automations exist only conceptually today.
 
-The other consumers (dojo-os, altrupets, habitanexus, vertivolatam) are more conventional and mostly live inside the existing port set. AduaNext needs an explicit mapping to avoid scope creep into `payments-core` of things that belong in `aduanext-api`.
+The other consumers (learning-platform, altrupets, habitanexus, vertivolatam) are more conventional and mostly live inside the existing port set. AduaNext needs an explicit mapping to avoid scope creep into `payments-core` of things that belong in `aduanext-api`.
 
 ## AduaNext flows and their `payments-core` fit
 

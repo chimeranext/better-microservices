@@ -29,7 +29,7 @@ Score: **5 of 5**.
 
 | Criterion | Result | Key evidence |
 |---|:---:|---|
-| 1. Cross-startup reuse | PASS (strong) | Five committed consumers: `dojo-os`, `altrupets-api`, `habitanexus-api`, `vertivolatam-api`, `aduanext-api` |
+| 1. Cross-startup reuse | PASS (strong) | Five committed consumers: `learning-platform`, `altrupets-api`, `habitanexus-api`, `vertivolatam-api`, `aduanext-api` |
 | 2. Bounded domain | PASS | State machines for PaymentIntent, Subscription, Escrow, Payout, Refund, Dispute are all payments-local; `invoice-core` consumes `PaymentSucceeded`, it does not own the state |
 | 3. Non-trivial complexity | PASS (strong) | 3DS, webhook HMAC, idempotency, reconciliation, chargebacks, PCI SAQ-A scoping, multi-currency FX, split payments, payout schedules |
 | 4. Credential / regulatory isolation | PASS (strong) | Stripe secrets, OnvoPay keys, Tilopay keys, webhook signing secrets, and PCI scope all collapse into the sidecar pod |
@@ -91,7 +91,7 @@ explicit ports rather than shared schemas.
 - **`compliance-core`** — KYC and AML. Runs before `payments-core` on
   high-value flows; `payments-core` trusts its verdict and gates accordingly.
 
-Consumer backends (`dojo-os`, `altrupets-api`, `habitanexus-api`,
+Consumer backends (`learning-platform`, `altrupets-api`, `habitanexus-api`,
 `vertivolatam-api`, `aduanext-api`) all talk to `payments-core` through the
 same gRPC sidecar contract; they never embed a Stripe or OnvoPay client
 directly.
