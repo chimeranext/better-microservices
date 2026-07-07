@@ -86,7 +86,7 @@ def test_gate_action_enum():
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd /home/kvttvrsis/Documentos/GitHub/agentic-core && python -m pytest tests/unit/domain/test_gate.py -v`
+Run: `cd agentic-core && python -m pytest tests/unit/domain/test_gate.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'agentic_core.domain.value_objects.gate'`
 
 - [ ] **Step 3: Implement Gate value object**
@@ -1188,7 +1188,7 @@ ENTRYPOINT ["python", "-m", "agentic_core.runtime"]
 
 - [ ] **Step 3: Verify compose file is valid**
 
-Run: `cd /home/kvttvrsis/Documentos/GitHub/agentic-core && docker compose config --quiet && echo "Valid"`
+Run: `cd agentic-core && docker compose config --quiet && echo "Valid"`
 Expected: `Valid` (no errors)
 
 - [ ] **Step 4: Commit**
@@ -1292,7 +1292,7 @@ class AgentStudioApp extends StatelessWidget {
 
 - [ ] **Step 4: Verify Flutter project is valid**
 
-Run: `cd /home/kvttvrsis/Documentos/GitHub/agentic-core/ui && flutter pub get && flutter analyze`
+Run: `cd agentic-core/ui && flutter pub get && flutter analyze`
 Expected: No issues found
 
 - [ ] **Step 5: Commit**

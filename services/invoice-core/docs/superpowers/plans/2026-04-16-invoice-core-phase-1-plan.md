@@ -12,7 +12,7 @@
 
 ## Source spec
 
-`/home/kvttvrsis/Documentos/GitHub/invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md` — sections §§3-6, §9 (capability matrix Fase 1 rows), §11 (observability), §12 (security), §14 (Fase 1 roadmap) govern this plan.
+`invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md` — sections §§3-6, §9 (capability matrix Fase 1 rows), §11 (observability), §12 (security), §14 (Fase 1 roadmap) govern this plan.
 
 **Out of scope for Fase 1** (deferred to Fases 2-7):
 - P1: DonationReceipt full flow, DonationAuthorizationPort adapter, AppraisalPort, CustomsDataPort ATENA wiring, FilingDataExportPort real aggregators, IssueExportInvoice (tipo 09) polish.
@@ -26,7 +26,7 @@ These appear in Fase 1 only as **port interfaces** and **proto stubs returning `
 
 ## File Structure (Fase 1)
 
-Every file created or modified in Fase 1. Paths relative to repo root `/home/kvttvrsis/Documentos/GitHub/invoice-core/`.
+Every file created or modified in Fase 1. Paths relative to repo root `invoice-core/`.
 
 ### Root tooling (10 files)
 

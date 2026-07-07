@@ -4,7 +4,7 @@
 >
 > **For agentic workers:** Phase A is monitoring + scheduling. Phase B is implementation (REQUIRED SUB-SKILL: `superpowers:subagent-driven-development`, but **only AFTER a Phase A re-review confirms the trigger has fired**). Steps use checkbox (`- [ ]`) syntax.
 >
-> **Governance warning:** Running Phase B prematurely — without a quarterly re-review output that documents trigger firing — violates the governance rubric (`/home/kvttvrsis/Escritorio/2026-04-16-core-governance-rubric.md` §5 filing-core verdict) and the spec itself (§14 Fase 0 + §16 risk "Premature construction"). Do not scaffold, generate protos, or write domain code without documented trigger confirmation.
+> **Governance warning:** Running Phase B prematurely — without a quarterly re-review output that documents trigger firing — violates the governance rubric (`2026-04-16-core-governance-rubric.md` §5 filing-core verdict) and the spec itself (§14 Fase 0 + §16 risk "Premature construction"). Do not scaffold, generate protos, or write domain code without documented trigger confirmation.
 
 **Goal:** (Phase A) Monitor trigger conditions quarterly; (Phase B) when trigger fires, build `filing-core` v0.1 MVP scaffold with TRIBU-CR CR adapter + D-104 IVA declaration only. Nothing more until Fase 2+.
 
@@ -88,7 +88,7 @@ Expected output: 4 milestones in `open` state with the due dates above.
 ### Task A3: Define metrics collection
 
 **Files:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/docs/reviews/METRICS.md` — definitions + data sources (create on first execution).
+- `filing-core/docs/reviews/METRICS.md` — definitions + data sources (create on first execution).
 
 - [ ] **Step 1: Define "startup requests" metric**
 
@@ -129,7 +129,7 @@ Any announcement that removes web UI submission, mandates API-only filing, or in
 - [ ] **Step 4: Commit METRICS.md**
 
 ```bash
-cd /home/kvttvrsis/Documentos/GitHub/filing-core
+cd filing-core
 mkdir -p docs/reviews
 # Write docs/reviews/METRICS.md capturing steps 1-3 above.
 git add docs/reviews/METRICS.md
@@ -204,7 +204,7 @@ Expected: `"isPinned": true`, `"state": "OPEN"`, labels include `monitoring`, `d
 ### Task A5: Re-review template
 
 **Files:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/docs/reviews/TEMPLATE.md` — markdown template used by each `YYYY-QN-review.md`.
+- `filing-core/docs/reviews/TEMPLATE.md` — markdown template used by each `YYYY-QN-review.md`.
 
 - [ ] **Step 1: Write the template**
 
@@ -217,7 +217,7 @@ Create `docs/reviews/2026-Q2-review.md` as the baseline, copying the template an
 - [ ] **Step 3: Commit**
 
 ```bash
-cd /home/kvttvrsis/Documentos/GitHub/filing-core
+cd filing-core
 git add docs/reviews/TEMPLATE.md docs/reviews/2026-Q2-review.md
 git commit -m "docs(reviews): add re-review template and Q2 2026 baseline"
 ```
@@ -295,12 +295,12 @@ All Phase B tasks follow TDD: write failing test → minimal implementation → 
 ### Task B1: Verify trigger officially fired
 
 **Files:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/docs/reviews/YYYY-QN-review.md` — the specific review file that fired the trigger.
+- `filing-core/docs/reviews/YYYY-QN-review.md` — the specific review file that fired the trigger.
 
 - [ ] **Step 1: Locate the firing review**
 
 ```bash
-cd /home/kvttvrsis/Documentos/GitHub/filing-core
+cd filing-core
 git log --all --oneline -- 'docs/reviews/*-review.md' | head -20
 # Identify the review with verdict: TRIGGER FIRED.
 ```
@@ -330,8 +330,8 @@ gh issue close <pinned-issue-number> --repo lapc506/filing-core --comment "Trigg
 ### Task B2: Re-read spec with fresh eyes
 
 **Files:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/docs/superpowers/specs/2026-04-16-filing-core-design.md` — may have drifted.
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/docs/reviews/YYYY-QN-activation-drift.md` — new drift-check output (create).
+- `filing-core/docs/superpowers/specs/2026-04-16-filing-core-design.md` — may have drifted.
+- `filing-core/docs/reviews/YYYY-QN-activation-drift.md` — new drift-check output (create).
 
 - [ ] **Step 1: Read the spec top-to-bottom**
 
@@ -356,14 +356,14 @@ Amend the spec in a dedicated commit (`docs(spec): post-trigger drift reconcilia
 ### Task B3: Re-read invoice-core FilingDataExportPort current signature
 
 **Files:**
-- `/home/kvttvrsis/Documentos/GitHub/invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md` — spec of truth at design time.
-- `/home/kvttvrsis/Documentos/GitHub/invoice-core/src/application/ports/FilingDataExportPort.ts` — actual code at activation time (path assumed; confirm when invoice-core exists).
-- `/home/kvttvrsis/Documentos/GitHub/invoice-core/proto/invoice_core/v1/filing_data_export.proto` — gRPC contract if published.
+- `invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md` — spec of truth at design time.
+- `invoice-core/src/application/ports/FilingDataExportPort.ts` — actual code at activation time (path assumed; confirm when invoice-core exists).
+- `invoice-core/proto/invoice_core/v1/filing_data_export.proto` — gRPC contract if published.
 
 - [ ] **Step 1: Read the actual port code**
 
 ```bash
-find /home/kvttvrsis/Documentos/GitHub/invoice-core -name 'FilingDataExportPort*' -o -name 'filing_data_export*'
+find invoice-core -name 'FilingDataExportPort*' -o -name 'filing_data_export*'
 ```
 
 - [ ] **Step 2: Snapshot the signature**
@@ -377,19 +377,19 @@ If invoice-core has published a `v1` proto that is stable (no `v2` in progress w
 ### Task B4: Scaffold TypeScript + hexagonal (mirror invoice-core repo structure)
 
 **Files created:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/package.json`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tsconfig.json`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/vitest.config.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/.nvmrc` (`22`)
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/pnpm-workspace.yaml`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/domain/.gitkeep`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/application/.gitkeep`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/adapters/primary/.gitkeep`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/adapters/secondary/.gitkeep`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/unit/.gitkeep`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/integration/.gitkeep`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/.github/workflows/ci.yml`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/LICENSE.md` (BSL 1.1 — already present, verify)
+- `filing-core/package.json`
+- `filing-core/tsconfig.json`
+- `filing-core/vitest.config.ts`
+- `filing-core/.nvmrc` (`22`)
+- `filing-core/pnpm-workspace.yaml`
+- `filing-core/src/domain/.gitkeep`
+- `filing-core/src/application/.gitkeep`
+- `filing-core/src/adapters/primary/.gitkeep`
+- `filing-core/src/adapters/secondary/.gitkeep`
+- `filing-core/tests/unit/.gitkeep`
+- `filing-core/tests/integration/.gitkeep`
+- `filing-core/.github/workflows/ci.yml`
+- `filing-core/LICENSE.md` (BSL 1.1 — already present, verify)
 
 - [ ] **Step 1: Copy structure from invoice-core**
 
@@ -426,9 +426,9 @@ Push to a feature branch, verify GitHub Actions CI passes before merging.
 ### Task B5: Domain — Declaration entity + DeclarationState state machine (subset)
 
 **Files created:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/domain/declaration/Declaration.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/domain/declaration/DeclarationStatus.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/unit/domain/Declaration.test.ts`
+- `filing-core/src/domain/declaration/Declaration.ts`
+- `filing-core/src/domain/declaration/DeclarationStatus.ts`
+- `filing-core/tests/unit/domain/Declaration.test.ts`
 
 Scope cut vs spec §4: only `DRAFT → CALCULATED → AWAITING_APPROVAL → SUBMITTED → ACCEPTED|REJECTED`. `VALIDATED`, `READY`, `OBSERVED`, `RESOLVED`, `CANCELLED` are Fase 2+.
 
@@ -504,9 +504,9 @@ Use `fast-check` to generate arbitrary transition sequences; assert `SUBMITTED` 
 ### Task B6: Domain — DeclarationLine value object
 
 **Files created:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/domain/declaration/DeclarationLine.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/domain/shared/Money.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/unit/domain/DeclarationLine.test.ts`
+- `filing-core/src/domain/declaration/DeclarationLine.ts`
+- `filing-core/src/domain/shared/Money.ts`
+- `filing-core/tests/unit/domain/DeclarationLine.test.ts`
 
 - [ ] **Step 1: TDD — test first**
 
@@ -553,8 +553,8 @@ Enforce: `source ∈ {AUTO_INVOICE, MANUAL, CALCULATED}` for Fase 1 (AUTO_PAYROL
 ### Task B7: Port — `TaxAuthorityFilingPort` interface
 
 **Files created:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/application/ports/TaxAuthorityFilingPort.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/unit/application/ports/TaxAuthorityFilingPort.contract.test.ts`
+- `filing-core/src/application/ports/TaxAuthorityFilingPort.ts`
+- `filing-core/tests/unit/application/ports/TaxAuthorityFilingPort.contract.test.ts`
 
 - [ ] **Step 1: Write contract test (fake adapter)**
 
@@ -618,8 +618,8 @@ Spec §5 port #1 lists it, but Fase 1 cut excludes observation flow — out of s
 ### Task B8: Port — `DeclarationRepository` interface
 
 **Files created:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/application/ports/DeclarationRepository.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/unit/application/ports/DeclarationRepository.contract.test.ts`
+- `filing-core/src/application/ports/DeclarationRepository.ts`
+- `filing-core/tests/unit/application/ports/DeclarationRepository.contract.test.ts`
 
 - [ ] **Step 1: Write contract test against in-memory fake**
 
@@ -650,8 +650,8 @@ Same file folder as Drizzle adapter (Task B12) for parallel structure.
 ### Task B9: Port — `InvoiceCoreDataSourcePort` interface (consumes invoice-core gRPC)
 
 **Files created:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/application/ports/InvoiceCoreDataSourcePort.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/unit/application/ports/InvoiceCoreDataSourcePort.contract.test.ts`
+- `filing-core/src/application/ports/InvoiceCoreDataSourcePort.ts`
+- `filing-core/tests/unit/application/ports/InvoiceCoreDataSourcePort.contract.test.ts`
 
 Signature aligned with the snapshot from Task B3 — do not guess, use the actual exported shape.
 
@@ -688,9 +688,9 @@ Only `exportD104Data` in Fase 1. Add others in Fase 2+ plans.
 ### Task B10: TRIBUCRAdapter skeleton (D-104 only)
 
 **Files created:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/adapters/secondary/tribucr/TRIBUCRAdapter.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/adapters/secondary/tribucr/TRIBUCRHttpClient.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/integration/tribucr/TRIBUCRAdapter.sandbox.test.ts`
+- `filing-core/src/adapters/secondary/tribucr/TRIBUCRAdapter.ts`
+- `filing-core/src/adapters/secondary/tribucr/TRIBUCRHttpClient.ts`
+- `filing-core/tests/integration/tribucr/TRIBUCRAdapter.sandbox.test.ts`
 
 - [ ] **Step 1: Write integration test against sandbox**
 
@@ -707,9 +707,9 @@ Validate payload against JSON Schema `d104-tribucr.schema.json` (committed to `s
 ### Task B11: DeclarationCalculator for D-104
 
 **Files created:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/domain/calculators/D104Calculator.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/unit/domain/calculators/D104Calculator.test.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/fixtures/d104-golden/`
+- `filing-core/src/domain/calculators/D104Calculator.ts`
+- `filing-core/tests/unit/domain/calculators/D104Calculator.test.ts`
+- `filing-core/tests/fixtures/d104-golden/`
 
 - [ ] **Step 1: Golden-file test first (TDD)**
 
@@ -785,10 +785,10 @@ For arbitrary non-negative inputs, both `saldoAPagar` and `saldoAFavor` must be 
 ### Task B12: PostgreSQL + Drizzle for DeclarationRepository
 
 **Files created:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/adapters/secondary/persistence/schema.ts` (Drizzle schema)
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/adapters/secondary/persistence/PostgresDeclarationRepository.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/drizzle/0001_initial.sql` (generated migration)
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/integration/persistence/PostgresDeclarationRepository.test.ts`
+- `filing-core/src/adapters/secondary/persistence/schema.ts` (Drizzle schema)
+- `filing-core/src/adapters/secondary/persistence/PostgresDeclarationRepository.ts`
+- `filing-core/drizzle/0001_initial.sql` (generated migration)
+- `filing-core/tests/integration/persistence/PostgresDeclarationRepository.test.ts`
 
 - [ ] **Step 1: Integration test with Testcontainers-postgres**
 
@@ -868,9 +868,9 @@ Add a test: save a declaration with `approvedBy = null` + status `AWAITING_APPRO
 ### Task B13: gRPC service `FilingAdmin` (`PrepareDeclaration` + `ApproveAndSubmit` only)
 
 **Files created:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/proto/filing_core/v1/filing_admin.proto`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/adapters/primary/grpc/FilingAdminService.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/integration/grpc/FilingAdminService.test.ts`
+- `filing-core/proto/filing_core/v1/filing_admin.proto`
+- `filing-core/src/adapters/primary/grpc/FilingAdminService.ts`
+- `filing-core/tests/integration/grpc/FilingAdminService.test.ts`
 
 Spec §6 lists 11 RPCs on `FilingAdmin`. Fase 1 implements **two**: `PrepareDeclaration` and `ApproveAndSubmit`. The rest are Fase 2+.
 
@@ -929,10 +929,10 @@ Fase 1 ships gRPC only. REST approval UI is Fase 2+. Leave the REST Fastify skel
 ### Task B14: Observability alignment
 
 **Files created:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/infrastructure/observability/tracing.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/infrastructure/observability/metrics.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/src/infrastructure/observability/logger.ts`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/tests/unit/infrastructure/observability.test.ts`
+- `filing-core/src/infrastructure/observability/tracing.ts`
+- `filing-core/src/infrastructure/observability/metrics.ts`
+- `filing-core/src/infrastructure/observability/logger.ts`
+- `filing-core/tests/unit/infrastructure/observability.test.ts`
 
 - [ ] **Step 1: Test — PII redaction in logs**
 
@@ -972,12 +972,12 @@ When `filing-core` calls invoice-core via `InvoiceCoreDataSourcePort`, the trace
 ### Task B15: Docker + basic Helm
 
 **Files created:**
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/Dockerfile`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/docker-compose.yml`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/helm/filing-core/Chart.yaml`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/helm/filing-core/values.yaml`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/helm/filing-core/templates/deployment.yaml`
-- `/home/kvttvrsis/Documentos/GitHub/filing-core/helm/filing-core/templates/service.yaml`
+- `filing-core/Dockerfile`
+- `filing-core/docker-compose.yml`
+- `filing-core/helm/filing-core/Chart.yaml`
+- `filing-core/helm/filing-core/values.yaml`
+- `filing-core/helm/filing-core/templates/deployment.yaml`
+- `filing-core/helm/filing-core/templates/service.yaml`
 
 - [ ] **Step 1: Dockerfile — multi-stage**
 
@@ -1020,7 +1020,7 @@ curl -sI https://www.hacienda.go.cr/TRIBU-CR.html | head -5
 echo "Check DGT announcements and TRIBU-CR release notes manually; automate only if RSS becomes available."
 
 # A.4 — verify invoice-core FilingDataExportPort has not silently changed signature
-cd /home/kvttvrsis/Documentos/GitHub/invoice-core && git log --oneline -5 -- '**/FilingDataExportPort*' '**/filing_data_export*'
+cd invoice-core && git log --oneline -5 -- '**/FilingDataExportPort*' '**/filing_data_export*'
 ```
 
 ## Appendix B — Labels setup for filing-core repo

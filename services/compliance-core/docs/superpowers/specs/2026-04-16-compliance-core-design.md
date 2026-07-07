@@ -11,11 +11,11 @@
 
 ## Documentos complementarios
 
-- `/home/kvttvrsis/Escritorio/2026-04-16-core-governance-rubric.md` — rúbrica 5/5 que aprobó este `-core` (§3 criterios, §5 verdicto).
-- `/home/kvttvrsis/Documentos/GitHub/invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md` — spec del `-core` predecesor; patrón y rigor replicados aquí.
-- `/home/kvttvrsis/Escritorio/2026-04-16-invoice-core-hallazgos.md` — hallazgos §8 (Ley 8204 HabitaNexus escrow) y §13 (referencias Compliance/KYC/PoP que originaron la lista de providers).
-- `/home/kvttvrsis/Documentos/GitHub/agentic-core/README.md` — patrón arquitectónico (Python + BSL 1.1 + hexagonal + sidecar).
-- `/home/kvttvrsis/Documentos/GitHub/marketplace-core/README.md` — patrón arquitectónico (TypeScript + hexagonal + gRPC).
+- `2026-04-16-core-governance-rubric.md` — rúbrica 5/5 que aprobó este `-core` (§3 criterios, §5 verdicto).
+- `invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md` — spec del `-core` predecesor; patrón y rigor replicados aquí.
+- `2026-04-16-invoice-core-hallazgos.md` — hallazgos §8 (Ley 8204 HabitaNexus escrow) y §13 (referencias Compliance/KYC/PoP que originaron la lista de providers).
+- `agentic-core/README.md` — patrón arquitectónico (Python + BSL 1.1 + hexagonal + sidecar).
+- `marketplace-core/README.md` — patrón arquitectónico (TypeScript + hexagonal + gRPC).
 
 ---
 
@@ -1137,10 +1137,10 @@ Diferencia clave con `invoice-core`: compliance-core **es sujeto obligado por pr
 - FATF 40 Recommendations: https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html
 - GAFILAT: https://www.gafilat.org
 - Repositorios del ecosistema:
-  - `/home/kvttvrsis/Documentos/GitHub/agentic-core/` (Python, BSL 1.1)
-  - `/home/kvttvrsis/Documentos/GitHub/marketplace-core/` (TypeScript, MIT)
-  - `/home/kvttvrsis/Documentos/GitHub/invoice-core/` (TypeScript, BSL 1.1)
-  - `/home/kvttvrsis/Documentos/GitHub/hacienda-cr/` (TypeScript, MIT, DojoCodingLabs)
-- Spec invoice-core (patrón): `/home/kvttvrsis/Documentos/GitHub/invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md`
-- Governance rubric: `/home/kvttvrsis/Escritorio/2026-04-16-core-governance-rubric.md`
-- Invoice-core hallazgos (fuentes compliance §13): `/home/kvttvrsis/Escritorio/2026-04-16-invoice-core-hallazgos.md`
+  - `agentic-core/` (Python, BSL 1.1)
+  - `marketplace-core/` (TypeScript, MIT)
+  - `invoice-core/` (TypeScript, BSL 1.1)
+  - `hacienda-cr/` (TypeScript, MIT, DojoCodingLabs)
+- Spec invoice-core (patrón): `invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md`
+- Governance rubric: `2026-04-16-core-governance-rubric.md`
+- Invoice-core hallazgos (fuentes compliance §13): `2026-04-16-invoice-core-hallazgos.md`

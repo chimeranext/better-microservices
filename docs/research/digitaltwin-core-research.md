@@ -51,7 +51,7 @@ Confirmed from `README.md` (root), `openspec/project.md`, `services/vision-core/
 ## 1. Per-source findings
 
 ### 1.1 Smoleňová et al. 2025 — *Development of a tomato FSPM for digital twin applications* (in silico Plants 7(2) diaf022) — **conceptual core**
-`/home/kvttvrsis/Descargas/vertivolatam/diaf022.pdf` → `/tmp/diaf022.md`
+`vertivolatam/diaf022.pdf` → `/tmp/diaf022.md`
 
 - **A digital twin = 3 parts** (Wright & Davidson 2020): (a) *a model of the object*,
   (b) *an evolving set of data relating to the object*, (c) *a means of dynamically
@@ -86,7 +86,7 @@ Confirmed from `README.md` (root), `openspec/project.md`, `services/vision-core/
   area, leaf dry weight, biomass, predicted yield, resource use (N, water, CO₂, energy).
 
 ### 1.2 Petropoulou et al. 2023 — *Lettuce Production in Intelligent Greenhouses* (Sensors 23(6) 2929) — **autonomous greenhouse + DT definition**
-`/home/kvttvrsis/Descargas/vertivolatam/sensors-23-02929-v2.pdf` → `/tmp/sensors.md`
+`vertivolatam/sensors-23-02929-v2.pdf` → `/tmp/sensors.md`
 
 - **3rd Autonomous Greenhouse Challenge:** 6 high-tech compartments, **lettuce**, goal =
   highest **net profit** under *fully autonomous* control by remote algorithms — decisions
@@ -109,7 +109,7 @@ Confirmed from `README.md` (root), `openspec/project.md`, `services/vision-core/
   climate recommendations — exactly the loop this paper automates by hand-built algorithms.
 
 ### 1.3 Calvo Vargas et al. 2025 — *IoT en Captura y Análisis de Sonido en Agroindustria* (Revista Agro 3(1)) — **acoustic IoT sensing modality**
-`/home/kvttvrsis/Descargas/vertivolatam/IoT+...Sonido...pdf` → `/tmp/iot_sonido.md`
+`vertivolatam/IoT+...Sonido...pdf` → `/tmp/iot_sonido.md`
 
 - **Systematic literature review** of IoT acoustic monitoring in agroindustry. Dominant
   applications: **pest detection** and **crop-state monitoring via sound**; identified gap =
@@ -451,9 +451,9 @@ over the same `.proto` (single source of truth), with a REST mirror fallback.
 
 | # | Source | Access | Local artifact |
 |---|---|---|---|
-| 1.1 | Smoleňová et al. 2025, *Tomato FSPM for digital twin* (in silico Plants 7(2) diaf022) | OK (PDF + web) | `/home/kvttvrsis/Descargas/vertivolatam/diaf022.pdf` → `/tmp/diaf022.md` |
-| 1.2 | Petropoulou et al. 2023, *Lettuce in Intelligent Greenhouses* (Sensors 23(6) 2929) | OK (PDF) | `/home/kvttvrsis/Descargas/vertivolatam/sensors-23-02929-v2.pdf` → `/tmp/sensors.md` |
-| 1.3 | Calvo Vargas et al. 2025, *IoT en Captura y Análisis de Sonido en Agroindustria* (Revista Agro 3(1)) | OK (PDF) | `/home/kvttvrsis/Descargas/vertivolatam/IoT+...Sonido...pdf` → `/tmp/iot_sonido.md` |
+| 1.1 | Smoleňová et al. 2025, *Tomato FSPM for digital twin* (in silico Plants 7(2) diaf022) | OK (PDF + web) | `vertivolatam/diaf022.pdf` → `/tmp/diaf022.md` |
+| 1.2 | Petropoulou et al. 2023, *Lettuce in Intelligent Greenhouses* (Sensors 23(6) 2929) | OK (PDF) | `vertivolatam/sensors-23-02929-v2.pdf` → `/tmp/sensors.md` |
+| 1.3 | Calvo Vargas et al. 2025, *IoT en Captura y Análisis de Sonido en Agroindustria* (Revista Agro 3(1)) | OK (PDF) | `vertivolatam/IoT+...Sonido...pdf` → `/tmp/iot_sonido.md` |
 | 1.4 | WUR — *Data Assimilation in the Digital Future Farm* | OK | research.wur.nl/en/projects/data-assimilation-in-the-digital-future-farm-... |
 | 1.5 | WUR — *AgroDataCube* | OK | https://agrodatacube.wur.nl/ |
 | 1.6 | WUR — *Winner 4th Autonomous Greenhouse Challenge* | OK | https://www.wur.nl/en/news/winner-4th-autonomous-greenhouse-challenge-announced |

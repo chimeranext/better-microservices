@@ -22,10 +22,10 @@
 
 ## Documentos complementarios
 
-- `/home/kvttvrsis/Escritorio/2026-04-16-core-governance-rubric.md` — rúbrica §5 "filing-core verdict".
-- `/home/kvttvrsis/Documentos/GitHub/invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md` — diseño padre. filing-core consume `FilingDataExportPort`.
-- `/home/kvttvrsis/Escritorio/2026-04-16-invoice-core-hallazgos.md` — §5 (Hacienda Digital = TRIBU-CR + ATENA + CR-Teza), §13 (fuentes).
-- `/home/kvttvrsis/Documentos/GitHub/agentic-core/README.md` — patrón arquitectónico de referencia.
+- `2026-04-16-core-governance-rubric.md` — rúbrica §5 "filing-core verdict".
+- `invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md` — diseño padre. filing-core consume `FilingDataExportPort`.
+- `2026-04-16-invoice-core-hallazgos.md` — §5 (Hacienda Digital = TRIBU-CR + ATENA + CR-Teza), §13 (fuentes).
+- `agentic-core/README.md` — patrón arquitectónico de referencia.
 
 ---
 
@@ -633,9 +633,9 @@ Gate: HabitaNexus con NIT CO activo + operaciones > umbral.
 
 ## Apéndice C — Referencias del ecosistema
 
-- `invoice-core` spec: `/home/kvttvrsis/Documentos/GitHub/invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md`
-- Governance rubric (§5 filing-core verdict): `/home/kvttvrsis/Escritorio/2026-04-16-core-governance-rubric.md`
-- Hallazgos invoice-core (§5 Hacienda Digital, §13 fuentes): `/home/kvttvrsis/Escritorio/2026-04-16-invoice-core-hallazgos.md`
-- `agentic-core` repo: `/home/kvttvrsis/Documentos/GitHub/agentic-core/`
-- `marketplace-core` repo: `/home/kvttvrsis/Documentos/GitHub/marketplace-core/`
+- `invoice-core` spec: `invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md`
+- Governance rubric (§5 filing-core verdict): `2026-04-16-core-governance-rubric.md`
+- Hallazgos invoice-core (§5 Hacienda Digital, §13 fuentes): `2026-04-16-invoice-core-hallazgos.md`
+- `agentic-core` repo: `agentic-core/`
+- `marketplace-core` repo: `marketplace-core/`
 - Explicit Architecture — Herbert Graca: https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/
