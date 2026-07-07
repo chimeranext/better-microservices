@@ -35,7 +35,7 @@ Sin librería común, cada startup duplicaría: firma XAdES-EPES, clave numéric
 
 ### Valor sobre `hacienda-cr` SDK existente
 
-`hacienda-cr` (ChimeraNext, TypeScript, MIT) cubre ya el SDK para CR v4.4. `invoice-core` lo **envuelve como adapter CR** dentro del patrón hexagonal y aporta:
+`hacienda-cr` (DojoCodingLabs, TypeScript, MIT) cubre ya el SDK para CR v4.4. `invoice-core` lo **envuelve como adapter CR** dentro del patrón hexagonal y aporta:
 
 1. **Arquitectura hexagonal** con ports + adapters, permitiendo swap por test o por jurisdicción.
 2. **gRPC sidecar** — alineado con `agentic-core` y `marketplace-core`, con dual deployment (K8s sidecar o standalone Docker).
@@ -464,7 +464,7 @@ Proto versionado por namespace (`v1`, `v2`). Breaking changes → nuevo namespac
 
 ### 7.1 `HaciendaCRAdapter` — P0
 
-Envuelve `@chimeranext/hacienda-sdk`. Responsabilidades:
+Envuelve `@dojocoding/hacienda-sdk`. Responsabilidades:
 
 - `buildClave` → `buildXML` → `sign` → `submit` → `poll status`.
 - Soporta los 7 tipos v4.4 + Mensaje Receptor.
@@ -662,7 +662,7 @@ Alineado con `agentic-core`:
 
 ### Paso 1: Sin breaking changes
 
-- invoice-core v0.1 depende de `@chimeranext/hacienda-sdk@^1` sin modificarlo.
+- invoice-core v0.1 depende de `@dojocoding/hacienda-sdk@^1` sin modificarlo.
 - Proyectos que ya usan `hacienda-cr` directo siguen funcionando.
 
 ### Paso 2: Refactor de shared primitives

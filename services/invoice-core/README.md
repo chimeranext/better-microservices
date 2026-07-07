@@ -1,6 +1,6 @@
 # invoice-core
 
-TypeScript library for multi-country electronic invoicing (Costa Rica v4.4 + México retenciones + Colombia retención en la fuente) as a **sidecar companion** to startup backends. Wraps [`@chimeranext/hacienda-sdk`](https://github.com/chimeranext/hacienda-cr) in a hexagonal architecture and exposes gRPC services aligned with [`agentic-core`](https://github.com/lapc506/agentic-core) and `marketplace-core` patterns.
+TypeScript library for multi-country electronic invoicing (Costa Rica v4.4 + México retenciones + Colombia retención en la fuente) as a **sidecar companion** to startup backends. Wraps [`@dojocoding/hacienda-sdk`](https://github.com/DojoCodingLabs/hacienda-cr) in a hexagonal architecture and exposes gRPC services aligned with [`agentic-core`](https://github.com/lapc506/agentic-core) and `marketplace-core` patterns.
 
 **Status**: **Pre-alpha**. Design spec approved 2026-04-16. Implementation pending.
 

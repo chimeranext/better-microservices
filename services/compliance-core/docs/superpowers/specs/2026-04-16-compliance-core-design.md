@@ -1140,7 +1140,7 @@ Diferencia clave con `invoice-core`: compliance-core **es sujeto obligado por pr
   - `agentic-core/` (Python, BSL 1.1)
   - `marketplace-core/` (TypeScript, MIT)
   - `invoice-core/` (TypeScript, BSL 1.1)
-  - `hacienda-cr/` (TypeScript, MIT, ChimeraNext)
+  - `hacienda-cr/` (TypeScript, MIT, DojoCodingLabs)
 - Spec invoice-core (patrón): `invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md`
 - Governance rubric: `2026-04-16-core-governance-rubric.md`
 - Invoice-core hallazgos (fuentes compliance §13): `2026-04-16-invoice-core-hallazgos.md`

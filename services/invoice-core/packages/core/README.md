@@ -5,7 +5,7 @@
 The inner hexagon of the hexagonal architecture: multi-country electronic
 invoicing logic (Costa Rica v4.4 + México retenciones + Colombia retención en la
 fuente) modelled with no dependency on gRPC, persistence, or the
-[`@chimeranext/hacienda-sdk`](https://github.com/chimeranext/hacienda-cr).
+[`@dojocoding/hacienda-sdk`](https://github.com/DojoCodingLabs/hacienda-cr).
 Adapters depend on this package; it depends on nothing in the service.
 
 - **Package:** `@lapc506/invoice-core-core` · ESM (`"type": "module"`)

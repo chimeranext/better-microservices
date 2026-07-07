@@ -3,6 +3,13 @@
 > **Source of truth** for how decisions are recorded, tracked, and shipped in this
 > monorepo. Convention shared across the ChimeraNext monorepos.
 
+> **Known external dependency exception:** `@dojocoding/hacienda-sdk`
+> (repo `github.com/DojoCodingLabs/hacienda-cr`) is a real, published third-party SDK
+> that `invoice-core` wraps for Costa Rica electronic invoicing. It is intentionally
+> **exempt from the brand-decoupling sweep** and keeps its `@dojocoding` scope until/
+> unless it is republished under `@chimeranext`. All other `dojo*` references have been
+> decoupled.
+
 ## Overview
 
 `better-microservices` is a monorepo of source-available, independently-selectable
