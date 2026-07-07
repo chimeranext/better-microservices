@@ -6,7 +6,7 @@ as plain-text references.
 
 ## Product surfaces
 
-- dojo-os — learning platform; uses `payments-core` for tier upgrades, course
+- learning-platform — learning platform; uses `payments-core` for tier upgrades, course
   purchases, and creator payouts.
 - altrupets — pet welfare marketplace; uses `payments-core` for donation
   flows and marketplace settlements.

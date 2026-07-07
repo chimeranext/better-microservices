@@ -82,5 +82,5 @@
 
 - [ ] Linear `Done` with PR link.
 - [ ] The adapter appears in `GatewayRegistry.listActive()` at runtime alongside Stripe.
-- [ ] `dojo-os` can start routing CR-tier subscriptions through OnvoPay instead of Stripe for CR-issued cards (tracked in a sibling repo PR).
+- [ ] `learning-platform` can start routing CR-tier subscriptions through OnvoPay instead of Stripe for CR-issued cards (tracked in a sibling repo PR).
 - [ ] The `docs.onvopay.com` verification log in `design.md` becomes the baseline; next upgrade PR re-verifies and updates dates.

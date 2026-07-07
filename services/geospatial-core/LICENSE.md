@@ -4,7 +4,7 @@ License text copyright © 2023 MariaDB plc, All Rights Reserved.
 "Business Source License" is a trademark of MariaDB plc.
 
 Copyright © 2026 Andrés (Luis Andrés Peña Castillo, GitHub: lapc506,
-andres@dojocoding.io) — intellectual author of geospatial-core.
+hello@chimeranext.dev) — intellectual author of geospatial-core.
 Licensed and published by ChimeraNext Shared Services LLC.
 
 geospatial-core is licensed under the Business Source License agreement below.
@@ -26,7 +26,7 @@ Parameters
 ChimeraNext Shared Services LLC (hereinafter, "Licensor").
 
 The intellectual author and copyright holder of the original work is
-Andrés (Luis Andrés Peña Castillo, GitHub: lapc506, andres@dojocoding.io).
+Andrés (Luis Andrés Peña Castillo, GitHub: lapc506, hello@chimeranext.dev).
 
 ## Licensed Work
 

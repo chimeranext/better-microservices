@@ -1,7 +1,7 @@
 # geospatial-core — satellite & aerial land-use AI without cadastral maps
 
 **Date:** 2026-06-01
-**Owner:** Andrés (andres@dojocoding.io)
+**Owner:** Andrés (hello@chimeranext.dev)
 **Status:** Proposed — scaffolded on branch `chore/geospatial-core-scaffold`, pending review
 **Domain:** `geospatial-core` (new 8th service; proposed label `service:geospatial-core`)
 **Primary consumer:** `habitanexus` (long-term housing-rental marketplace)

@@ -72,6 +72,6 @@ message ProductPurchaseRequested {
 1. marketplace-core's OpenSpec tree gains a matching change (`openspec/changes/payments-core-events-integration/` or equivalent) that ships the subscription code + event schemas.
 2. `PaymentSucceeded`, `PaymentRefunded`, and `PaymentDisputed` subscriptions on marketplace-core's side are wired and tested against a running payments-core sidecar.
 3. `docs/content/docs/integrations/marketplace-core.md` in this repo describes the contract (read-only from payments-core's side).
-4. At least one consumer backend (candidate: `vertivolatam-api` or `dojo-os`) adopts the pattern in a follow-up PR that demonstrates the full end-to-end flow.
+4. At least one consumer backend (candidate: `vertivolatam-api` or `learning-platform`) adopts the pattern in a follow-up PR that demonstrates the full end-to-end flow.
 5. Both sides' PRs reference each other and merge in lockstep.
 6. The canonical `order_id` metadata key is documented: any consumer calling `InitiateCheckout` on payments-core SHOULD include `metadata.order_id` when the payment corresponds to a marketplace-core order.

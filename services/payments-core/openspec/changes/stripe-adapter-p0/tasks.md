@@ -6,7 +6,7 @@
 - Labels: `adapter`, `stripe`, `p0`.
 - Base branch: `main`. Branch: `feat/PCR-{issue-id}-stripe-adapter-p0`.
 - Blocked by: `domain-skeleton`, `application-use-cases`, `grpc-server-inbound`, `proto-contract-v1`.
-- Related: sibling lesson `DOJ-3287` in dojo-os (stripe-client factory pattern). This adapter inherits that pattern.
+- Related: sibling lesson (pinned-SDK factory pattern) (stripe-client factory pattern). This adapter inherits that pattern.
 
 ## Implementation checklist
 
@@ -57,7 +57,7 @@
 
 ### Docs
 
-- [ ] `docs/content/docs/adapters/stripe.md` — adapter overview, supported flows, env vars, version-pin rationale (with one-line cross-ref to DOJ-3287 as `sibling-repo internal`), migration note for dojo-os Edge Functions.
+- [ ] `docs/content/docs/adapters/stripe.md` — adapter overview, supported flows, env vars, version-pin rationale (with one-line cross-ref to the internal SDK-drift lesson), migration note for learning-platform Edge Functions.
 - [ ] `docs/mkdocs.yml` nav entry uncommented for `Adapters → Stripe`.
 
 ### `.env.example`
@@ -73,7 +73,7 @@
 
 ## Pitfalls to avoid
 
-- Do not upgrade the Stripe SDK in this change. Any upgrade is its own OpenSpec change; see DOJ-3287 for why.
+- Do not upgrade the Stripe SDK in this change. Any upgrade is its own OpenSpec change; see the SDK-drift lesson for why.
 - Do not instantiate the Stripe SDK outside `stripe-client-factory.ts`. ESLint guards this but a rule drift check runs in CI.
 - Do not JSON-parse the webhook body before signature verification.
 - Do not cast `bigint` amounts to `number` without the precision guard (Stripe amounts capped at `Number.MAX_SAFE_INTEGER`).
@@ -86,6 +86,6 @@
 
 - [ ] Linear `Done` with PR link.
 - [ ] `stripe-agentic-commerce-p1` unblocks — it extends this adapter with the agentic product surface.
-- [ ] A sibling dojo-os PR deprecates the Stripe Edge Functions and switches to `payments-core` (tracked separately in that repo).
+- [ ] A sibling learning-platform PR deprecates the Stripe Edge Functions and switches to `payments-core` (tracked separately in that repo).
 - [ ] `marketplace-core-events` (when it lands) uses Stripe Connect fee support demonstrated here.
 - [ ] The `stripe-client-factory` pattern is referenced by `onvopay-adapter-p0` and `tilopay-adapter-p1` as a template for each gateway's client factory.

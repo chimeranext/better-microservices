@@ -9,7 +9,7 @@ description = "Satellite & aerial land-use / land-cover AI without cadastral map
 readme = "README.md"
 license = "BUSL-1.1"
 requires-python = ">=3.12"
-authors = [{ name = "Andrés (lapc506)", email = "andres@dojocoding.io" }]
+authors = [{ name = "Andrés (lapc506)", email = "hello@chimeranext.dev" }]
 dependencies = [
     "pydantic>=2.0",
     "pydantic-settings>=2.0",

@@ -8,7 +8,7 @@
 
 ## 1. Problem Statement
 
-Six projects across the DojoCoding portfolio require reputation/trust scoring, each with different domain semantics but overlapping structural patterns:
+Six projects across the ChimeraNext portfolio require reputation/trust scoring, each with different domain semantics but overlapping structural patterns:
 
 | Project | Who gets rated | Who rates | What drives reputation |
 |---------|---------------|-----------|----------------------|

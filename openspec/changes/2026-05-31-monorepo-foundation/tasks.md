@@ -2,7 +2,7 @@
 
 > Implementation checklist for [`proposal.md`](./proposal.md) / [`design.md`](./design.md).
 > Phases marked **🚧 GATED** require explicit owner go-ahead (outward-facing / hard to reverse).
-> `$ROOT` = `/home/kvttvrsis/Documentos/GitHub/chimeranext/better-microservices`.
+> `$ROOT` = `chimeranext/better-microservices`.
 
 ## Status (2026-05-31)
 

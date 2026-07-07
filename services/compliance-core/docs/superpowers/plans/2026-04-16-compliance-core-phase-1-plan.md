@@ -12,7 +12,7 @@
 
 ## Source spec
 
-`/home/kvttvrsis/Documentos/GitHub/compliance-core/docs/superpowers/specs/2026-04-16-compliance-core-design.md` — sections §§3-6, §10-12, §14 govern Fase 1.
+`compliance-core/docs/superpowers/specs/2026-04-16-compliance-core-design.md` — sections §§3-6, §10-12, §14 govern Fase 1.
 
 **Non-goals for Fase 1** (deferred to Fases 2-5): PEP screening, adverse media, KYB full, AML transaction monitoring, PoP, whistleblower channel, Snap Compliance adapter, Incode adapter (fallback), Travel Rule.
 
@@ -20,7 +20,7 @@
 
 ## File Structure (Fase 1)
 
-Every file created or modified in Fase 1. Paths relative to repo root `/home/kvttvrsis/Documentos/GitHub/compliance-core/`.
+Every file created or modified in Fase 1. Paths relative to repo root `compliance-core/`.
 
 ### Root tooling
 

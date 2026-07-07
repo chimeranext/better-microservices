@@ -20,7 +20,7 @@ Score: **5 of 5**.
 
 | Criterion | Result | Key evidence |
 |---|:---:|---|
-| 1. Cross-startup reuse | ✅✅ | Five committed consumers: dojo-os, altrupets-api, habitanexus-api, vertivolatam-api, aduanext-api |
+| 1. Cross-startup reuse | ✅✅ | Five committed consumers: learning-platform, altrupets-api, habitanexus-api, vertivolatam-api, aduanext-api |
 | 2. Bounded domain | ✅ | State machines for PaymentIntent, Subscription, Escrow, Payout, Refund, Dispute are all payments-local; invoice-core consumes `PaymentSucceeded`, it does not own the state |
 | 3. Non-trivial complexity | ✅✅ | 3DS, webhook HMAC, idempotency, reconciliation, chargebacks, PCI SAQ-A scoping, multi-currency FX, split payments, payout schedules |
 | 4. Credential / regulatory isolation | ✅✅ | Stripe secrets, OnvoPay keys, Tilopay keys, webhook signing secrets, PCI scope all collapse into the sidecar pod |
@@ -44,7 +44,7 @@ The same brainstorming session that produced the verdict also produced the decis
 
 - **`accounting-core` sibling** — the rubric itself rejects this: `accounting-core` is a destination sink over invoice + payments + inventory. Any ERP export adapter (QuickBooks, Xero, Alegra) lives **inside** `invoice-core` as an `AccountingSinkPort`.
 - **Merge `payments-core` into `invoice-core`** — rejected because the state machines differ. `invoice-core` emits a fiscal document **after** payment succeeds; that is a distinct bounded context.
-- **Do not build a sidecar, leave payments in each backend** — rejected because `dojo-os` alone already has 3,429 LOC across 13 Edge Functions replicating Stripe + service_role patterns. Multiplying that by five consumers crosses the threshold the rubric uses to justify extraction.
+- **Do not build a sidecar, leave payments in each backend** — rejected because `learning-platform` alone already has 3,429 LOC across 13 Edge Functions replicating Stripe + service_role patterns. Multiplying that by five consumers crosses the threshold the rubric uses to justify extraction.
 
 ## Acceptance
 

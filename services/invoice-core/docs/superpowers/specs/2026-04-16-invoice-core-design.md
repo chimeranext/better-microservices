@@ -1,7 +1,7 @@
 # invoice-core — Design Specification
 
 **Fecha**: 2026-04-16
-**Autor**: @lapc506 (Luis Andrés Peña Castillo / andres@dojocoding.io)
+**Autor**: @lapc506 (Luis Andrés Peña Castillo / hello@chimeranext.dev)
 **Estado**: **APROBADO** por el autor tras ronda de brainstorming 2026-04-16.
 **Licencia del diseño**: BSL 1.1 (igual que el código).
 **Siguiente paso**: invocar `superpowers:writing-plans` para generar implementation plan con issues Linear.
@@ -10,9 +10,9 @@
 
 ## Documentos complementarios
 
-- `/home/kvttvrsis/Escritorio/2026-04-16-invoice-core-hallazgos.md` — research completa (MoR, ATENA vs TRIBU-CR, donaciones, Vaki.co, fuentes).
-- `/home/kvttvrsis/Escritorio/2026-04-16-core-governance-rubric.md` — rúbrica reusable de 5 criterios para decidir `-core` nuevos.
-- `/home/kvttvrsis/Documentos/GitHub/habitanexus/business/spikes/06-contract-core-megaprompt.md` — mega-prompt para contract-core interno.
+- `2026-04-16-invoice-core-hallazgos.md` — research completa (MoR, ATENA vs TRIBU-CR, donaciones, Vaki.co, fuentes).
+- `2026-04-16-core-governance-rubric.md` — rúbrica reusable de 5 criterios para decidir `-core` nuevos.
+- `habitanexus/business/spikes/06-contract-core-megaprompt.md` — mega-prompt para contract-core interno.
 
 ---
 
@@ -811,10 +811,10 @@ Entregables:
 ## Apéndice C — Referencias externas
 
 - Explicit Architecture — Herbert Graca: https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/
-- `agentic-core` repo: `/home/kvttvrsis/Documentos/GitHub/agentic-core/`
-- `marketplace-core` repo: `/home/kvttvrsis/Documentos/GitHub/marketplace-core/`
-- `hacienda-cr` repo: `/home/kvttvrsis/Documentos/GitHub/hacienda-cr/`
-- Hallazgos: `/home/kvttvrsis/Escritorio/2026-04-16-invoice-core-hallazgos.md`
-- Plan operativo: `/home/kvttvrsis/Escritorio/2026-04-16-invoice-core-plan.md`
-- Governance: `/home/kvttvrsis/Escritorio/2026-04-16-core-governance-rubric.md`
-- contract-core mega-prompt: `/home/kvttvrsis/Documentos/GitHub/habitanexus/business/spikes/06-contract-core-megaprompt.md`
+- `agentic-core` repo: `agentic-core/`
+- `marketplace-core` repo: `marketplace-core/`
+- `hacienda-cr` repo: `hacienda-cr/`
+- Hallazgos: `2026-04-16-invoice-core-hallazgos.md`
+- Plan operativo: `2026-04-16-invoice-core-plan.md`
+- Governance: `2026-04-16-core-governance-rubric.md`
+- contract-core mega-prompt: `habitanexus/business/spikes/06-contract-core-megaprompt.md`

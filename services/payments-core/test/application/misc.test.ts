@@ -195,7 +195,7 @@ describe('makeHandleAgenticPayment', () => {
 
     const r = await execute({
       id: 'pi_agent',
-      consumer: 'doji',
+      consumer: 'conversational-agent',
       agentId: 'agent_1',
       toolCallId: 'tool_1',
       auditJwt: 'eyJ...',
@@ -223,7 +223,7 @@ describe('makeHandleAgenticPayment', () => {
     });
     const input = {
       id: 'pi_agent2',
-      consumer: 'doji',
+      consumer: 'conversational-agent',
       agentId: 'agent_1',
       toolCallId: 'tool_1',
       auditJwt: 'eyJ...',

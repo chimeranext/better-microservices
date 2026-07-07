@@ -4,7 +4,7 @@
 
 OnvoPay is a Costa-Rican payments gateway specialized in the local card-acquisition market. It covers CR-domestic Visa / Mastercard acquiring with settlement in CRC and USD, supports recurring billing (`cargos-recurrentes`), and is the highest-priority CR-local gateway for the ecosystem. All five consumers of `payments-core` have at least one flow where OnvoPay is the preferred gateway:
 
-- `dojo-os` — CR-domestic subscriptions for the local tier.
+- `learning-platform` — CR-domestic subscriptions for the local tier.
 - `altrupets-api` — CR donors paying with CR-issued cards.
 - `habitanexus-api` — CR HOA fees (recurring).
 - `vertivolatam-api` — some CR corporate customers prefer a CR-native gateway.

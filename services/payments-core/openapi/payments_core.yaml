@@ -612,7 +612,7 @@ definitions:
       consumer:
         type: string
         description: |-
-          consumer is the tenant tag identifying the caller (e.g. "dojo-os",
+          consumer is the tenant tag identifying the caller (e.g. "learning-platform",
           "altrupets-api"). Used for routing events and for audit.
       customerReference:
         type: string

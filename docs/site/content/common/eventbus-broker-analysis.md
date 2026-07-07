@@ -824,7 +824,7 @@ Y minimiza:
 
 ## Parte VI — Estado actual del ecosistema y gaps de implementación
 
-> **Fecha del estudio:** 2026-04-20. Basado en auditoría read-only sobre ocho repositorios: `infraestructura-backend`, `habitanexus`, `vertivolatam`, `altrupets`, `aduanext`, `marketplace-core`, `agentic-core`, `dojocoding/dojo-os`.
+> **Fecha del estudio:** 2026-04-20. Basado en auditoría read-only sobre ocho repositorios: `infraestructura-backend`, `habitanexus`, `vertivolatam`, `altrupets`, `aduanext`, `marketplace-core`, `agentic-core`, `learning-platform`.
 >
 > **Propósito:** las Partes I–V exponen el marco teórico de las cuatro decisiones. Esta parte contrasta ese marco con la **realidad actual** del ecosistema y documenta las decisiones implícitas ya tomadas que deberían sesgar la elección "limpia" hacia la opción que hereda menos infra nueva.
 

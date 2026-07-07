@@ -6,7 +6,7 @@
 
 ## Why now
 
-Freezing the v1 contract early is the single best lever against churn. Every time we later rename an RPC or reshape a message, every consumer that has wired client stubs rebuilds. The ecosystem rubric's §9 warns against "construir antes de consumidor"; this change inverts the warning: we HAVE consumers (dojo-os today, four more close behind), so we must pin the contract before they pick it up.
+Freezing the v1 contract early is the single best lever against churn. Every time we later rename an RPC or reshape a message, every consumer that has wired client stubs rebuilds. The ecosystem rubric's §9 warns against "construir antes de consumidor"; this change inverts the warning: we HAVE consumers (learning-platform today, four more close behind), so we must pin the contract before they pick it up.
 
 ## Scope
 

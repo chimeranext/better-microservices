@@ -29,7 +29,7 @@ Each use case is a class (or a pure async function) in `src/application/use-case
 ## Cross-cutting concerns (all use cases)
 
 - **Idempotency**: every mutating use case takes an `IdempotencyKey` and checks `IdempotencyStorePort` before doing work. On replay, return the stored result.
-- **Consumer tagging**: every call carries `consumer: string` (e.g. `"dojo-os"`). Persisted on entities. Required for tenant-aware reads and for the `consumer` field on emitted events.
+- **Consumer tagging**: every call carries `consumer: string` (e.g. `"learning-platform"`). Persisted on entities. Required for tenant-aware reads and for the `consumer` field on emitted events.
 - **Event emission**: use cases emit events via an `EventBusPort` (declared here as part of this change, since it is application-level, not domain-level). The default adapter lands in a later infra change.
 - **Error mapping**: domain errors (`InvalidStateTransitionError`, `CurrencyMismatchError`) convert to application-layer errors that the grpc adapter then maps to gRPC status codes. Mapping table lives in `src/application/errors.ts`.
 

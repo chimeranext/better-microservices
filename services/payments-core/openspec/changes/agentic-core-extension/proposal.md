@@ -2,7 +2,7 @@
 
 ## Context
 
-`payments-core`'s `InitiateAgenticPayment` RPC is called by `agentic-core` — the sibling repo that hosts the AI agent runtime (Doji, DojoOS's consumer-facing agent, lives there as a deployed instance). For that RPC to be usable, `agentic-core` needs:
+`payments-core`'s `InitiateAgenticPayment` RPC is called by `agentic-core` — the sibling repo that hosts the AI agent runtime (the platform's consumer-facing conversational agent lives there as a deployed instance). For that RPC to be usable, `agentic-core` needs:
 
 1. An `AgenticCheckoutPort` in its domain layer that agent tools call when they need to charge money.
 2. An outbound adapter that speaks gRPC to `payments-core` and knows how to build the scoped JWT.
@@ -11,7 +11,7 @@ This change is the `agentic-core`-side counterpart of this repo's `stripe-agenti
 
 ## Why this change
 
-Without the agentic-core side, the `InitiateAgenticPayment` RPC sits unused. The business value (Doji being able to complete a transaction on behalf of a DojoOS user) depends on both sides landing together.
+Without the agentic-core side, the `InitiateAgenticPayment` RPC sits unused. The business value (the conversational agent being able to complete a transaction on behalf of a platform user) depends on both sides landing together.
 
 ## Scope (happens in `../agentic-core/`, not this repo)
 
@@ -103,7 +103,7 @@ The gRPC contract is `proto-contract-v1`'s `InitiateAgenticPayment(InitiateAgent
 
 ## Out of scope
 
-- **Doji-specific tool wiring** — the individual agent tools that call `AgenticCheckoutPort` are a separate change in agentic-core (or in the Doji-specific plugin repo).
+- **Agent-specific tool wiring** — the individual agent tools that call `AgenticCheckoutPort` are a separate change in agentic-core (or in a separate agent plugin repo).
 - **Payment-in via WebSocket / streaming RPCs** — v1 is a unary RPC.
 - **OAuth 2.1 token flow** — rejected in `stripe-agentic-commerce-p1`; scoped JWT is the authoritative mechanism.
 - **Agent budget enforcement** — agentic-core enforces agent-level spend limits before even calling `initiate_agentic_payment`. Limit logic is not in this change; it belongs to agentic-core's domain layer.

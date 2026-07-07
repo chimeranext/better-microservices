@@ -1,7 +1,7 @@
 # License Normalization — one BSL 1.1 policy across all 6 services
 
 **Date:** 2026-06-01
-**Owner:** Andrés (andres@dojocoding.io)
+**Owner:** Andrés (hello@chimeranext.dev)
 **Status:** Design approved — implemented on branch `chore/license-normalization`
 **Domain:** `platform`
 **Tracking issue:** TBD (`service:cross-repo`) — sub-project #2 of the monorepo foundation.
@@ -38,7 +38,7 @@ with per-service parameters substituted from a single template:
 | Parameter | Normalized value |
 |---|---|
 | **Licensor** (BSL party) | **ChimeraNext Shared Services LLC** |
-| **Intellectual author / copyright** | **Andrés (Luis Andrés Peña Castillo, GitHub: lapc506, andres@dojocoding.io)** |
+| **Intellectual author / copyright** | **Andrés (Luis Andrés Peña Castillo, GitHub: lapc506, hello@chimeranext.dev)** |
 | **Licensed Work** | the service name (`<service>`), Version 0.0.1 or later |
 | **Change License** | **Non-Profit Open Software License ("Non-Profit OSL") 3.0** (uniform) |
 | **Change Date** | **5 years** from each service's first publicly available distribution (first commit), fixed per service |

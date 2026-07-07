@@ -192,7 +192,7 @@ export default [
   {
     // Stripe adapter guard — inside `src/adapters/outbound/gateways/stripe/**`
     // only `client.ts` may import from the `stripe` package; every other file
-    // routes through it. This mirrors the DOJ-3287 factory pattern and keeps
+    // routes through it. This mirrors the pinned-SDK factory pattern and keeps
     // the SDK version / apiVersion in exactly one place.
     //
     // Cross-adapter contamination is also forbidden: the Stripe adapter must
@@ -208,7 +208,7 @@ export default [
             {
               group: ['stripe', 'stripe/*'],
               message:
-                "Import Stripe types and client only through './client.js' (the DOJ-3287 factory pattern).",
+                "Import Stripe types and client only through './client.js' (the pinned-SDK factory pattern).",
             },
             {
               group: ['**/adapters/outbound/gateways/!(stripe)/**'],

@@ -12,7 +12,7 @@
 
 ## Source spec
 
-`/home/kvttvrsis/Documentos/GitHub/invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md` — sections §§3-6, §9 (capability matrix Fase 1 rows), §11 (observability), §12 (security), §14 (Fase 1 roadmap) govern this plan.
+`invoice-core/docs/superpowers/specs/2026-04-16-invoice-core-design.md` — sections §§3-6, §9 (capability matrix Fase 1 rows), §11 (observability), §12 (security), §14 (Fase 1 roadmap) govern this plan.
 
 **Out of scope for Fase 1** (deferred to Fases 2-7):
 - P1: DonationReceipt full flow, DonationAuthorizationPort adapter, AppraisalPort, CustomsDataPort ATENA wiring, FilingDataExportPort real aggregators, IssueExportInvoice (tipo 09) polish.
@@ -26,7 +26,7 @@ These appear in Fase 1 only as **port interfaces** and **proto stubs returning `
 
 ## File Structure (Fase 1)
 
-Every file created or modified in Fase 1. Paths relative to repo root `/home/kvttvrsis/Documentos/GitHub/invoice-core/`.
+Every file created or modified in Fase 1. Paths relative to repo root `invoice-core/`.
 
 ### Root tooling (10 files)
 
@@ -4142,12 +4142,12 @@ test -f .github/PULL_REQUEST_TEMPLATE.md
 test -f .github/ISSUE_TEMPLATE/bug_report.yml
 test -f .github/ISSUE_TEMPLATE/feature_request.yml
 grep -q "BSL 1.1" CONTRIBUTING.md
-grep -q "andres@dojocoding.io" SECURITY.md
+grep -q "hello@chimeranext.dev" SECURITY.md
 ```
 
 - [ ] **Step 2: Author `CONTRIBUTING.md`** covering: BSL 1.1 CLA-less policy, Conventional Commits, TDD + coverage thresholds, per-task worktree isolation + `superpowers:executing-plans` loop, Linear + GitHub issue cross-link convention, PR checklist.
 
-- [ ] **Step 3: Author `SECURITY.md`** covering: reporting channel `andres@dojocoding.io` + PGP key link, response SLA (72h ack), scope (production + sandbox), CVD policy, `.p12`/cert handling warning.
+- [ ] **Step 3: Author `SECURITY.md`** covering: reporting channel `hello@chimeranext.dev` + PGP key link, response SLA (72h ack), scope (production + sandbox), CVD policy, `.p12`/cert handling warning.
 
 - [ ] **Step 4: Author PR + issue templates** — checklist mirroring spec §10 testing strategy + §12 security review.
 
@@ -4169,7 +4169,7 @@ git commit -m "docs: add CONTRIBUTING + SECURITY + templates"
 gh issue create --repo lapc506/invoice-core \
   --title "[Fase 1] Task 58 — CONTRIBUTING + SECURITY" \
   --label "phase/1,scope/docs,type/docs,security/credentials" \
-  --body "BSL 1.1 contribution policy; SECURITY.md with andres@dojocoding.io reporting + CVD; PR + issue templates."
+  --body "BSL 1.1 contribution policy; SECURITY.md with hello@chimeranext.dev reporting + CVD; PR + issue templates."
 ```
 
 ---

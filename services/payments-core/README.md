@@ -23,7 +23,7 @@ A single `-core` that speaks gRPC to every backend, owns the state machines (int
 
 | Consumer | Primary use case |
 |---|---|
-| `dojo-os` | Subscriptions, org billing, Stripe webhook |
+| `learning-platform` | Subscriptions, org billing, Stripe webhook |
 | `altrupets-api` | Donations (one-time + recurring), potential crowdfunding |
 | `habitanexus-api` | Escrow (rental deposits), ACH/SINPE future |
 | `vertivolatam-api` | B2B subscriptions, Tilopay CR, Convera cross-border |

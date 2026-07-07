@@ -21,8 +21,8 @@ follow-up work once the domain ports they need are also finalized. See the
 ## SDK version pin
 
 **`stripe@18.5.0`** — exact version, no caret, no tilde. The same version the
-sibling `dojo-os` repo runs in production post
-[DOJ-3287](https://linear.app/dojo-coding/issue/DOJ-3287) (sibling-repo
+sibling `learning-platform` repo runs in production post
+an internal SDK-drift lesson (sibling-repo
 internal). Avoiding drift across the portfolio is a governance rule; never
 bump this line without a dedicated OpenSpec change.
 
@@ -30,7 +30,7 @@ bump this line without a dedicated OpenSpec change.
 `Stripe.LatestApiVersion` string shipped with SDK 18.5.0. Treat this as a
 second pin with the same upgrade discipline as the SDK version.
 
-## Factory pattern (DOJ-3287)
+## Factory pattern
 
 The entire adapter has exactly **one** `new Stripe(...)` call — inside
 `src/adapters/outbound/gateways/stripe/client.ts`. Every other file imports
@@ -119,10 +119,10 @@ preserves the raw bytes on `ProcessWebhookRequest.raw_body` for this reason.
   currently rides on `IdempotencyPort`. A dedicated event repository port is
   tracked for post-P0 work.
 
-## Migration note for dojo-os
+## Migration note for learning-platform
 
-The sibling `dojo-os` repo's Stripe Edge Functions are superseded by this
+The sibling `learning-platform` repo's Stripe Edge Functions are superseded by this
 adapter once the consumer-side PR switches its call sites to
 `payments-core`'s gRPC endpoint. The factory pattern in this adapter mirrors
-dojo-os's `_shared/payments-core/stripe-client.ts` contract precisely so the
+learning-platform's `_shared/payments-core/stripe-client.ts` contract precisely so the
 rollover is a pure client-side swap — no protocol change for Stripe itself.

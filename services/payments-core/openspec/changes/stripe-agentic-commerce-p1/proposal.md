@@ -12,7 +12,7 @@ Stripe P0 covers card + subscription + webhook + payout — the baseline every c
 
 - `agentic-core` to ship its `AgenticCheckoutPort` and `payments_core_client` (tracked in `agentic-core-extension`).
 - Stripe's product to reach GA for the API version pinned in `stripe-adapter-p0` (the agentic endpoints may require a newer `apiVersion` header; this change can bump the header without bumping the SDK, because Stripe supports multiple API versions per SDK release).
-- Doji (the consumer-facing AI agent running on `agentic-core`) to have at least one flow that needs to charge a real card.
+- the conversational agent (the consumer-facing AI agent running on `agentic-core`) to have at least one flow that needs to charge a real card.
 
 Shipping P1 after P0 lets us ship Stripe baseline flows immediately while the agentic piece lines up on both sides of the gRPC boundary.
 
@@ -52,7 +52,7 @@ These fields land in a `payment_intents.metadata` JSONB block and in the `audit_
 ## Alternatives rejected
 
 - **Ship agentic payments as part of Stripe P0** — rejected; would block Stripe P0 launch on agentic-core readiness.
-- **Build a gateway-agnostic agentic layer in `payments-core`** — rejected. Stripe's agentic product is a specific set of Stripe API endpoints; other gateways do not currently ship comparable primitives. We stay gateway-specific for the first consumer (Doji on dojo-os) and generalize only if a second agentic gateway appears.
+- **Build a gateway-agnostic agentic layer in `payments-core`** — rejected. Stripe's agentic product is a specific set of Stripe API endpoints; other gateways do not currently ship comparable primitives. We stay gateway-specific for the first consumer (the conversational agent on learning-platform) and generalize only if a second agentic gateway appears.
 - **Put agentic JWT verification inside `agentic-core` only, treat this adapter as a pass-through** — partially accepted. agentic-core is the authoritative issuer of scoped JWTs. `payments-core` re-verifies defensively (don't-trust-the-caller model) using the same public key.
 - **Use OAuth 2.1 authorization-code flow instead of scoped JWT** — rejected for v1. Stripe's agentic product spec uses a scoped JWT; aligning reduces integration friction. Re-evaluate if multiple agentic gateways converge on OAuth.
 

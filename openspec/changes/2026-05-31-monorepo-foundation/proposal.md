@@ -1,7 +1,7 @@
 # Monorepo Foundation — consolidate 6 microservices into `chimeranext/better-microservices`
 
 **Date:** 2026-05-31
-**Owner:** Andrés (andres@dojocoding.io)
+**Owner:** Andrés (hello@chimeranext.dev)
 **Status:** Design approved — pending implementation
 **Domain:** `platform`
 **Tracking issue:** [#1](https://github.com/chimeranext/better-microservices/issues/1) (`service:cross-repo`)
@@ -69,5 +69,5 @@ consolidated issue migration (gated), archiving origin repos (gated).
 
 - ADR: [`design.md`](./design.md)
 - Tasks: [`tasks.md`](./tasks.md)
-- Convention source: `dojocoding/dojo-os` `openspec/`
+- Convention shared across the ChimeraNext monorepos (`openspec/`)
 - Docs site reference: `habitanexus/monorepo/docs/site/` (Material for MkDocs)

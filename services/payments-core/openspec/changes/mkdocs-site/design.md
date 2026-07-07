@@ -32,7 +32,7 @@ docs/
 │       │   ├── invoice-core.md
 │       │   ├── compliance-core.md
 │       │   └── consumers/
-│       │       ├── dojo-os.md
+│       │       ├── learning-platform.md
 │       │       ├── altrupets.md
 │       │       ├── habitanexus.md
 │       │       ├── vertivolatam.md
