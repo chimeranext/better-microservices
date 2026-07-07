@@ -4,7 +4,7 @@
 > `digitaltwin-core` (digital twin of a crop / greenhouse) to be added to the
 > `better-microservices` monorepo, following the same Explicit Architecture
 > (Hexagonal + DDD) + OpenSpec governance as `vision-core` and `geospatial-core`.
-> **Author context:** andres@dojocoding.io · drafted 2026-06-03.
+> **Author context:** hello@chimeranext.dev · drafted 2026-06-03.
 
 This service is the **third AgTech sibling**: where `vision-core` does close-range
 phytopathology vision and `geospatial-core` does satellite land-use, `digitaltwin-core`

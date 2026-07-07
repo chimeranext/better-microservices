@@ -1,7 +1,7 @@
 # Monorepo Foundation — consolidate 6 microservices into `chimeranext/better-microservices`
 
 **Date:** 2026-05-31
-**Owner:** Andrés (andres@dojocoding.io)
+**Owner:** Andrés (hello@chimeranext.dev)
 **Status:** Design approved — pending implementation
 **Domain:** `platform`
 **Tracking issue:** [#1](https://github.com/chimeranext/better-microservices/issues/1) (`service:cross-repo`)

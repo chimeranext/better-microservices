@@ -15,7 +15,7 @@
 ---
 
 **Fecha**: 2026-04-16
-**Autor**: @lapc506 (Luis Andrés Peña Castillo / andres@dojocoding.io)
+**Autor**: @lapc506 (Luis Andrés Peña Castillo / hello@chimeranext.dev)
 **Estado**: **DISEÑO PRELIMINAR / DEFERRED**. No invocar `writing-plans` hasta que el trigger se dispare.
 **Licencia**: BSL 1.1.
 **Hospedaje previsto**: `github.com/lapc506/filing-core`. Paquete npm: `@lapc506/filing-core`.

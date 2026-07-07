@@ -1,7 +1,7 @@
 # compliance-core — Design Specification
 
 **Fecha**: 2026-04-16
-**Autor**: @lapc506 (Luis Andrés Peña Castillo / andres@dojocoding.io)
+**Autor**: @lapc506 (Luis Andrés Peña Castillo / hello@chimeranext.dev)
 **Estado**: **APROBADO** por el autor tras ronda de governance 2026-04-16 (5/5 con múltiples ✅✅ en rúbrica).
 **Licencia del diseño**: BSL 1.1 (igual que el código).
 **Prioridad**: **#2 inmediata** — siguiente `-core` después de `invoice-core`. Driver regulatorio: Ley 8204 CR aplica al escrow de HabitaNexus desde día uno (> USD 1000/mes). Sin KYC formal el escrow cae en "actividad financiera no supervisada" ante SUGEF.

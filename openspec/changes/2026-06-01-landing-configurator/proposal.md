@@ -1,7 +1,7 @@
 # Landing / Configurator — "pick your microservices" builder (Shadcn)
 
 **Date:** 2026-06-01
-**Owner:** Andrés (andres@dojocoding.io)
+**Owner:** Andrés (hello@chimeranext.dev)
 **Status:** Modeled — pending implementation
 **Domain:** `platform` (lives in `apps/web`)
 **Tracking issue:** _to be created (`service:cross-repo`)_

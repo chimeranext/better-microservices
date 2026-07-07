@@ -1,7 +1,7 @@
 # vision-core — phytopathology vision/MLOps engine for hydroponic greenhouses
 
 **Date:** 2026-06-01 (MLOps architecture update: 2026-06-01)
-**Owner:** Andrés (Luis Andrés Peña Castillo, GitHub: lapc506, andres@dojocoding.io)
+**Owner:** Andrés (Luis Andrés Peña Castillo, GitHub: lapc506, hello@chimeranext.dev)
 **Status:** Proposed — scaffold on branch `chore/vision-core-mlops-update`; pending review/merge
 **Domain:** `vision-core` (new 7th service) · touches `common` (gRPC/REST contract), `platform` (gRPC Health, OTel)
 **Tracking issue:** _to open_ with `service:vision-core` + `type:feature` + `size:XL` (decompose).

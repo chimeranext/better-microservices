@@ -47,7 +47,7 @@ Change Date = first-commit date (preserved git history from origin repos) + 5 ye
 | `payments-core` | 2026-04-18 | **2031-04-18** | ChimeraNext Shared Services LLC | Non-Profit OSL 3.0 | `BUSL-1.1` | `package.json` |
 
 Intellectual author / copyright credit for **all** services: **Andrés (Luis Andrés
-Peña Castillo, GitHub: lapc506, andres@dojocoding.io)**.
+Peña Castillo, GitHub: lapc506, hello@chimeranext.dev)**.
 
 ## Template structure
 

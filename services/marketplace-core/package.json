@@ -51,7 +51,7 @@
     "type": "git",
     "url": "git+https://github.com/lapc506/marketplace-core.git"
   },
-  "author": "Andrés (lapc506) <andres@dojocoding.io>",
+  "author": "Andrés (lapc506) <hello@chimeranext.dev>",
   "license": "BUSL-1.1",
   "engines": {
     "node": ">=20.11.0"

@@ -274,7 +274,7 @@ If deactivation is chosen at an annual review:
 
 - [ ] **Step 3: Notify author**
 
-Post to the author (@lapc506) via email (andres@dojocoding.io) or standup confirming the decision is intentional.
+Post to the author (@lapc506) via email (hello@chimeranext.dev) or standup confirming the decision is intentional.
 
 ---
 

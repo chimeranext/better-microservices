@@ -1,7 +1,7 @@
 # invoice-core — Design Specification
 
 **Fecha**: 2026-04-16
-**Autor**: @lapc506 (Luis Andrés Peña Castillo / andres@dojocoding.io)
+**Autor**: @lapc506 (Luis Andrés Peña Castillo / hello@chimeranext.dev)
 **Estado**: **APROBADO** por el autor tras ronda de brainstorming 2026-04-16.
 **Licencia del diseño**: BSL 1.1 (igual que el código).
 **Siguiente paso**: invocar `superpowers:writing-plans` para generar implementation plan con issues Linear.

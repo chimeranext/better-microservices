@@ -1,7 +1,7 @@
 # Centralized docs site — one Material-for-MkDocs site for all 6 services + Common
 
 **Date:** 2026-06-01
-**Owner:** Andrés (andres@dojocoding.io)
+**Owner:** Andrés (hello@chimeranext.dev)
 **Status:** Implemented on branch `docs/mkdocs-site` — pending review/merge
 **Domain:** `platform` (cross-service); touches `common`
 **Tracking issue:** sub-project #4 of `2026-05-31-monorepo-foundation`

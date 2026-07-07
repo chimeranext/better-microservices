@@ -4142,12 +4142,12 @@ test -f .github/PULL_REQUEST_TEMPLATE.md
 test -f .github/ISSUE_TEMPLATE/bug_report.yml
 test -f .github/ISSUE_TEMPLATE/feature_request.yml
 grep -q "BSL 1.1" CONTRIBUTING.md
-grep -q "andres@dojocoding.io" SECURITY.md
+grep -q "hello@chimeranext.dev" SECURITY.md
 ```
 
 - [ ] **Step 2: Author `CONTRIBUTING.md`** covering: BSL 1.1 CLA-less policy, Conventional Commits, TDD + coverage thresholds, per-task worktree isolation + `superpowers:executing-plans` loop, Linear + GitHub issue cross-link convention, PR checklist.
 
-- [ ] **Step 3: Author `SECURITY.md`** covering: reporting channel `andres@dojocoding.io` + PGP key link, response SLA (72h ack), scope (production + sandbox), CVD policy, `.p12`/cert handling warning.
+- [ ] **Step 3: Author `SECURITY.md`** covering: reporting channel `hello@chimeranext.dev` + PGP key link, response SLA (72h ack), scope (production + sandbox), CVD policy, `.p12`/cert handling warning.
 
 - [ ] **Step 4: Author PR + issue templates** — checklist mirroring spec §10 testing strategy + §12 security review.
 
@@ -4169,7 +4169,7 @@ git commit -m "docs: add CONTRIBUTING + SECURITY + templates"
 gh issue create --repo lapc506/invoice-core \
   --title "[Fase 1] Task 58 — CONTRIBUTING + SECURITY" \
   --label "phase/1,scope/docs,type/docs,security/credentials" \
-  --body "BSL 1.1 contribution policy; SECURITY.md with andres@dojocoding.io reporting + CVD; PR + issue templates."
+  --body "BSL 1.1 contribution policy; SECURITY.md with hello@chimeranext.dev reporting + CVD; PR + issue templates."
 ```
 
 ---
