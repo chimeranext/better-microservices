@@ -1,7 +1,7 @@
 # timeseries-core — shared time-series capability: extract now, later, or never?
 
 **Date:** 2026-06-21 (decision date)
-**Owner:** Andrés (andres@dojocoding.io)
+**Owner:** Andrés (hello@chimeranext.dev)
 **Status:** Proposed — spike outcome (research + PoC), pending review
 **Domain:** `timeseries-core` (proposed 9th service; proposed label `service:timeseries-core`)
 **Primary (only real) consumer today:** `vertivo` (greenhouse sensor telemetry)

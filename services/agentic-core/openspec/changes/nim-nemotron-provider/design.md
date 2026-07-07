@@ -24,7 +24,7 @@ NIM habla el wire format OpenAI (`/chat/completions`). `langchain-openai>=0.3` y
 dependencia del proyecto. Un SDK dedicado (`langchain-nvidia-ai-endpoints`) agregaria
 una dependencia nueva sin beneficio para chat basico + tool calling.
 
-Patron adoptado del registry multi-provider de dojo-agent-openclaw-plugin
+Patron adoptado del registry multi-provider de a sibling plugin
 (`reviewer-providers.ts`): provider = kind OpenAI-compatible + model slug + api key env
 + base URL; un bearer (`NVIDIA_API_KEY`) autentica todo el catalogo NIM.
 
