@@ -24,6 +24,14 @@ pnpm test       # vitest run
 npx vitest run  # run the suite directly
 ```
 
+## Open Graph
+
+`public/og.png` (1200×630) is referenced from `src/app/layout.tsx` as `og:image` /
+`twitter:image` (absolute URLs via `metadataBase` → `https://microservices.chimeranext.dev`).
+After deploy, re-scrape with the
+[Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) if WhatsApp
+still shows a stale preview.
+
 ## Architecture
 
 The wizard's **pure logic** lives in unit-tested `src/lib/*` modules; the React/Shadcn
