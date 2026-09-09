@@ -50,3 +50,8 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# ---- Agent / git worktrees (transient, never committed) ----
+.agents/
+.claude/worktrees/
+.worktrees/
