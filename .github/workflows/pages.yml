@@ -2,7 +2,7 @@ name: Pages (web app + docs → GitHub Pages)
 
 # Single owner of the GitHub Pages deployment for this repo.
 #
-# Layout served at the custom domain betterms.lapc506.me:
+# Layout served at the custom domain microservices.chimeranext.dev:
 #   /       → apps/web (Next.js static export, `output: export`)
 #   /docs   → MkDocs site
 #
@@ -79,7 +79,7 @@ jobs:
           cp -r apps/web/out/. _site/
           cp -r docs/site/site/. _site/docs/
           touch _site/.nojekyll            # keep Next.js _next/ assets from Jekyll
-          echo "betterms.lapc506.me" > _site/CNAME
+          echo "microservices.chimeranext.dev" > _site/CNAME
 
       - name: Upload Pages artifact
         if: github.ref == 'refs/heads/main'
